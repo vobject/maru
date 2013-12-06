@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               label="&amp;Debug">
+            <command
+                  commandId="maru.ui.debug.commands.createScenario0"
+                  id="maru.ui.debug.menus.createScenario0">
+            </command>
+            <command
+                  commandId="maru.ui.debug.commands.createScenario1"
+                  id="maru.ui.debug.menus.createScenario1">
+            </command>
+            <command
+                  commandId="maru.ui.debug.commands.createScenario2"
+                  id="maru.ui.debug.menus.createScenario2">
+            </command>
+            <command
+                  commandId="maru.ui.debug.commands.createScenario3"
+                  id="maru.ui.debug.menus.createScenario3">
+            </command>
+            <command
+                  commandId="maru.ui.debug.commands.createScenario4"
+                  id="maru.ui.debug.menus.createScenario4">
+            </command>
+            <command
+                  commandId="maru.ui.debug.commands.createScenario5"
+                  id="maru.ui.debug.menus.createScenario5">
+            </command>
+            <command
+                  commandId="maru.ui.debug.commands.createScenario6"
+                  id="maru.ui.debug.menus.createScenario6">
+            </command>
+            <command
+                  commandId="maru.ui.debug.commands.createScenario7"
+                  id="maru.ui.debug.menus.createScenario7">
+            </command>
+            <command
+                  commandId="maru.ui.debug.command.openthesis">
+            </command>
+            <command
+                  commandId="maru.ui.debug.commands.drawjob0">
+            </command>
+            <command
+                  commandId="maru.ui.debug.commands.drawjob1">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="maru.ui.debug.commands.createScenario0"
+            name="Create : Scenario + Timepoints">
+      </command>
+      <command
+            id="maru.ui.debug.commands.createScenario1"
+            name="Create : Scenario + Timepoints + Groundstation">
+      </command>
+      <command
+            id="maru.ui.debug.commands.createScenario2"
+            name="Create : Scenario + Timepoints + CKE Satellite">
+      </command>
+      <command
+            id="maru.ui.debug.commands.createScenario3"
+            name="Create : Scenario + Timepoints + TLE Satellite">
+      </command>
+      <command
+            id="maru.ui.debug.commands.createScenario4"
+            name="Create : Scenario + Timepoints + Groundstation + CKE Satellite">
+      </command>
+      <command
+            id="maru.ui.debug.commands.createScenario5"
+            name="Create : Scenario + Timepoints + Groundstation + TLE Satellite">
+      </command>
+      <command
+            id="maru.ui.debug.commands.createScenario6"
+            name="Create : Scenario + Timepoints + CKE Satellite + TLE Satellite">
+      </command>
+      <command
+            id="maru.ui.debug.commands.createScenario7"
+            name="Create : Scenario + Timepoints + Groundstation + CKE Satellite + TLE Satellite">
+      </command>
+      <command
+            id="maru.ui.debug.command.openthesis"
+            name="Open Thesis PDF">
+      </command>
+      <command
+            id="maru.ui.debug.commands.drawjob0"
+            name="DrawJob 0">
+      </command>
+      <command
+            id="maru.ui.debug.commands.drawjob1"
+            name="DrawJob 1">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="maru.ui.debug.handlers.DebugCreateScenarioHandler0"
+            commandId="maru.ui.debug.commands.createScenario0">
+      </handler>
+      <handler
+            class="maru.ui.debug.handlers.DebugCreateScenarioHandler1"
+            commandId="maru.ui.debug.commands.createScenario1">
+      </handler>
+      <handler
+            class="maru.ui.debug.handlers.DebugCreateScenarioHandler2"
+            commandId="maru.ui.debug.commands.createScenario2">
+      </handler>
+      <handler
+            class="maru.ui.debug.handlers.DebugCreateScenarioHandler3"
+            commandId="maru.ui.debug.commands.createScenario3">
+      </handler>
+      <handler
+            class="maru.ui.debug.handlers.DebugCreateScenarioHandler4"
+            commandId="maru.ui.debug.commands.createScenario4">
+      </handler>
+      <handler
+            class="maru.ui.debug.handlers.DebugCreateScenarioHandler5"
+            commandId="maru.ui.debug.commands.createScenario5">
+      </handler>
+      <handler
+            class="maru.ui.debug.handlers.DebugCreateScenarioHandler6"
+            commandId="maru.ui.debug.commands.createScenario6">
+      </handler>
+      <handler
+            class="maru.ui.debug.handlers.DebugCreateScenarioHandler7"
+            commandId="maru.ui.debug.commands.createScenario7">
+      </handler>
+      <handler
+            class="maru.ui.debug.handlers.OpenThesisHandler"
+            commandId="maru.ui.debug.command.openthesis">
+      </handler>
+      <handler
+            class="maru.ui.debug.handlers.DrawJobHandler0"
+            commandId="maru.ui.debug.commands.drawjob0">
+      </handler>
+      <handler
+            class="maru.ui.debug.handlers.DrawJobHandler1"
+            commandId="maru.ui.debug.commands.drawjob1">
+      </handler>
+   </extension>
+
+</plugin>

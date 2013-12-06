@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="maru.spacecraft.commands.newSpacecraft"
+            name="Spacecraft">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <commonWizard
+            menuGroupId="maru.spacecraft.wizards.new.object"
+            type="new"
+            wizardId="maru.spacecraft.wizards.new.tlesatellite">
+         <enablement></enablement>
+      </commonWizard>
+      <commonWizard
+            menuGroupId="maru.spacecraft.wizards.new.object"
+            type="new"
+            wizardId="maru.spacecraft.wizards.new.ckesatellite">
+         <enablement></enablement>
+      </commonWizard>
+      <commonWizard
+            menuGroupId="maru.spacecraft.wizards.new.object"
+            type="new"
+            wizardId="maru.spacecraft.wizards.new.externaltlesatellite">
+         <enablement></enablement>
+      </commonWizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="maru.spacecraft.category.wizards"
+            name="Spacecrafts">
+      </category>
+      <wizard
+            category="maru.spacecraft.category.wizards"
+            class="maru.spacecraft.wizards.KeplerSatelliteWizard"
+            icon="icons/Satellite_16.png"
+            id="maru.spacecraft.wizards.new.ckesatellite"
+            name="CKE Satellite">
+      </wizard>
+      <wizard
+            category="maru.spacecraft.category.wizards"
+            class="maru.spacecraft.wizards.TleSatelliteWizard"
+            icon="icons/Satellite_16.png"
+            id="maru.spacecraft.wizards.new.tlesatellite"
+            name="TLE Satellite">
+      </wizard>
+      <wizard
+            category="maru.spacecraft.category.wizards"
+            class="maru.spacecraft.wizards.ExternalTleSatelliteWizard"
+            icon="icons/Satellite_16.png"
+            id="maru.spacecraft.wizards.new.externaltlesatellite"
+            name="TLE Satellite (external)">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="maru.preferences"
+            class="maru.spacecraft.preferences.SpacecraftRoot"
+            id="maru.spacecraft.preferences"
+            name="Spacecraft">
+      </page>
+      <page
+            category="maru.spacecraft.preferences"
+            class="maru.spacecraft.preferences.TleSources"
+            id="maru.spacecraft.preferences.externaltle"
+            name="TLE Sources">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="maru.spacecraft.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+
+</plugin>

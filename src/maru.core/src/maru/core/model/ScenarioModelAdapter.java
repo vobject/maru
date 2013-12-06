@@ -1,0 +1,100 @@
+package maru.core.model;
+
+public abstract class ScenarioModelAdapter implements IScenarioModelListener
+{
+    @Override
+    public void scenarioCreated(IScenarioProject project)
+    {
+
+    }
+
+    @Override
+    public void scenarioAdded(IScenarioProject project)
+    {
+
+    }
+
+    @Override
+    public void scenarioRemoved(IScenarioProject project)
+    {
+
+    }
+
+    @Override
+    public void elementAdded(IScenarioElement element)
+    {
+
+    }
+
+    @Override
+    public void elementRemoved(IScenarioElement element)
+    {
+
+    }
+
+    @Override
+    public void elementRenamed(IScenarioElement element)
+    {
+
+    }
+
+    @Override
+    public void elementCommented(IScenarioElement element)
+    {
+
+    }
+
+    @Override
+    public void elementColored(IPropagatable element)
+    {
+
+    }
+
+    @Override
+    public void elementGraphic2DChanged(IPropagatable element)
+    {
+
+    }
+
+    @Override
+    public void propagatablesTimeChanged(IScenarioProject element)
+    {
+
+    }
+
+    @Override
+    public void timepointStartChanged(ITimepoint element)
+    {
+
+    }
+
+    @Override
+    public void timepointStopChanged(ITimepoint element)
+    {
+
+    }
+
+    @Override
+    public void timepointCurrentChanged(ITimepoint element)
+    {
+
+    }
+
+    @Override
+    public void timepointAdded(ITimepoint element)
+    {
+
+    }
+
+    @Override
+    public void timepointRemoved(ITimepoint element)
+    {
+
+    }
+
+    @Override
+    public void timepointChanged(ITimepoint element)
+    {
+
+    }
+}

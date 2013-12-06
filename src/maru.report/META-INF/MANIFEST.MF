@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Maru Report
+Bundle-SymbolicName: maru.report;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: maru.report.MaruReportPlugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ maru,
+ maru.core,
+ maru.ui
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy

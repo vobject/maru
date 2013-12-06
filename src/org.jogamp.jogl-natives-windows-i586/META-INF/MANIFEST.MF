@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: jogl-natives-windows-i586
+Bundle-SymbolicName: org.jogamp.jogl-natives-windows-i586
+Bundle-Version: 1.1.1
+Bundle-Vendor: JogAmp
+Fragment-Host: org.jogamp.jogl
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Eclipse-PlatformFilter: (& (osgi.os=win32) (osgi.arch=x86))

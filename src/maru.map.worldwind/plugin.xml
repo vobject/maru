@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="maru.ui.category.views"
+            class="maru.map.worldwind.views.Map2D"
+            icon="icons/Categories-applications-internet-icon.png"
+            id="maru.map.worldwind.views.FlatMap"
+            name="2D Map">
+      </view>
+      <view
+            category="maru.ui.category.views"
+            class="maru.map.worldwind.views.Map3D"
+            icon="icons/Categories-applications-internet-icon_3D.png"
+            id="maru.map.worldwind.views.GlobeMap"
+            name="3D Map">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="maru.perspectives.Planning">
+         <view
+               id="maru.map.worldwind.views.FlatMap"
+               relationship="stack"
+               relative="maru.map.views.MapView">
+         </view>
+         <view
+               id="maru.map.worldwind.views.GlobeMap"
+               relationship="stack"
+               relative="maru.map.worldwind.views.FlatMap">
+         </view>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="maru.perspectives.Presentation">
+         <view
+               closeable="false"
+               id="maru.map.worldwind.views.FlatMap"
+               minimized="false"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               showTitle="false"
+               standalone="true">
+         </view>
+         <view
+               closeable="false"
+               id="maru.map.worldwind.views.GlobeMap"
+               minimized="false"
+               relationship="right"
+               relative="org.eclipse.ui.editorss"
+               showTitle="false"
+               standalone="true">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="maru.map.worldwind.preferences.MainPage"
+            id="maru.map.worldwind.preferences.MainPage"
+            name="World Wind">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="maru.map.worldwind.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+
+</plugin>

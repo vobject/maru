@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Maru Debug
+Bundle-SymbolicName: maru.ui.debug;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: maru.ui.debug.MaruDebugPlugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.7.101",
+ maru,
+ maru.core,
+ maru.centralbody,
+ maru.groundstation,
+ maru.spacecraft,
+ maru.map,
+ maru.ui,
+ org.orekit;bundle-version="6.0.0",
+ org.apache.commons.math3;bundle-version="3.2.0",
+ org.jogamp.jogl;bundle-version="1.1.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy

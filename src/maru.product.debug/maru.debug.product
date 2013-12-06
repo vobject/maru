@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Maru (Debug)" id="maru.product.debug.product" application="maru.application" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+
+   <aboutInfo>
+      <image path="about.gif"/>
+      <text>
+         Maru (Debug)
+
+Version 1.0.0
+License: Apache License, Version 2.0
+Visit: https://github.com/vobject/maru
+
+This product includes software and media
+developed by the following third parties:
+- Orekit: https://www.orekit.org
+- Apache Commons Math: http://commons.apache.org/proper/commons-math
+- JOGL: https://jogamp.org/jogl
+- NASA World Wind: http://worldwind.arc.nasa.gov
+- Oxygen Team: http://www.oxygen-icons.org
+- Unrestrictedstock.com: http://unrestrictedstock.com
+      </text>
+   </aboutInfo>
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages i16="icons/maru_16.png" i32="icons/maru_32.png" i48="icons/maru_48.png" i64="icons/maru_64.png" i128="icons/maru_128.png"/>
+
+   <splash
+      location="maru.product.debug"
+      startupProgressRect="5,270,445,15"
+      startupMessageRect="7,245,445,20"
+      startupForegroundColor="FFFFFF" />
+   <launcher name="maru">
+      <linux icon="/maru.product.debug/icons/maru_64.xpm"/>
+      <solaris/>
+      <win useIco="false">
+         <bmp
+            winSmallHigh="/maru.product.debug/icons/maru_16.bmp"
+            winSmallLow="/maru.product.debug/icons/maru_16_8bit.bmp"
+            winMediumHigh="/maru.product.debug/icons/maru_32.bmp"
+            winMediumLow="/maru.product.debug/icons/maru_32_8bit.bmp"
+            winLargeHigh="/maru.product.debug/icons/maru_48.bmp"
+            winLargeLow="/maru.product.debug/icons/maru_48_8bit.bmp"
+            winExtraLargeHigh="/maru.product.debug/icons/maru_256.bmp"/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="maru"/>
+      <plugin id="org.eclipse.core.commands"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.databinding"/>
+      <plugin id="org.eclipse.core.databinding.observable"/>
+      <plugin id="org.eclipse.core.databinding.property"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.filesystem"/>
+      <plugin id="org.eclipse.core.filesystem.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.resources"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.p2.core"/>
+      <plugin id="org.eclipse.equinox.p2.engine"/>
+      <plugin id="org.eclipse.equinox.p2.metadata"/>
+      <plugin id="org.eclipse.equinox.p2.metadata.repository"/>
+      <plugin id="org.eclipse.equinox.p2.repository"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.jface"/>
+      <plugin id="org.eclipse.jface.databinding"/>
+      <plugin id="org.eclipse.jface.text"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.text"/>
+      <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.ide"/>
+      <plugin id="org.eclipse.ui.win32" fragment="true"/>
+      <plugin id="org.eclipse.ui.workbench"/>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.rcp" version="3.7.2.v20120120-1424-9DB5FmnFq5JCf1UA38R-kz0S0272"/>
+      <feature id="org.eclipse.equinox.p2.core.feature" version="1.0.1.v20110906-1605-8290FZ9FVKHVRKtmx3fpNuo02129"/>
+      <feature id="maru.feature.debug"/>
+   </features>
+
+
+</product>

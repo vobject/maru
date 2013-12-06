@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Maru Central Body
+Bundle-SymbolicName: maru.centralbody;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: maru.centralbody.MaruCentralBodyPlugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ maru,
+ maru.core,
+ org.apache.commons.math3;bundle-version="3.2.0",
+ org.orekit;bundle-version="6.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Export-Package: maru.centralbody;uses:="org.eclipse.ui.plugin,org.osgi.framework",
+ maru.centralbody.earth;uses:="maru.core.model.generic,maru.core.model",
+ maru.centralbody.projection,
+ maru.centralbody.wizards
+Eclipse-RegisterBuddy: maru.core

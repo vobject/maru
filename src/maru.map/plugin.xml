@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="maru.ui.category.views"
+            class="maru.map.views.gl.GLMapView"
+            icon="icons/Categories-applications-internet-icon.png"
+            id="maru.map.views.GLMapView"
+            name="GL Map">
+      </view>
+      <view
+            category="maru.ui.category.views"
+            class="maru.map.views.swt.SWTMapView"
+            icon="icons/Categories-applications-internet-icon.png"
+            id="maru.map.views.MapView"
+            name="SWT Map">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="maru.perspectives.Planning">
+         <view
+               id="maru.map.views.GLMapView"
+               ratio=".20f"
+               relationship="right"
+               relative="org.eclipse.ui.editorss">
+         </view>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="maru.perspectives.Presentation">
+         <view
+               closeable="false"
+               id="maru.map.views.GLMapView"
+               minimized="false"
+               ratio=".91f"
+               relationship="top"
+               relative="org.eclipse.ui.editorss"
+               showTitle="false"
+               standalone="true">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="maru.map.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="maru.preferences"
+            class="maru.map.preferences.MapPreferencePage"
+            id="maru.map.preferences.MapPreferencePage"
+            name="Map">
+      </page>
+   </extension>
+
+</plugin>

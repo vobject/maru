@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Maru Map
+Bundle-SymbolicName: maru.map;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: maru.map.MaruMapPlugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ maru,
+ maru.core,
+ maru.centralbody,
+ maru.ui,
+ org.orekit;bundle-version="6.0.0",
+ org.apache.commons.math3;bundle-version="3.2.0",
+ org.jogamp.jogl;bundle-version="1.1.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Export-Package: maru.map,
+ maru.map.jobs,
+ maru.map.jobs.gl,
+ maru.map.utils,
+ maru.map.views

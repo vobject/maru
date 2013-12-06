@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="maru.groundstation.commands.newGroundstation"
+            name="Groundstation">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <commonWizard
+            menuGroupId="maru.groundstation.wizards.new.object"
+            type="new"
+            wizardId="maru.groundstation.wizards.new.groundstation">
+         <enablement></enablement>
+      </commonWizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="maru.groundstation.category.wizards"
+            class="maru.groundstation.wizards.GroundstationWizard"
+            icon="icons/Antenna_16.png"
+            id="maru.groundstation.wizards.new.groundstation"
+            name="Groundstation">
+      </wizard>
+      <category
+            id="maru.groundstation.category.wizards"
+            name="Groundstations">
+      </category>
+   </extension>
+
+</plugin>
