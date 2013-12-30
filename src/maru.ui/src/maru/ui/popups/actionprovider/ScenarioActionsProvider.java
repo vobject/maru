@@ -27,6 +27,7 @@ public class ScenarioActionsProvider extends CommonActionProvider
     private WizardActionGroup newWizardActionGroup;
     private ScenarioProjectDeleteAction projectDeleteAction;
     private ScenarioElementDeleteAction elementDeleteAction;
+    private ScenarioPropertyDialogAction propertyDialogAction;
 
     @Override
     public void init(ICommonActionExtensionSite aSite)
@@ -52,6 +53,8 @@ public class ScenarioActionsProvider extends CommonActionProvider
         elementDeleteAction = new ScenarioElementDeleteAction();
         elementDeleteAction.setDisabledImageDescriptor(MaruUIPlugin.getSharedImageDescriptor(ISharedImages.IMG_TOOL_DELETE_DISABLED));
         elementDeleteAction.setImageDescriptor(MaruUIPlugin.getSharedImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
+
+        propertyDialogAction = new ScenarioPropertyDialogAction(window);
     }
 
     @Override
@@ -81,6 +84,10 @@ public class ScenarioActionsProvider extends CommonActionProvider
             elementDeleteAction.selectionChanged(selection);
             menu.appendToGroup(ICommonMenuConstants.GROUP_EDIT, elementDeleteAction);
         }
+
+        // add the 'Properties' entry to the popup menu
+        propertyDialogAction.selectionChanged(selection);
+        menu.appendToGroup(ICommonMenuConstants.GROUP_PROPERTIES, propertyDialogAction);
     }
 
     @Override
@@ -89,6 +96,7 @@ public class ScenarioActionsProvider extends CommonActionProvider
         IStructuredSelection selection = (IStructuredSelection) getContext().getSelection();
         projectDeleteAction.selectionChanged(selection);
         elementDeleteAction.selectionChanged(selection);
+        propertyDialogAction.selectionChanged(selection);
     }
 
     private boolean allScenarioElementsAreRemovable(IStructuredSelection selection)
