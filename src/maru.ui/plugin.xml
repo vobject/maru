@@ -196,5 +196,18 @@
          </adapter>
       </factory>
    </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="maru.ui.propertypages.ScenarioRootPropertyPage"
+            id="maru.ui.propertypages.scenario.root"
+            name="Scenario">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
+      </page>
+   </extension>
 
 </plugin>
