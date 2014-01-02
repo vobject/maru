@@ -199,12 +199,62 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            class="maru.ui.propertypages.ScenarioRootPropertyPage"
-            id="maru.ui.propertypages.scenario.root"
+            class="maru.ui.propertypages.UiProjectPropertyPage"
+            id="maru.ui.propertypages.uiproject.1000"
             name="Scenario">
          <enabledWhen>
             <instanceof
                   value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
+      </page>
+      <page
+            class="maru.ui.propertypages.UiElementPropertyPage"
+            id="maru.ui.propertypages.uielement.1000"
+            name="Scenario Element">
+         <enabledWhen>
+            <instanceof
+                  value="maru.ui.model.UiElement">
+            </instanceof>
+         </enabledWhen>
+      </page>
+      <page
+            class="maru.ui.propertypages.UiCentralBodyPropertyPage"
+            id="maru.ui.propertypages.uicentralbody.2000"
+            name="Central Body">
+         <enabledWhen>
+            <instanceof
+                  value="maru.ui.model.UiCentralBody">
+            </instanceof>
+         </enabledWhen>
+      </page>
+      <page
+            class="maru.ui.propertypages.UiGroundstationPropertyPage"
+            id="maru.ui.propertypages.uigroundstation.2000"
+            name="Groundstation">
+         <enabledWhen>
+            <instanceof
+                  value="maru.ui.model.UiGroundstation">
+            </instanceof>
+         </enabledWhen>
+      </page>
+      <page
+            class="maru.ui.propertypages.UiSpacecraftPropertyPage"
+            id="maru.ui.propertypages.uispacecraft.2000"
+            name="Spacecraft">
+         <enabledWhen>
+            <instanceof
+                  value="maru.ui.model.UiSpacecraft">
+            </instanceof>
+         </enabledWhen>
+      </page>
+      <page
+            class="maru.ui.propertypages.UiTimepointPropertyPage"
+            id="maru.ui.propertypages.uitimepoint.2000"
+            name="Timepoint">
+         <enabledWhen>
+            <instanceof
+                  value="maru.ui.model.UiTimepoint">
             </instanceof>
          </enabledWhen>
       </page>

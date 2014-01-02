@@ -78,5 +78,46 @@
             class="maru.spacecraft.preferences.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="maru.spacecraft.propertypages.OrekitSpacecraftPropertyPage"
+            id="maru.spacecraft.propertypages.orekitspacecraft.3000"
+            name="Orekit">
+         <enabledWhen>
+            <instanceof
+                  value="maru.ui.model.UiSpacecraft">
+            </instanceof>
+         </enabledWhen>
+      </page>
+      <page
+            class="maru.spacecraft.propertypages.KeplerSatellitePropertyPage"
+            id="maru.spacecraft.propertypages.keplersatellite.4000"
+            name="Kepler Satellite">
+         <enabledWhen>
+            <instanceof
+                  value="maru.ui.model.UiSpacecraft">
+            </instanceof>
+         </enabledWhen>
+         <filter
+               name="instanceof.underlying"
+               value="maru.spacecraft.ckesatellite.KeplerSatellite">
+         </filter>
+      </page>
+      <page
+            class="maru.spacecraft.propertypages.TleSatellitePropertyPage"
+            id="maru.spacecraft.propertypages.tlesatellite.4000"
+            name="TLE Satellite">
+         <enabledWhen>
+            <instanceof
+                  value="maru.ui.model.UiSpacecraft">
+            </instanceof>
+         </enabledWhen>
+         <filter
+               name="instanceof.underlying"
+               value="maru.spacecraft.tlesatellite.TleSatellite">
+         </filter>
+      </page>
+   </extension>
 
 </plugin>

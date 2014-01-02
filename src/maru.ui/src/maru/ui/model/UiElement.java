@@ -7,8 +7,9 @@ import maru.core.model.IScenarioElement;
 import maru.ui.MaruUIPlugin;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.IActionFilter;
 
-public abstract class UiElement
+public abstract class UiElement implements IActionFilter
 {
     protected enum UiSortPriority
     {
@@ -94,5 +95,29 @@ public abstract class UiElement
     protected String getImagePath()
     {
         return "icons/sample.gif";
+    }
+
+    @Override
+    public boolean testAttribute(Object target, String name, String value)
+    {
+        if (name.equals("instanceof.underlying"))
+        {
+            // this is usually invoked by a property page filter to test
+            // whether its property page should be displayed or not
+
+            try
+            {
+                Class<?> classToCheckFor = Class.forName(value);
+                Class<?> underlyingClass = getUnderlyingElement().getClass();
+
+                return underlyingClass.isAssignableFrom(classToCheckFor);
+            }
+            catch (ClassNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        return false;
     }
 }

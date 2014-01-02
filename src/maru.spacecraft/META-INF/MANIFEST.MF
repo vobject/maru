@@ -27,4 +27,5 @@ Export-Package: maru.spacecraft;
  maru.spacecraft.ckesatellite,
  maru.spacecraft.tlesatellite,
  maru.spacecraft.utils
-Eclipse-RegisterBuddy: maru.core
+Eclipse-RegisterBuddy: maru.core,
+ maru.ui

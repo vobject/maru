@@ -2,7 +2,6 @@ package maru.ui.model;
 
 import maru.core.model.CoreModel;
 import maru.core.model.ITimepoint;
-import maru.core.utils.TimeUtil;
 
 public class UiTimepoint extends UiElement
 {
@@ -40,7 +39,7 @@ public class UiTimepoint extends UiElement
     @Override
     public String getName()
     {
-        return TimeUtil.asISO8601(getUnderlyingElement());
+        return getUnderlyingElement().getElementName();
     }
 
     @Override

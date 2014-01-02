@@ -22,5 +22,22 @@
             class="maru.centralbody.preferences.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="maru.centralbody.propertypages.EarthPropertyPage"
+            id="maru.centralbody.propertypages.earth.3000"
+            name="Earth">
+         <enabledWhen>
+            <instanceof
+                  value="maru.ui.model.UiCentralBody">
+            </instanceof>
+         </enabledWhen>
+         <filter
+               name="instanceof.underlying"
+               value="maru.centralbody.earth.Earth">
+         </filter>
+      </page>
+   </extension>
 
 </plugin>

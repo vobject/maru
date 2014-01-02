@@ -1,6 +1,7 @@
 package maru.ui;
 
 import maru.ui.model.UiModel;
+import maru.ui.wizards.ICentralBodyWizardPage;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -14,6 +15,7 @@ public class MaruUIPlugin extends AbstractUIPlugin
 
     private static MaruUIPlugin plugin;
     private UiModel uiModel;
+    private ICentralBodyWizardPage centralBodyWizardPage;
 
     @Override
     public void start(BundleContext context) throws Exception
@@ -76,5 +78,20 @@ public class MaruUIPlugin extends AbstractUIPlugin
     public static Image getSharedImage(String imagePath)
     {
         return getSharedImageDescriptor(imagePath).createImage();
+    }
+
+    /**
+     * When creating a new scenario the wizard page for selecting a central body
+     * does not come from the maru.ui plugin but is provided by the maru.centralbody
+     * plugin which should use this method to register the wizard page.
+     */
+    public void setCentralBodyWizardPage(ICentralBodyWizardPage page)
+    {
+        centralBodyWizardPage = page;
+    }
+
+    public ICentralBodyWizardPage getCentralBodyWizardPage()
+    {
+        return centralBodyWizardPage;
     }
 }

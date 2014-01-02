@@ -1,8 +1,8 @@
 package maru.ui.wizards;
 
-import maru.centralbody.wizards.NewCentralBodyWizardPage;
 import maru.core.model.CoreModel;
 import maru.core.model.IScenarioProject;
+import maru.ui.MaruUIPlugin;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -22,7 +22,7 @@ public class ScenarioProjectWizard extends Wizard implements INewWizard, IExecut
     private IConfigurationElement configElement;
     private IWorkbench workbench;
     private ScenarioProjectWizardPage mainPage;
-    private NewCentralBodyWizardPage centralBodyPage;
+    private ICentralBodyWizardPage centralBodyPage;
     private TimeframeWizardPage periodPage;
 
     public ScenarioProjectWizard()
@@ -46,7 +46,7 @@ public class ScenarioProjectWizard extends Wizard implements INewWizard, IExecut
     public void addPages()
     {
         mainPage = new ScenarioProjectWizardPage();
-        centralBodyPage = new NewCentralBodyWizardPage();
+        centralBodyPage = MaruUIPlugin.getDefault().getCentralBodyWizardPage();
         periodPage = new TimeframeWizardPage();
 
         addPage(mainPage);

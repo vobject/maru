@@ -10,10 +10,25 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.ide;bundle-version="3.7.0",
  org.eclipse.ui.navigator;bundle-version="3.5.101",
  maru,
- maru.core,
- maru.centralbody
+ maru.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: maru.ui,
- maru.ui.model,
- maru.ui.wizards
+Export-Package: maru.ui;
+  uses:="org.eclipse.jface.resource,
+   org.eclipse.ui.plugin,
+   org.eclipse.swt.graphics,
+   org.osgi.framework,
+   maru.ui.model",
+ maru.ui.model;uses:="maru.core.model,org.eclipse.jface.resource,org.eclipse.core.resources",
+ maru.ui.propertypages,
+ maru.ui.wizards;
+  uses:="org.eclipse.jface.wizard,
+   maru.core.model,
+   org.eclipse.core.runtime,
+   org.eclipse.ui,
+   org.eclipse.swt.events,
+   org.eclipse.jface.viewers,
+   org.eclipse.swt.graphics,
+   org.eclipse.ui.dialogs,
+   org.eclipse.swt.widgets"
+Eclipse-BuddyPolicy: registered

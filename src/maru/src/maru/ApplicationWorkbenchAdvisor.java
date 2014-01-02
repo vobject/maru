@@ -17,6 +17,8 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.internal.ide.IDEInternalWorkbenchImages;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
+import org.eclipse.ui.model.ContributionComparator;
+import org.eclipse.ui.model.IContributionService;
 import org.osgi.framework.Bundle;
 
 @SuppressWarnings("restriction") // see hack below
@@ -93,6 +95,16 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
         }
 
         return super.preShutdown();
+    }
+
+    @Override
+    public ContributionComparator getComparatorFor(String contributionType)
+    {
+        if (contributionType.equals(IContributionService.TYPE_PROPERTY)) {
+            return new MaruPropertyPageComparator();
+        } else {
+            return super.getComparatorFor(contributionType);
+        }
     }
 
     private void declareWorkbenchImage(IWorkbenchConfigurer cfg, Bundle ideBundle, String symbolicName, String path, boolean shared)

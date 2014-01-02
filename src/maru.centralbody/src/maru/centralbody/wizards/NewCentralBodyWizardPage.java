@@ -7,6 +7,7 @@ import maru.centralbody.MaruCentralBodyResources;
 import maru.centralbody.earth.Earth;
 import maru.centralbody.preferences.MapImagesEditor;
 import maru.core.model.ICentralBody;
+import maru.ui.wizards.ICentralBodyWizardPage;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -88,7 +89,7 @@ enum CentralBodies
  * properties cannot be changed. This would have to change as soon as new
  * central bodies can be selected in addition to {@link maru.centralbody.earth.Earth}.
  */
-public class NewCentralBodyWizardPage extends WizardPage
+public class NewCentralBodyWizardPage extends WizardPage implements ICentralBodyWizardPage
 {
     private static final String PAGE_NAME = "Central Body Page";
     private static final String PAGE_TITLE = "Central Body";
@@ -113,9 +114,9 @@ public class NewCentralBodyWizardPage extends WizardPage
     }
 
     @Override
-    public void createControl(final Composite parent)
+    public void createControl(Composite parent)
     {
-        final Composite container = new Composite(parent, SWT.NONE);
+        Composite container = new Composite(parent, SWT.NONE);
         container.setLayout(new GridLayout(2, false));
 
         new Label(container, SWT.NONE).setText("Central body:");
@@ -159,6 +160,7 @@ public class NewCentralBodyWizardPage extends WizardPage
         setControl(container);
     }
 
+    @Override
     public ICentralBody createCentralBody()
     {
         return CentralBodies.createCentralBody(centralBody.getText(), images.getText());

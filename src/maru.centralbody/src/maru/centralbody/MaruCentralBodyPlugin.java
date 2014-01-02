@@ -1,5 +1,8 @@
 package maru.centralbody;
 
+import maru.centralbody.wizards.NewCentralBodyWizardPage;
+import maru.ui.MaruUIPlugin;
+
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -14,6 +17,9 @@ public class MaruCentralBodyPlugin extends AbstractUIPlugin
     {
         super.start(context);
         plugin = this;
+
+        // register the central body creation page at the maru.ui plugin
+        MaruUIPlugin.getDefault().setCentralBodyWizardPage(new NewCentralBodyWizardPage());
     }
 
     @Override

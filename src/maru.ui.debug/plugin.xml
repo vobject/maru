@@ -40,9 +40,6 @@
                   id="maru.ui.debug.menus.createScenario7">
             </command>
             <command
-                  commandId="maru.ui.debug.command.openthesis">
-            </command>
-            <command
                   commandId="maru.ui.debug.commands.drawjob0">
             </command>
             <command
@@ -86,10 +83,6 @@
             name="Create : Scenario + Timepoints + Groundstation + CKE Satellite + TLE Satellite">
       </command>
       <command
-            id="maru.ui.debug.command.openthesis"
-            name="Open Thesis PDF">
-      </command>
-      <command
             id="maru.ui.debug.commands.drawjob0"
             name="DrawJob 0">
       </command>
@@ -131,10 +124,6 @@
       <handler
             class="maru.ui.debug.handlers.DebugCreateScenarioHandler7"
             commandId="maru.ui.debug.commands.createScenario7">
-      </handler>
-      <handler
-            class="maru.ui.debug.handlers.OpenThesisHandler"
-            commandId="maru.ui.debug.command.openthesis">
       </handler>
       <handler
             class="maru.ui.debug.handlers.DrawJobHandler0"

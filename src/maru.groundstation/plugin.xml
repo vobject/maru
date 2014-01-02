@@ -31,5 +31,22 @@
             name="Groundstations">
       </category>
    </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="maru.groundstation.propertypages.GeodeticGroundstationPropertyPage"
+            id="maru.groundstation.propertypages.geodeticgroundstation.3000"
+            name="Geodetic Groundstation">
+         <enabledWhen>
+            <instanceof
+                  value="maru.ui.model.UiGroundstation">
+            </instanceof>
+         </enabledWhen>
+         <filter
+               name="instanceof.underlying"
+               value="maru.groundstation.earth.GeodeticGroundstation">
+         </filter>
+      </page>
+   </extension>
 
 </plugin>

@@ -19,4 +19,5 @@ Export-Package: maru.groundstation;uses:="org.eclipse.ui.plugin,org.osgi.framewo
    org.eclipse.swt.graphics,
    maru.core.units",
  maru.groundstation.wizards
-Eclipse-RegisterBuddy: maru.core
+Eclipse-RegisterBuddy: maru.core,
+ maru.ui

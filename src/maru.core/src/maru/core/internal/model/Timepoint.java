@@ -14,15 +14,20 @@ public class Timepoint extends ScenarioElement implements ITimepoint
     /** Timestamp in seconds. */
     private long time;
 
+    public Timepoint(String name, long time)
+    {
+        super(name);
+        this.time = time;
+    }
+
     public Timepoint(long time)
     {
-        super("Timepoint");
-        this.time = time;
+        this("Timepoint", time);
     }
 
     public Timepoint(ITimepoint timepoint)
     {
-        this(timepoint.getTime());
+        this(timepoint.getElementName(), timepoint.getTime());
         setParent(timepoint.getParent());
     }
 

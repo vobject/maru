@@ -92,8 +92,8 @@ public class CoreModel
                 ScenarioNature.addNature(description);
                 project.setDescription(description, null);
 
-                Timepoint startTimepoint = new Timepoint(startTime);
-                Timepoint stopTimepoint = new Timepoint(stopTime);
+                Timepoint startTimepoint = new Timepoint("Start", startTime);
+                Timepoint stopTimepoint = new Timepoint("Stop", stopTime);
 
                 // create scenario storage file and load populate the scenario model
                 IScenarioProject scenarioProject =

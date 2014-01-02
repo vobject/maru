@@ -7,8 +7,10 @@ import maru.ui.model.UiModel;
 import maru.ui.model.UiProject;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
-public abstract class UiProjectPropertyPage extends UiElementPropertyPage
+public class UiProjectPropertyPage extends UiElementPropertyPage
 {
     @Override
     public UiElement getUiElement()
@@ -29,5 +31,16 @@ public abstract class UiProjectPropertyPage extends UiElementPropertyPage
     public IProject getProject()
     {
         return (IProject) getElement();
+    }
+
+    @Override
+    protected Control createContents(Composite parent)
+    {
+        Control container = super.createContents(parent);
+
+        // the project's name may not be changed
+        getNameControl().setEnabled(false);
+
+        return container;
     }
 }
