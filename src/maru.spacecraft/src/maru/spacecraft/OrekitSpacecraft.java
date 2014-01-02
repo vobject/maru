@@ -14,7 +14,7 @@ import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
 
-public class OrekitSpacecraft extends Spacecraft
+public abstract class OrekitSpacecraft extends Spacecraft
 {
     private static final long serialVersionUID = 1L;
 

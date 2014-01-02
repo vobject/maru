@@ -10,4 +10,25 @@ public class GeodeticGroundstation extends Groundstation
     {
         super(name, initialPosition);
     }
+
+    @Override
+    public GeodeticCoordinate getInitialCoordinate()
+    {
+        return (GeodeticCoordinate) super.getInitialCoordinate();
+    }
+
+    @Override
+    public void centralbodyChanged()
+    {
+        GeodeticCoordinate newCoordinate = new GeodeticCoordinate(
+            getCentralBody(),
+            getInitialCoordinate().getLatitude(),
+            getInitialCoordinate().getLongitude(),
+            getInitialCoordinate().getAltitude(),
+            getInitialCoordinate().getElevation(),
+            getInitialCoordinate().getTime()
+        );
+
+        setInitialCoordinate(newCoordinate);
+    }
 }

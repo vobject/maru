@@ -1,11 +1,5 @@
 package maru.centralbody.wizards;
 
-import java.util.ArrayList;
-
-import maru.IMaruResource;
-import maru.centralbody.MaruCentralBodyResources;
-import maru.centralbody.earth.Earth;
-import maru.centralbody.preferences.MapImagesEditor;
 import maru.core.model.ICentralBody;
 import maru.ui.wizards.ICentralBodyWizardPage;
 
@@ -17,68 +11,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
-/**
- * The central bodies supported by the wizard page.
- */
-enum CentralBodies
-{
-    Earth;
-
-    ICentralBody createCentralBody(String imageName)
-    {
-        return createCentralBody(this.toString(), imageName);
-    }
-
-    static ICentralBody createCentralBody(String name, String imageName)
-    {
-        switch (CentralBodies.valueOf(name))
-        {
-            case Earth:
-            {
-                // try to interpret the image name as an external resource first
-                IMaruResource res = MapImagesEditor.fromName(imageName);
-
-                if (res == null) {
-                    // try to get a bundle resource if it is no external resource
-                    res = MaruCentralBodyResources.fromName(imageName);
-                }
-
-                return new Earth(res);
-            }
-        }
-        return null;
-    }
-
-    static String[] getMapImages(String name)
-    {
-        ArrayList<String> images = new ArrayList<>();
-
-        switch (CentralBodies.valueOf(name))
-        {
-            case Earth:
-            {
-                // add predefined map images
-                images.add(MaruCentralBodyResources.MAP_EARTH_1.getName());
-                images.add(MaruCentralBodyResources.MAP_EARTH_2.getName());
-                images.add(MaruCentralBodyResources.MAP_EARTH_3.getName());
-                images.add(MaruCentralBodyResources.MAP_EARTH_4.getName());
-                images.add(MaruCentralBodyResources.MAP_EARTH_5.getName());
-                images.add(MaruCentralBodyResources.MAP_EARTH_6.getName());
-            }
-        }
-
-        // FIXME: external map images are currently not assigned to a specific
-        // central body of any sort. they are added to all available bodies.
-
-        // add external map images to selection
-        for (IMaruResource res : MapImagesEditor.getMapImageResources()) {
-            images.add(res.getName());
-        }
-
-        return images.toArray(new String[images.size()]);
-    }
-}
 
 /**
  * Wizard page selecting, reviewing, and creating a central body for a
@@ -163,18 +95,18 @@ public class NewCentralBodyWizardPage extends WizardPage implements ICentralBody
     @Override
     public ICentralBody createCentralBody()
     {
-        return CentralBodies.createCentralBody(centralBody.getText(), images.getText());
+        return CentralBodyFactory.createCentralBody(centralBody.getText(), images.getText());
     }
 
     private String[] getAvailableBodies()
     {
         return new String[] {
-            CentralBodies.Earth.toString()
+            CentralBodyFactory.Earth.toString()
         };
     }
 
     private String[] getMapImages()
     {
-        return CentralBodies.getMapImages(centralBody.getText());
+        return CentralBodyFactory.getMapImages(centralBody.getText());
     }
 }

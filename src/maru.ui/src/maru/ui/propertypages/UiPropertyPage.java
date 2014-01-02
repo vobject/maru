@@ -6,15 +6,14 @@ import maru.ui.model.UiElement;
 import maru.ui.model.UiProject;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PropertyPage;
 
 public abstract class UiPropertyPage extends PropertyPage
 {
-    public UiPropertyPage()
-    {
-        noDefaultAndApplyButton();
-    }
-
     public UiElement getUiElement()
     {
         return (UiElement) getElement().getAdapter(UiElement.class);
@@ -40,14 +39,20 @@ public abstract class UiPropertyPage extends PropertyPage
         return getUiElement().getUnderlyingElement();
     }
 
-//  protected void addSeparator(Composite parent)
-//  {
-//      GridData data = new GridData();
-//      data.horizontalAlignment = GridData.FILL;
-//      data.grabExcessHorizontalSpace = true;
-//      data.horizontalSpan = 2;
-//
-//      Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
-//      separator.setLayoutData(data);
-//  }
+    @Override
+    protected void performDefaults()
+    {
+        setMessage("\"Restore Defaults\" is not implemented.", WARNING);
+    }
+
+    protected void addSeparator(Composite parent)
+    {
+        GridData data = new GridData();
+        data.horizontalAlignment = SWT.FILL;
+        data.grabExcessHorizontalSpace = true;
+        data.horizontalSpan = 2;
+
+        Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
+        separator.setLayoutData(data);
+    }
 }

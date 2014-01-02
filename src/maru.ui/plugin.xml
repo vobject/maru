@@ -209,6 +209,16 @@
          </enabledWhen>
       </page>
       <page
+            class="maru.ui.propertypages.UiTimeframePropertyPage"
+            id="maru.ui.propertypages.uiproject.timeframe.1000"
+            name="Timeframe">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
+      </page>
+      <page
             class="maru.ui.propertypages.UiElementPropertyPage"
             id="maru.ui.propertypages.uielement.1000"
             name="Scenario Element">
@@ -229,28 +239,8 @@
          </enabledWhen>
       </page>
       <page
-            class="maru.ui.propertypages.UiGroundstationPropertyPage"
-            id="maru.ui.propertypages.uigroundstation.2000"
-            name="Groundstation">
-         <enabledWhen>
-            <instanceof
-                  value="maru.ui.model.UiGroundstation">
-            </instanceof>
-         </enabledWhen>
-      </page>
-      <page
-            class="maru.ui.propertypages.UiSpacecraftPropertyPage"
-            id="maru.ui.propertypages.uispacecraft.2000"
-            name="Spacecraft">
-         <enabledWhen>
-            <instanceof
-                  value="maru.ui.model.UiSpacecraft">
-            </instanceof>
-         </enabledWhen>
-      </page>
-      <page
             class="maru.ui.propertypages.UiTimepointPropertyPage"
-            id="maru.ui.propertypages.uitimepoint.2000"
+            id="maru.ui.propertypages.timepoint.2000"
             name="Timepoint">
          <enabledWhen>
             <instanceof

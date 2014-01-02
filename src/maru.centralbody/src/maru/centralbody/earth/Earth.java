@@ -17,60 +17,36 @@ public class Earth extends CentralBody
     private static final long serialVersionUID = 1L;
 
     /** Standard gravitational parameter (m³/s²); JGM3 */
-    private static final double EARTH_GM = 3.986004415e+14;
+    private static final double DEFAULT_EARTH_GM = 3.986004415e+14;
 
     /** Earth equatorial radius (m); WGS84. */
-    private static final double EARTH_EQUATORIAL_RADIUS = 6378137.0;
+    private static final double DEFAULT_EARTH_EQUATORIAL_RADIUS = 6378137.0;
 
     /** Earth polar radius (m); WGS84. */
-    private static final double EARTH_POLAR_RADIUS = 6356752.3142;
+    private static final double DEFAULT_EARTH_POLAR_RADIUS = 6356752.3142;
 
     /** Earth mean radius (m); WGS84. */
-    private static final double EARTH_MEAN_RADIUS = 6371008.7714;
+    private static final double DEFAULT_EARTH_MEAN_RADIUS = 6371008.7714;
 
     /** Earth flattening; WGS84 */
-    private static final double EARTH_FLATTENING = (1.0 / 298.257223563);
+    private static final double DEFAULT_EARTH_FLATTENING = (1.0 / 298.257223563);
 
     public Earth(IMaruResource mapImage)
     {
         super("Earth");
         setElementGraphic2D(mapImage);
-    }
 
-    @Override
-    public double getGM()
-    {
-        return EARTH_GM;
-    }
-
-    @Override
-    public double getEquatorialRadius()
-    {
-        return EARTH_EQUATORIAL_RADIUS;
-    }
-
-    @Override
-    public double getFlattening()
-    {
-        return EARTH_FLATTENING;
+        setGM(DEFAULT_EARTH_GM);
+        setEquatorialRadius(DEFAULT_EARTH_EQUATORIAL_RADIUS);
+        setPolarRadius(DEFAULT_EARTH_POLAR_RADIUS);
+        setMeanRadius(DEFAULT_EARTH_MEAN_RADIUS);
+        setFlattening(DEFAULT_EARTH_FLATTENING);
     }
 
     @Override
     public Frame getFrame()
     {
         return Frame.ITRF2005;
-    }
-
-    @Override
-    public double getPolarRadius()
-    {
-        return EARTH_POLAR_RADIUS;
-    }
-
-    @Override
-    public double getMeanRadius()
-    {
-        return EARTH_MEAN_RADIUS;
     }
 
     @Override

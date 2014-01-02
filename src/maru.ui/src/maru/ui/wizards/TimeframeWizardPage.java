@@ -20,12 +20,13 @@ public class TimeframeWizardPage extends WizardPage
     private static final String PAGE_TITLE = "Scenario Period";
     private static final String PAGE_DESCRIPTION = "Set the time period for the new scenario in UTC.";
 
-    private DateTime calenderBegin;
-    private DateTime calenderEnd;
+    private DateTime calendarBegin;
+    private DateTime calendarEnd;
     private DateTime timeBegin;
     private DateTime timeEnd;
 
-    private final SelectionAdapter pageCompleteValidation = new SelectionAdapter() {
+    private final SelectionAdapter pageCompleteValidation = new SelectionAdapter()
+    {
         @Override
         public void widgetSelected(SelectionEvent event) {
             if (getEnd() > getBegin()) {
@@ -55,13 +56,13 @@ public class TimeframeWizardPage extends WizardPage
         new Label(container, SWT.NONE).setText("Start time in UTC:");
         new Label(container, SWT.NONE).setText("Stop time in UTC:");
 
-        calenderBegin = new DateTime(container, SWT.CALENDAR);
-        calenderBegin.addSelectionListener(pageCompleteValidation);
-        calenderBegin.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        calendarBegin = new DateTime(container, SWT.CALENDAR);
+        calendarBegin.addSelectionListener(pageCompleteValidation);
+        calendarBegin.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        calenderEnd = new DateTime(container, SWT.CALENDAR);
-        calenderEnd.addSelectionListener(pageCompleteValidation);
-        calenderEnd.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        calendarEnd = new DateTime(container, SWT.CALENDAR);
+        calendarEnd.addSelectionListener(pageCompleteValidation);
+        calendarEnd.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         timeBegin = new DateTime(container, SWT.TIME);
         timeBegin.addSelectionListener(pageCompleteValidation);
@@ -78,25 +79,25 @@ public class TimeframeWizardPage extends WizardPage
 
     public long getBegin()
     {
-        Calendar calender = TimeUtil.getCalendar();
-        calender.set(Calendar.YEAR, calenderBegin.getYear());
-        calender.set(Calendar.MONTH, calenderBegin.getMonth());
-        calender.set(Calendar.DAY_OF_MONTH, calenderBegin.getDay());
-        calender.set(Calendar.HOUR_OF_DAY, timeBegin.getHours());
-        calender.set(Calendar.MINUTE, timeBegin.getMinutes());
-        calender.set(Calendar.SECOND, timeBegin.getSeconds());
-        return calender.getTimeInMillis() / 1000;
+        Calendar calendar = TimeUtil.getCalendar();
+        calendar.set(Calendar.YEAR, calendarBegin.getYear());
+        calendar.set(Calendar.MONTH, calendarBegin.getMonth());
+        calendar.set(Calendar.DAY_OF_MONTH, calendarBegin.getDay());
+        calendar.set(Calendar.HOUR_OF_DAY, timeBegin.getHours());
+        calendar.set(Calendar.MINUTE, timeBegin.getMinutes());
+        calendar.set(Calendar.SECOND, timeBegin.getSeconds());
+        return calendar.getTimeInMillis() / 1000;
     }
 
     public long getEnd()
     {
-        Calendar calender = TimeUtil.getCalendar();
-        calender.set(Calendar.YEAR, calenderEnd.getYear());
-        calender.set(Calendar.MONTH, calenderEnd.getMonth());
-        calender.set(Calendar.DAY_OF_MONTH, calenderEnd.getDay());
-        calender.set(Calendar.HOUR_OF_DAY, timeEnd.getHours());
-        calender.set(Calendar.MINUTE, timeEnd.getMinutes());
-        calender.set(Calendar.SECOND, timeEnd.getSeconds());
-        return calender.getTimeInMillis() / 1000;
+        Calendar calendar = TimeUtil.getCalendar();
+        calendar.set(Calendar.YEAR, calendarEnd.getYear());
+        calendar.set(Calendar.MONTH, calendarEnd.getMonth());
+        calendar.set(Calendar.DAY_OF_MONTH, calendarEnd.getDay());
+        calendar.set(Calendar.HOUR_OF_DAY, timeEnd.getHours());
+        calendar.set(Calendar.MINUTE, timeEnd.getMinutes());
+        calendar.set(Calendar.SECOND, timeEnd.getSeconds());
+        return calendar.getTimeInMillis() / 1000;
     }
 }

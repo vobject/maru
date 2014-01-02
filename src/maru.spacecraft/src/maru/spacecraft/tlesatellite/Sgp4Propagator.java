@@ -121,4 +121,13 @@ public class Sgp4Propagator extends Propagator
     {
         return propagatorName;
     }
+
+    public void clearCoordinateCache()
+    {
+        coordinates.clear();
+        lastInitialCoordinate = null;
+        lastStartTime = 0;
+        lastStopTime = 0;
+        lastStepSize = 0;
+    }
 }

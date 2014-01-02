@@ -36,8 +36,15 @@ public interface IScenarioModelListener
     void elementRenamed(IScenarioElement element);
     void elementCommented(IScenarioElement element);
     void elementColored(IPropagatable element);
-    void elementGraphic2DChanged(IPropagatable element);
+    void elementGraphic2DChanged(IScenarioElement element);
 
+    void centralbodyGmChanged(ICentralBody element);
+    void centralbodyEquatorialRadiusChanged(ICentralBody element);
+    void centralbodyPolarRadiusChanged(ICentralBody element);
+    void centralbodyMeanRadiusChanged(ICentralBody element);
+    void centralbodyFlatteningChanged(ICentralBody element);
+
+    void propagatablesCentralBodyChanged(IScenarioProject element);
     void propagatablesTimeChanged(IScenarioProject element);
 
     void timepointStartChanged(ITimepoint element);
@@ -47,5 +54,4 @@ public interface IScenarioModelListener
     void timepointAdded(ITimepoint element);
     void timepointRemoved(ITimepoint element);
     void timepointChanged(ITimepoint element);
-
 }

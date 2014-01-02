@@ -2,6 +2,9 @@ package maru.spacecraft.ckesatellite;
 
 import maru.spacecraft.OrekitSpacecraft;
 
+import org.orekit.orbits.KeplerianOrbit;
+import org.orekit.orbits.PositionAngle;
+
 public class KeplerSatellite extends OrekitSpacecraft
 {
     private static final long serialVersionUID = 1L;
@@ -15,5 +18,36 @@ public class KeplerSatellite extends OrekitSpacecraft
     public InitialKeplerCoordinate getInitialCoordinate()
     {
         return (InitialKeplerCoordinate) super.getInitialCoordinate();
+    }
+
+    @Override
+    public KeplerPropagator getPropagator()
+    {
+        return (KeplerPropagator) super.getPropagator();
+    }
+
+    @Override
+    public void centralbodyChanged()
+    {
+        InitialKeplerCoordinate formerCoordinate = getInitialCoordinate();
+        KeplerianOrbit formerOrbit = formerCoordinate.getInitialOrbit();
+
+        KeplerianOrbit newInitialOrbit = new KeplerianOrbit(
+                formerOrbit.getA(),
+                formerOrbit.getE(),
+                formerOrbit.getI(),
+                formerOrbit.getPerigeeArgument(),
+                formerOrbit.getRightAscensionOfAscendingNode(),
+                formerOrbit.getAnomaly(PositionAngle.TRUE),
+                PositionAngle.TRUE,
+                formerOrbit.getFrame(),
+                formerOrbit.getDate(),
+                getCentralBody().getGM()
+        );
+
+        setInitialCoordinate(new InitialKeplerCoordinate(newInitialOrbit));
+
+        // make sure we get fresh coordinates based on the new central body
+        getPropagator().clearCoordinateCache();
     }
 }

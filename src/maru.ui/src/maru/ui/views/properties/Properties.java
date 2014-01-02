@@ -2,6 +2,7 @@ package maru.ui.views.properties;
 
 import java.util.Map;
 
+import maru.core.model.ICentralBody;
 import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ITimepoint;
@@ -92,6 +93,52 @@ public class Properties extends ScenarioModelViewPart
         if (element == currentElement) {
             refreshTableContent();
         }
+    }
+
+    @Override
+    public void centralbodyGmChanged(ICentralBody element)
+    {
+        if (element == currentElement) {
+            refreshTableContent();
+        }
+    }
+
+    @Override
+    public void centralbodyEquatorialRadiusChanged(ICentralBody element)
+    {
+        if (element == currentElement) {
+            refreshTableContent();
+        }
+    }
+
+    @Override
+    public void centralbodyPolarRadiusChanged(ICentralBody element)
+    {
+        if (element == currentElement) {
+            refreshTableContent();
+        }
+    }
+
+    @Override
+    public void centralbodyMeanRadiusChanged(ICentralBody element)
+    {
+        if (element == currentElement) {
+            refreshTableContent();
+        }
+    }
+
+    @Override
+    public void centralbodyFlatteningChanged(ICentralBody element)
+    {
+        if (element == currentElement) {
+            refreshTableContent();
+        }
+    }
+
+    @Override
+    public void propagatablesCentralBodyChanged(IScenarioProject element)
+    {
+        refreshTableContent();
     }
 
     @Override

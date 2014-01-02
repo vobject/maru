@@ -177,7 +177,7 @@ public class KeplerSatelliteWizardPage extends ScenarioElementWizardNamingPage
 
     public double getSemimajorAxis()
     {
-        // convert to meters. internally meters are used
+        // convert to meters. meters are used internally
         return (Double.parseDouble(semimajorAxisText.getText()) * 1000.0);
     }
 

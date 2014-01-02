@@ -13,9 +13,9 @@ public class TleSatellite extends OrekitSpacecraft
         this(initialPosition, "Custom");
     }
 
-    public TleSatellite(InitialTleCoordinate initialPosition, String category)
+    public TleSatellite(InitialTleCoordinate initialCoordinate, String category)
     {
-        super(initialPosition.getName(), initialPosition);
+        super(initialCoordinate.getName(), initialCoordinate);
         this.category = category;
     }
 
@@ -28,5 +28,21 @@ public class TleSatellite extends OrekitSpacecraft
     public InitialTleCoordinate getInitialCoordinate()
     {
         return (InitialTleCoordinate) super.getInitialCoordinate();
+    }
+
+    @Override
+    public Sgp4Propagator getPropagator()
+    {
+        return (Sgp4Propagator) super.getPropagator();
+    }
+
+    @Override
+    public void centralbodyChanged()
+    {
+        // TleSatellite does not rely on any ICentralBody parameters, so its
+        // InitialTleCoordinate member does not have to be changed.
+
+        // make sure we get fresh coordinates based on the new central body
+        getPropagator().clearCoordinateCache();
     }
 }

@@ -73,6 +73,12 @@ public class CoreModelMock
         {
             super("DummyGroundstation", null);
         }
+
+        @Override
+        public void centralbodyChanged()
+        {
+
+        }
     }
 
     public static class DummySatellite extends Spacecraft
@@ -94,6 +100,12 @@ public class CoreModelMock
         public boolean inUmbraOrPenumbra(ICoordinate coordinate)
         {
             return false;
+        }
+
+        @Override
+        public void centralbodyChanged()
+        {
+
         }
     }
 

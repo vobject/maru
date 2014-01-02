@@ -1,6 +1,6 @@
 package maru.core.model;
 
-import maru.IMaruPluginResource;
+import maru.IMaruResource;
 import maru.core.internal.model.ScenarioModelManager;
 import maru.core.internal.model.ScenarioNature;
 import maru.core.internal.model.Timepoint;
@@ -146,6 +146,11 @@ public class CoreModel
         modelManager.changeTimepoint(timepoint, time, update);
     }
 
+    public void changePropagatablesCentralBody(IScenarioProject project, boolean update)
+    {
+        modelManager.changePropagatablesCentralBody(project, update);
+    }
+
     public void changePropagatablesTime(IScenarioProject project, long time, boolean update)
     {
         modelManager.changePropagatablesTime(project, time, update);
@@ -165,9 +170,35 @@ public class CoreModel
     {
         modelManager.setElementColor(element, color, update);
     }
-    public void setElementGraphics2D(IScenarioElement element, IMaruPluginResource graphic2d, boolean update)
+
+    public void setElementGraphics2D(IScenarioElement element, IMaruResource graphic2d, boolean update)
     {
         modelManager.setElementGraphics2D(element, graphic2d, update);
+    }
+
+    public void changeCentralBodyGM(ICentralBody element, double gm, boolean update)
+    {
+        modelManager.changeCentralBodyGM(element, gm, update);
+    }
+
+    public void changeCentralBodyEquatorialRadius(ICentralBody element, double radius, boolean update)
+    {
+        modelManager.changeCentralBodyEquatorialRadius(element, radius, update);
+    }
+
+    public void changeCentralBodyMeanRadius(ICentralBody element, double radius, boolean update)
+    {
+        modelManager.changeCentralBodyMeanRadius(element, radius, update);
+    }
+
+    public void changeCentralBodyPolarRadius(ICentralBody element, double radius, boolean update)
+    {
+        modelManager.changeCentralBodyPolarRadius(element, radius, update);
+    }
+
+    public void changeCentralBodyFlattening(ICentralBody element, double flattening, boolean update)
+    {
+        modelManager.changeCentralBodyFlattening(element, flattening, update);
     }
 
     public void addTimeProvider(IScenarioProject project, ITimeProvider provider)

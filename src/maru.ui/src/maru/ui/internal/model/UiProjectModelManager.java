@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import maru.core.model.CoreModel;
+import maru.core.model.ICentralBody;
 import maru.core.model.IPropagatable;
 import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioProject;
@@ -221,7 +222,43 @@ public class UiProjectModelManager extends ScenarioModelAdapter
     }
 
     @Override
-    public void elementGraphic2DChanged(IPropagatable element)
+    public void elementGraphic2DChanged(IScenarioElement element)
+    {
+        uiProjectChanged(element);
+    }
+
+    @Override
+    public void centralbodyGmChanged(ICentralBody element)
+    {
+        uiProjectChanged(element);
+    }
+
+    @Override
+    public void centralbodyEquatorialRadiusChanged(ICentralBody element)
+    {
+        uiProjectChanged(element);
+    }
+
+    @Override
+    public void centralbodyPolarRadiusChanged(ICentralBody element)
+    {
+        uiProjectChanged(element);
+    }
+
+    @Override
+    public void centralbodyMeanRadiusChanged(ICentralBody element)
+    {
+        uiProjectChanged(element);
+    }
+
+    @Override
+    public void centralbodyFlatteningChanged(ICentralBody element)
+    {
+        uiProjectChanged(element);
+    }
+
+    @Override
+    public void propagatablesCentralBodyChanged(IScenarioProject element)
     {
         uiProjectChanged(element);
     }

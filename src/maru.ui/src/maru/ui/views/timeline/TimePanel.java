@@ -62,7 +62,8 @@ class TimePanel
     {
         private final Label label;
 
-        private final IInputValidator dateValidator = new IInputValidator() {
+        private final IInputValidator dateValidator = new IInputValidator()
+        {
             @Override
             public String isValid(String newText)
             {

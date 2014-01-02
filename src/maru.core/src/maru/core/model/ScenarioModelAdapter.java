@@ -51,7 +51,43 @@ public abstract class ScenarioModelAdapter implements IScenarioModelListener
     }
 
     @Override
-    public void elementGraphic2DChanged(IPropagatable element)
+    public void elementGraphic2DChanged(IScenarioElement element)
+    {
+
+    }
+
+    @Override
+    public void centralbodyGmChanged(ICentralBody element)
+    {
+
+    }
+
+    @Override
+    public void centralbodyEquatorialRadiusChanged(ICentralBody element)
+    {
+
+    }
+
+    @Override
+    public void centralbodyPolarRadiusChanged(ICentralBody element)
+    {
+
+    }
+
+    @Override
+    public void centralbodyMeanRadiusChanged(ICentralBody element)
+    {
+
+    }
+
+    @Override
+    public void centralbodyFlatteningChanged(ICentralBody element)
+    {
+
+    }
+
+    @Override
+    public void propagatablesCentralBodyChanged(IScenarioProject element)
     {
 
     }

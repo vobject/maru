@@ -15,11 +15,9 @@ public class UiElementPropertyPage extends UiPropertyPage
 {
     private Text name;
     private Text comment;
-//    private Combo images;
 
     private String initialName;
     private String initialComment;
-//    private String initialImage;
 
     public Text getNameControl()
     {
@@ -31,11 +29,6 @@ public class UiElementPropertyPage extends UiPropertyPage
         return comment;
     }
 
-//    public Combo getImageControl()
-//    {
-//        return images;
-//    }
-
     public String getInitialName()
     {
         return initialName;
@@ -44,28 +37,6 @@ public class UiElementPropertyPage extends UiPropertyPage
     public String getInitialComment()
     {
         return initialComment;
-    }
-
-//    public String getInitialImage()
-//    {
-//        return initialImage;
-//    }
-
-    protected String[] getElementImageNames()
-    {
-        // return an empty array be default
-        return new String[] { };
-    }
-
-    @Override
-    protected Control createContents(Composite parent)
-    {
-        Composite container = createControls(parent);
-
-        initDefaults();
-        initControls();
-
-        return container;
     }
 
     @Override
@@ -82,14 +53,19 @@ public class UiElementPropertyPage extends UiPropertyPage
             CoreModel.getDefault().commentElement(getScenarioElement(), newComment, true);
         }
 
-//        String newImage = images.getText();
-//        if (!newImage.equals(initialImage)) {
-//            // change the scenario's 2D graphic
-//            // TODO
-////            CoreModel.getDefault().setElementGraphics2D(getScenarioElement(), null, true);
-//        }
-
+        initDefaults();
         return true;
+    }
+
+    @Override
+    protected Control createContents(Composite parent)
+    {
+        Composite container = createControls(parent);
+
+        initDefaults();
+        initControls();
+
+        return container;
     }
 
     private Composite createControls(Composite parent)
@@ -99,7 +75,7 @@ public class UiElementPropertyPage extends UiPropertyPage
         layout.marginHeight = 0;
 
         GridData data = new GridData();
-        data.verticalAlignment = GridData.FILL;
+        data.verticalAlignment = SWT.FILL;
         data.grabExcessVerticalSpace = true;
         data.horizontalSpan = 2;
 
@@ -109,7 +85,6 @@ public class UiElementPropertyPage extends UiPropertyPage
 
         createNameControl(container);
         createCommentControl(container);
-//        createImageControl(container);
 
         return container;
     }
@@ -120,8 +95,8 @@ public class UiElementPropertyPage extends UiPropertyPage
         // a scenario's name cannot be changed
 
         GridData data = new GridData();
-        data.horizontalAlignment = GridData.FILL;
-        data.verticalAlignment = GridData.BEGINNING;
+        data.horizontalAlignment = SWT.FILL;
+        data.verticalAlignment = SWT.BEGINNING;
         data.grabExcessHorizontalSpace = true;
         data.grabExcessVerticalSpace = false;
 
@@ -136,8 +111,8 @@ public class UiElementPropertyPage extends UiPropertyPage
         // a scenario's comment can be changed with this property page
 
         GridData data = new GridData();
-        data.horizontalAlignment = GridData.FILL;
-        data.verticalAlignment = GridData.FILL;
+        data.horizontalAlignment = SWT.FILL;
+        data.verticalAlignment = SWT.FILL;
         data.grabExcessHorizontalSpace = true;
         data.grabExcessVerticalSpace = true;
 
@@ -145,20 +120,6 @@ public class UiElementPropertyPage extends UiPropertyPage
         comment = new Text(parent, SWT.BORDER | SWT.MULTI);
         comment.setLayoutData(data);
     }
-
-//    private void createImageControl(Composite parent)
-//    {
-//        GridData data = new GridData();
-//        data.horizontalAlignment = GridData.FILL;
-//        data.verticalAlignment = GridData.BEGINNING;
-//        data.grabExcessHorizontalSpace = true;
-//        data.grabExcessVerticalSpace = false;
-//
-//        new Label(parent, SWT.NONE).setText("Image:");
-//        images = new Combo(parent, SWT.READ_ONLY);
-//        images.setItems(getElementImageNames());
-//        images.setLayoutData(data);
-//    }
 
     private void initDefaults()
     {
@@ -169,7 +130,6 @@ public class UiElementPropertyPage extends UiPropertyPage
 
         initialName = element.getName();
         initialComment = element.getComment();
-//        initialImage = element.getUnderlyingElement().getElementGraphic2D().getName();
     }
 
     private void initControls()
@@ -181,6 +141,5 @@ public class UiElementPropertyPage extends UiPropertyPage
 
         name.setText(element.getName());
         comment.setText(element.getComment());
-//        images.setText(element.getUnderlyingElement().getElementGraphic2D().getName());
     }
 }

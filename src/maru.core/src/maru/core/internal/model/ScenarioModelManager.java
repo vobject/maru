@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import maru.IMaruPluginResource;
+import maru.IMaruResource;
 import maru.core.model.ICentralBody;
 import maru.core.model.IGroundstation;
 import maru.core.model.IPropagatable;
@@ -16,6 +16,7 @@ import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.core.model.ITimeProvider;
 import maru.core.model.ITimepoint;
+import maru.core.model.template.CentralBody;
 import maru.core.model.template.Propagatable;
 import maru.core.model.template.Propagator;
 import maru.core.model.template.ScenarioElement;
@@ -43,6 +44,13 @@ final public class ScenarioModelManager implements IResourceChangeListener
         ELEMENT_COLORED,
         ELEMENT_GRAPHIC2D_CHANGED,
 
+        CENTRALBODY_GM_CHANGED,
+        CENTRALBODY_EQUATORIAL_RADIUS_CHANGED,
+        CENTRALBODY_POLAR_RADIUS_CHANGED,
+        CENTRALBODY_MEAN_RADIUS_CHANGED,
+        CENTRALBODY_FLATTENING_CHANGED,
+
+        PROPAGATABLES_CENTRALBODY_CHANGED,
         PROPAGATABLES_TIME_CHANGED,
 
         TIMEPOINT_START_CHANGED,
@@ -263,6 +271,17 @@ final public class ScenarioModelManager implements IResourceChangeListener
         }
     }
 
+    public void changePropagatablesCentralBody(IScenarioProject project, boolean update)
+    {
+        for (IPropagatable element : project.getPropagatables()) {
+            element.centralbodyChanged();
+        }
+
+        if (update) {
+            notifyPropagatablesCentralBodyChanged(project);
+        }
+    }
+
     public void changePropagatablesTime(IScenarioProject project, long time, boolean update)
     {
         for (IPropagatable element : project.getPropagatables()) {
@@ -301,12 +320,57 @@ final public class ScenarioModelManager implements IResourceChangeListener
         }
     }
 
-    public void setElementGraphics2D(IScenarioElement element, IMaruPluginResource graphic2d, boolean update)
+    public void setElementGraphics2D(IScenarioElement element, IMaruResource graphic2d, boolean update)
     {
         ((ScenarioElement) element).setElementGraphic2D(graphic2d);
 
         if (update) {
             notifyElementGraphic2DChanged(element);
+        }
+    }
+
+    public void changeCentralBodyGM(ICentralBody element, double gm, boolean update)
+    {
+        ((CentralBody) element).setGM(gm);
+
+        if (update) {
+            notifyCentralBodyGmChanged(element);
+        }
+    }
+
+    public void changeCentralBodyEquatorialRadius(ICentralBody element, double radius, boolean update)
+    {
+        ((CentralBody) element).setEquatorialRadius(radius);
+
+        if (update) {
+            notifyCentralBodyEquatorialRadiusChanged(element);
+        }
+    }
+
+    public void changeCentralBodyMeanRadius(ICentralBody element, double radius, boolean update)
+    {
+        ((CentralBody) element).setMeanRadius(radius);
+
+        if (update) {
+            notifyCentralBodyMeanRadiusChanged(element);
+        }
+    }
+
+    public void changeCentralBodyPolarRadius(ICentralBody element, double radius, boolean update)
+    {
+        ((CentralBody) element).setPolarRadius(radius);
+
+        if (update) {
+            notifyCentralBodyPolarRadiusChanged(element);
+        }
+    }
+
+    public void changeCentralBodyFlattening(ICentralBody element, double flattening, boolean update)
+    {
+        ((CentralBody) element).setFlattening(flattening);
+
+        if (update) {
+            notifyCentralBodyFlatteningChanged(element);
         }
     }
 
@@ -415,6 +479,36 @@ final public class ScenarioModelManager implements IResourceChangeListener
         notifyScenarioElementListeners(ScenarioEvent.ELEMENT_GRAPHIC2D_CHANGED, element);
     }
 
+    private void notifyCentralBodyGmChanged(ICentralBody element)
+    {
+        writeProjectStorage(element.getScenarioProject());
+        notifyScenarioElementListeners(ScenarioEvent.CENTRALBODY_GM_CHANGED, element);
+    }
+
+    private void notifyCentralBodyEquatorialRadiusChanged(ICentralBody element)
+    {
+        writeProjectStorage(element.getScenarioProject());
+        notifyScenarioElementListeners(ScenarioEvent.CENTRALBODY_EQUATORIAL_RADIUS_CHANGED, element);
+    }
+
+    private void notifyCentralBodyPolarRadiusChanged(ICentralBody element)
+    {
+        writeProjectStorage(element.getScenarioProject());
+        notifyScenarioElementListeners(ScenarioEvent.CENTRALBODY_POLAR_RADIUS_CHANGED, element);
+    }
+
+    private void notifyCentralBodyMeanRadiusChanged(ICentralBody element)
+    {
+        writeProjectStorage(element.getScenarioProject());
+        notifyScenarioElementListeners(ScenarioEvent.CENTRALBODY_MEAN_RADIUS_CHANGED, element);
+    }
+
+    private void notifyCentralBodyFlatteningChanged(ICentralBody element)
+    {
+        writeProjectStorage(element.getScenarioProject());
+        notifyScenarioElementListeners(ScenarioEvent.CENTRALBODY_FLATTENING_CHANGED, element);
+    }
+
     private void notifyStartChanged(ITimepoint element)
     {
         writeProjectStorage(element.getScenarioProject());
@@ -430,6 +524,12 @@ final public class ScenarioModelManager implements IResourceChangeListener
     private void notifyCurrentChanged(ITimepoint element)
     {
         notifyScenarioElementListeners(ScenarioEvent.TIMEPOINT_CURRENT_CHANGED, element);
+    }
+
+    private void notifyPropagatablesCentralBodyChanged(IScenarioProject element)
+    {
+        writeProjectStorage(element);
+        notifyScenarioElementListeners(ScenarioEvent.PROPAGATABLES_CENTRALBODY_CHANGED, element);
     }
 
     private void notifyPropagatablesTimeChanged(IScenarioProject element)
@@ -501,9 +601,28 @@ final public class ScenarioModelManager implements IResourceChangeListener
                     listener.elementColored((IPropagatable) element);
                     break;
                 case ELEMENT_GRAPHIC2D_CHANGED:
-                    listener.elementGraphic2DChanged((IPropagatable) element);
+                    listener.elementGraphic2DChanged(element);
                     break;
 
+                case CENTRALBODY_GM_CHANGED:
+                    listener.centralbodyGmChanged((ICentralBody) element);
+                    break;
+                case CENTRALBODY_EQUATORIAL_RADIUS_CHANGED:
+                    listener.centralbodyEquatorialRadiusChanged((ICentralBody) element);
+                    break;
+                case CENTRALBODY_POLAR_RADIUS_CHANGED:
+                    listener.centralbodyPolarRadiusChanged((ICentralBody) element);
+                    break;
+                case CENTRALBODY_MEAN_RADIUS_CHANGED:
+                    listener.centralbodyMeanRadiusChanged((ICentralBody) element);
+                    break;
+                case CENTRALBODY_FLATTENING_CHANGED:
+                    listener.centralbodyFlatteningChanged((ICentralBody) element);
+                    break;
+
+                case PROPAGATABLES_CENTRALBODY_CHANGED:
+                    listener.propagatablesCentralBodyChanged((IScenarioProject) element);
+                    break;
                 case PROPAGATABLES_TIME_CHANGED:
                     listener.propagatablesTimeChanged((IScenarioProject) element);
                     break;
@@ -526,6 +645,8 @@ final public class ScenarioModelManager implements IResourceChangeListener
                     break;
                 case TIMEPOINT_CHANGED:
                     listener.timepointChanged((ITimepoint) element);
+                    break;
+                default:
                     break;
             }
         }

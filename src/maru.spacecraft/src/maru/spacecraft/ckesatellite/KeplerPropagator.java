@@ -116,4 +116,13 @@ public class KeplerPropagator extends Propagator
     {
         return "KeplerPropagator";
     }
+
+    public void clearCoordinateCache()
+    {
+        coordinates.clear();
+        lastInitialCoordinate = null;
+        lastStartTime = 0;
+        lastStopTime = 0;
+        lastStepSize = 0;
+    }
 }
