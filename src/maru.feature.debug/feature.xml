@@ -2,7 +2,7 @@
 <feature
       id="maru.feature.debug"
       label="Maru Feature (Debug)"
-      version="1.0.0.qualifier">
+      version="1.1.0.qualifier">
 
    <requires>
       <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>

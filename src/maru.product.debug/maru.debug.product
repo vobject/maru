@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Maru (Debug)" id="maru.product.debug.product" application="maru.application" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Maru (Debug)" id="maru.product.debug.product" application="maru.application" version="1.1.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="about.gif"/>
       <text>
          Maru (Debug)
 
-Version 1.0.0
+Version 1.1.0
 License: Apache License, Version 2.0
 Visit: https://github.com/vobject/maru
 
@@ -51,6 +51,7 @@ developed by the following third parties:
             winExtraLargeHigh="/maru.product.debug/icons/maru_256.bmp"/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
