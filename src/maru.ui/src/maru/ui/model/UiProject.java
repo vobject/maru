@@ -156,9 +156,6 @@ public class UiProject extends UiParent implements IPropagationListener,
 
             // make all propagatables adapt to the new central body
             CoreModel.getDefault().changePropagatablesCentralBody(getUnderlyingElement(), true);
-
-            // update the propagatable's current position based on the new central body
-            CoreModel.getDefault().changePropagatablesTime(getUnderlyingElement(), getCurrentTime(), true);
         }
         else if (element instanceof IGroundstation)
         {

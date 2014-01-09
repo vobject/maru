@@ -7,6 +7,7 @@ import java.util.Map;
 
 import maru.IMaruResource;
 import maru.core.model.ICentralBody;
+import maru.core.model.ICoordinate;
 import maru.core.model.IGroundstation;
 import maru.core.model.IPropagatable;
 import maru.core.model.IPropagationListener;
@@ -41,13 +42,13 @@ final public class ScenarioModelManager implements IResourceChangeListener
         ELEMENT_RENAMED,
         ELEMENT_COMMENTED,
 
-        ELEMENT_COLORED,
-        ELEMENT_GRAPHIC2D_CHANGED,
+        PROPAGATABLE_COLOR_CHANGED,
+        PROPAGATABLE_IMAGE_CHANGED,
+        PROPAGATABLE_INITIAL_COORDINATE_CHANGED,
 
+        CENTRALBODY_IMAGE_CHANGED,
         CENTRALBODY_GM_CHANGED,
         CENTRALBODY_EQUATORIAL_RADIUS_CHANGED,
-        CENTRALBODY_POLAR_RADIUS_CHANGED,
-        CENTRALBODY_MEAN_RADIUS_CHANGED,
         CENTRALBODY_FLATTENING_CHANGED,
 
         PROPAGATABLES_CENTRALBODY_CHANGED,
@@ -311,21 +312,39 @@ final public class ScenarioModelManager implements IResourceChangeListener
         }
     }
 
-    public void setElementColor(IPropagatable element, RGB color, boolean update)
+    public void changeElementColor(IPropagatable element, RGB color, boolean update)
     {
         ((Propagatable) element).setElementColor(color);
 
         if (update) {
-            notifyElementColored(element);
+            notifyElementColorChanged(element);
         }
     }
 
-    public void setElementGraphics2D(IScenarioElement element, IMaruResource graphic2d, boolean update)
+    public void changeElementImage(IPropagatable element, IMaruResource image, boolean update)
     {
-        ((ScenarioElement) element).setElementGraphic2D(graphic2d);
+        ((Propagatable) element).setElementImage(image);
 
         if (update) {
-            notifyElementGraphic2DChanged(element);
+            notifyElementImageChanged(element);
+        }
+    }
+
+    public void changeInitialCoordinate(IPropagatable element, ICoordinate coordinate, boolean update)
+    {
+        ((Propagatable) element).setInitialCoordinate(coordinate);
+
+        if (update) {
+            notifyInitialCoordinateChanged(element);
+        }
+    }
+
+    public void changeCentralBodyImage(ICentralBody element, IMaruResource image, boolean update)
+    {
+        ((CentralBody) element).setTexture(image);
+
+        if (update) {
+            notifyCentralBodyImageChanged(element);
         }
     }
 
@@ -344,24 +363,6 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
         if (update) {
             notifyCentralBodyEquatorialRadiusChanged(element);
-        }
-    }
-
-    public void changeCentralBodyMeanRadius(ICentralBody element, double radius, boolean update)
-    {
-        ((CentralBody) element).setMeanRadius(radius);
-
-        if (update) {
-            notifyCentralBodyMeanRadiusChanged(element);
-        }
-    }
-
-    public void changeCentralBodyPolarRadius(ICentralBody element, double radius, boolean update)
-    {
-        ((CentralBody) element).setPolarRadius(radius);
-
-        if (update) {
-            notifyCentralBodyPolarRadiusChanged(element);
         }
     }
 
@@ -467,16 +468,28 @@ final public class ScenarioModelManager implements IResourceChangeListener
         notifyScenarioElementListeners(ScenarioEvent.ELEMENT_COMMENTED, element);
     }
 
-    private void notifyElementColored(IPropagatable element)
+    private void notifyElementColorChanged(IPropagatable element)
     {
         writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.ELEMENT_COLORED, element);
+        notifyScenarioElementListeners(ScenarioEvent.PROPAGATABLE_COLOR_CHANGED, element);
     }
 
-    private void notifyElementGraphic2DChanged(IScenarioElement element)
+    private void notifyElementImageChanged(IPropagatable element)
     {
         writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.ELEMENT_GRAPHIC2D_CHANGED, element);
+        notifyScenarioElementListeners(ScenarioEvent.PROPAGATABLE_IMAGE_CHANGED, element);
+    }
+
+    private void notifyInitialCoordinateChanged(IPropagatable element)
+    {
+        writeProjectStorage(element.getScenarioProject());
+        notifyScenarioElementListeners(ScenarioEvent.PROPAGATABLE_INITIAL_COORDINATE_CHANGED, element);
+    }
+
+    private void notifyCentralBodyImageChanged(ICentralBody element)
+    {
+        writeProjectStorage(element.getScenarioProject());
+        notifyScenarioElementListeners(ScenarioEvent.CENTRALBODY_IMAGE_CHANGED, element);
     }
 
     private void notifyCentralBodyGmChanged(ICentralBody element)
@@ -489,18 +502,6 @@ final public class ScenarioModelManager implements IResourceChangeListener
     {
         writeProjectStorage(element.getScenarioProject());
         notifyScenarioElementListeners(ScenarioEvent.CENTRALBODY_EQUATORIAL_RADIUS_CHANGED, element);
-    }
-
-    private void notifyCentralBodyPolarRadiusChanged(ICentralBody element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.CENTRALBODY_POLAR_RADIUS_CHANGED, element);
-    }
-
-    private void notifyCentralBodyMeanRadiusChanged(ICentralBody element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.CENTRALBODY_MEAN_RADIUS_CHANGED, element);
     }
 
     private void notifyCentralBodyFlatteningChanged(ICentralBody element)
@@ -597,24 +598,25 @@ final public class ScenarioModelManager implements IResourceChangeListener
                 case ELEMENT_COMMENTED:
                     listener.elementCommented(element);
                     break;
-                case ELEMENT_COLORED:
-                    listener.elementColored((IPropagatable) element);
+
+                case PROPAGATABLE_COLOR_CHANGED:
+                    listener.elementColorChanged((IPropagatable) element);
                     break;
-                case ELEMENT_GRAPHIC2D_CHANGED:
-                    listener.elementGraphic2DChanged(element);
+                case PROPAGATABLE_IMAGE_CHANGED:
+                    listener.elementImageChanged((IPropagatable) element);
+                    break;
+                case PROPAGATABLE_INITIAL_COORDINATE_CHANGED:
+                    listener.elementInitialCoordinateChanged((IPropagatable) element);
                     break;
 
+                case CENTRALBODY_IMAGE_CHANGED:
+                    listener.centralbodyImageChanged((ICentralBody) element);
+                    break;
                 case CENTRALBODY_GM_CHANGED:
                     listener.centralbodyGmChanged((ICentralBody) element);
                     break;
                 case CENTRALBODY_EQUATORIAL_RADIUS_CHANGED:
                     listener.centralbodyEquatorialRadiusChanged((ICentralBody) element);
-                    break;
-                case CENTRALBODY_POLAR_RADIUS_CHANGED:
-                    listener.centralbodyPolarRadiusChanged((ICentralBody) element);
-                    break;
-                case CENTRALBODY_MEAN_RADIUS_CHANGED:
-                    listener.centralbodyMeanRadiusChanged((ICentralBody) element);
                     break;
                 case CENTRALBODY_FLATTENING_CHANGED:
                     listener.centralbodyFlatteningChanged((ICentralBody) element);

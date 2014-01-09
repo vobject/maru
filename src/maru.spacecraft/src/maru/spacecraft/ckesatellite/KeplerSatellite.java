@@ -1,5 +1,6 @@
 package maru.spacecraft.ckesatellite;
 
+import maru.core.model.ICoordinate;
 import maru.spacecraft.OrekitSpacecraft;
 
 import org.orekit.orbits.KeplerianOrbit;
@@ -21,6 +22,15 @@ public class KeplerSatellite extends OrekitSpacecraft
     }
 
     @Override
+    public void setInitialCoordinate(ICoordinate coordinate)
+    {
+        // make sure we get coordinates based on the new initial coordinate
+        getPropagator().clearCoordinateCache();
+
+        super.setInitialCoordinate(coordinate);
+    }
+
+    @Override
     public KeplerPropagator getPropagator()
     {
         return (KeplerPropagator) super.getPropagator();
@@ -38,16 +48,13 @@ public class KeplerSatellite extends OrekitSpacecraft
                 formerOrbit.getI(),
                 formerOrbit.getPerigeeArgument(),
                 formerOrbit.getRightAscensionOfAscendingNode(),
-                formerOrbit.getAnomaly(PositionAngle.TRUE),
-                PositionAngle.TRUE,
+                formerOrbit.getAnomaly(PositionAngle.MEAN),
+                PositionAngle.MEAN,
                 formerOrbit.getFrame(),
                 formerOrbit.getDate(),
                 getCentralBody().getGM()
         );
 
         setInitialCoordinate(new InitialKeplerCoordinate(newInitialOrbit));
-
-        // make sure we get fresh coordinates based on the new central body
-        getPropagator().clearCoordinateCache();
     }
 }

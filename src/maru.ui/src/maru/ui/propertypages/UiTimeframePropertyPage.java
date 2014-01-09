@@ -16,7 +16,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Label;
 
@@ -109,7 +108,7 @@ public class UiTimeframePropertyPage extends UiElementPropertyPage
     }
 
     @Override
-    protected Control createContents(Composite parent)
+    protected Composite createContents(Composite parent)
     {
         Composite container = createControls(parent);
 

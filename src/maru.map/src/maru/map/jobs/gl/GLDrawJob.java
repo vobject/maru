@@ -3,7 +3,6 @@ package maru.map.jobs.gl;
 import javax.media.opengl.GL;
 
 import maru.map.jobs.DrawJob;
-import maru.map.views.gl.TextureCache;
 
 import com.sun.opengl.util.j2d.TextRenderer;
 

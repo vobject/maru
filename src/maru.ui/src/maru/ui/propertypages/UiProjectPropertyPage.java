@@ -8,7 +8,6 @@ import maru.ui.model.UiProject;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 
 public class UiProjectPropertyPage extends UiElementPropertyPage
 {
@@ -34,9 +33,9 @@ public class UiProjectPropertyPage extends UiElementPropertyPage
     }
 
     @Override
-    protected Control createContents(Composite parent)
+    protected Composite createContents(Composite parent)
     {
-        Control container = super.createContents(parent);
+        Composite container = super.createContents(parent);
 
         // the project's name may not be changed
         getNameControl().setEnabled(false);

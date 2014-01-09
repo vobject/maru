@@ -155,7 +155,19 @@ public class ContentProvider extends BaseWorkbenchContentProvider
         }
 
         @Override
-        public void elementColored(IPropagatable element)
+        public void elementColorChanged(IPropagatable element)
+        {
+            refreshViewer(element.getScenarioProject(), false);
+        }
+
+        @Override
+        public void elementImageChanged(IPropagatable element)
+        {
+            refreshViewer(element.getScenarioProject(), false);
+        }
+
+        @Override
+        public void elementInitialCoordinateChanged(IPropagatable element)
         {
             refreshViewer(element.getScenarioProject(), false);
         }

@@ -22,24 +22,16 @@ public class Earth extends CentralBody
     /** Earth equatorial radius (m); WGS84. */
     private static final double DEFAULT_EARTH_EQUATORIAL_RADIUS = 6378137.0;
 
-    /** Earth polar radius (m); WGS84. */
-    private static final double DEFAULT_EARTH_POLAR_RADIUS = 6356752.3142;
-
-    /** Earth mean radius (m); WGS84. */
-    private static final double DEFAULT_EARTH_MEAN_RADIUS = 6371008.7714;
-
     /** Earth flattening; WGS84 */
     private static final double DEFAULT_EARTH_FLATTENING = (1.0 / 298.257223563);
 
     public Earth(IMaruResource mapImage)
     {
         super("Earth");
-        setElementGraphic2D(mapImage);
+        setTexture(mapImage);
 
         setGM(DEFAULT_EARTH_GM);
         setEquatorialRadius(DEFAULT_EARTH_EQUATORIAL_RADIUS);
-        setPolarRadius(DEFAULT_EARTH_POLAR_RADIUS);
-        setMeanRadius(DEFAULT_EARTH_MEAN_RADIUS);
         setFlattening(DEFAULT_EARTH_FLATTENING);
     }
 

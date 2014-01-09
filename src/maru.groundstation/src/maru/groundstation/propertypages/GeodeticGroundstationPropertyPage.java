@@ -2,51 +2,48 @@ package maru.groundstation.propertypages;
 
 import maru.IMaruResource;
 import maru.core.model.CoreModel;
+import maru.core.model.ICoordinate;
 import maru.groundstation.MaruGroundstationResources;
+import maru.groundstation.earth.GeodeticCoordinate;
 import maru.groundstation.earth.GeodeticGroundstation;
-import maru.ui.propertypages.UiPropertyPage;
+import maru.ui.propertypages.UiPropagatablePropertyPage;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.ColorDialog;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
-public class GeodeticGroundstationPropertyPage extends UiPropertyPage
+public class GeodeticGroundstationPropertyPage extends UiPropagatablePropertyPage
 {
-    private Label color;
-    private Combo images;
+    private Text latitude;
+    private Text longitude;
+    private Text altitude;
+    private Text elevation;
 
-    private RGB newColor;
-    private RGB initialColor;
-    private String initialImage;
+    private String initialLatitude;
+    private String initialLongitude;
+    private String initialAltitude;
+    private String initialElevation;
 
-    public Combo getImageControl()
-    {
-        return images;
-    }
-
-    public String getInitialImage()
-    {
-        return initialImage;
-    }
-
-    protected String[] getElementImageNames()
+    @Override
+    protected String[] getImageNames()
     {
         // return an empty array be default
         return new String[] {
             "", // empty string allows to disable element image
-            MaruGroundstationResources.GROUNDSTATION_DEFAULT_128.getName()
+            MaruGroundstationResources.GROUNDSTATION_DEFAULT_1.getName(),
+            MaruGroundstationResources.GROUNDSTATION_DEFAULT_2.getName(),
+            MaruGroundstationResources.GROUNDSTATION_DEFAULT_3.getName(),
+            MaruGroundstationResources.GROUNDSTATION_DEFAULT_4.getName(),
+            MaruGroundstationResources.GROUNDSTATION_DEFAULT_5.getName(),
         };
+    }
+
+    @Override
+    protected IMaruResource getImageFromName(String name)
+    {
+        return MaruGroundstationResources.fromName(name);
     }
 
     @Override
@@ -58,22 +55,15 @@ public class GeodeticGroundstationPropertyPage extends UiPropertyPage
     @Override
     public boolean performOk()
     {
-        GeodeticGroundstation element = getScenarioElement();
-
-        if (newColorSelected()) {
-            CoreModel.getDefault().setElementColor(element, newColor, true);
+        if (!super.performOk()) {
+            return false;
         }
 
-        String newImage = images.getText();
-        if (!newImage.equals(initialImage))
+        if (hasInitialCoordinateChanged())
         {
-            IMaruResource image = null;
-
-            if (!newImage.isEmpty()) {
-                // change the scenario's 2D graphic
-                image = MaruGroundstationResources.fromName(newImage);
-            }
-            CoreModel.getDefault().setElementGraphics2D(element, image, true);
+            GeodeticGroundstation element = getScenarioElement();
+            GeodeticCoordinate newCoordinate = createNewCoordinate(element);
+            CoreModel.getDefault().changeInitialCoordinate(element, newCoordinate, true);
         }
 
         initDefaults();
@@ -81,9 +71,12 @@ public class GeodeticGroundstationPropertyPage extends UiPropertyPage
     }
 
     @Override
-    protected Control createContents(Composite parent)
+    protected Composite createContents(Composite parent)
     {
-        Composite container = createControls(parent);
+        Composite container = super.createContents(parent);
+        addSeparator(container);
+
+        createControls(container);
 
         initDefaults();
         initControls();
@@ -91,62 +84,25 @@ public class GeodeticGroundstationPropertyPage extends UiPropertyPage
         return container;
     }
 
-    private Composite createControls(Composite parent)
+    private Composite createControls(Composite container)
     {
-        GridLayout layout = new GridLayout(2, false);
-        layout.marginWidth = 0;
-        layout.marginHeight = 0;
+        new Label(container, SWT.NONE).setText("Latitude (deg):");
+        latitude = new Text(container, SWT.BORDER | SWT.SINGLE);
+        latitude.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-        GridData data = new GridData();
-        data.verticalAlignment = GridData.FILL;
-        data.grabExcessVerticalSpace = true;
-        data.horizontalSpan = 2;
+        new Label(container, SWT.NONE).setText("Longitude (deg):");
+        longitude = new Text(container, SWT.BORDER | SWT.SINGLE);
+        longitude.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-        Composite container = new Composite(parent, SWT.NONE);
-        container.setLayout(layout);
-        container.setLayoutData(data);
+        new Label(container, SWT.NONE).setText("Altitude (m):");
+        altitude = new Text(container, SWT.BORDER | SWT.SINGLE);
+        altitude.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-        createColorControl(container);
-        createImageControl(container);
+        new Label(container, SWT.NONE).setText("Elevation (deg):");
+        elevation = new Text(container, SWT.BORDER | SWT.SINGLE);
+        elevation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
         return container;
-    }
-
-    private void createColorControl(final Composite parent)
-    {
-        new Label(parent, SWT.NONE).setText("Color:");
-        color = new Label(parent, SWT.BORDER);
-        color.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-        color.addMouseListener(new MouseListener() {
-            @Override public void mouseDoubleClick(MouseEvent e) { }
-            @Override public void mouseDown(MouseEvent e) { }
-            @Override public void mouseUp(MouseEvent e)
-            {
-                ColorDialog dlg = new ColorDialog(parent.getShell());
-                dlg.setRGB(newColor);
-
-                RGB rgb = dlg.open();
-                if (rgb != null) {
-                    newColor = rgb;
-
-                    color.getBackground().dispose();
-                    color.setBackground(new Color(null, newColor));
-                }
-            }
-        });
-        color.addDisposeListener(new DisposeListener() {
-            @Override public void widgetDisposed(DisposeEvent e) {
-                color.getBackground().dispose();
-            }
-        });
-    }
-
-    private void createImageControl(Composite parent)
-    {
-        new Label(parent, SWT.NONE).setText("Image:");
-        images = new Combo(parent, SWT.READ_ONLY);
-        images.setItems(getElementImageNames());
-        images.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
     }
 
     private void initDefaults()
@@ -156,15 +112,15 @@ public class GeodeticGroundstationPropertyPage extends UiPropertyPage
             return;
         }
 
-        initialColor = element.getElementColor();
-        newColor = initialColor;
+        GeodeticCoordinate coordinate = element.getInitialCoordinate();
 
-        IMaruResource graphic2d = element.getElementGraphic2D();
-        if (graphic2d != null) {
-            initialImage = graphic2d.getName();
-        } else {
-            initialImage = "";
-        }
+        // angles are processes in radiant internally
+        // convert them to degrees for user interface interactions
+
+        initialLatitude = Double.toString(Math.toDegrees(coordinate.getLatitude()));
+        initialLongitude = Double.toString(Math.toDegrees(coordinate.getLongitude()));
+        initialAltitude = Double.toString(coordinate.getAltitude());
+        initialElevation = Double.toString(Math.toDegrees(coordinate.getElevation()));
     }
 
     private void initControls()
@@ -174,24 +130,46 @@ public class GeodeticGroundstationPropertyPage extends UiPropertyPage
             return;
         }
 
-        if (color.getBackground() != null) {
-            color.getBackground().dispose();
-        }
-        color.setBackground(new Color(null, initialColor));
+        latitude.setText(initialLatitude);
+        longitude.setText(initialLongitude);
+        altitude.setText(initialAltitude);
+        elevation.setText(initialElevation);
+    }
 
-        IMaruResource graphic2d = element.getElementGraphic2D();
-        if (graphic2d != null) {
-            images.setText(graphic2d.getName());
-        } else {
-            images.setText("");
+    private boolean hasInitialCoordinateChanged()
+    {
+        String newLatitude = latitude.getText();
+        String newLongitude = longitude.getText();
+        String newAltitude = altitude.getText();
+        String newElevation = elevation.getText();
+
+        if (!newLatitude.equals(initialLatitude)   ||
+            !newLongitude.equals(initialLongitude) ||
+            !newAltitude.equals(initialAltitude)   ||
+            !newElevation.equals(initialElevation))
+        {
+            return true;
+        }
+        else
+        {
+            // the user did not change the values in the text controls
+            return false;
         }
     }
 
-
-    private boolean newColorSelected()
+    private GeodeticCoordinate createNewCoordinate(GeodeticGroundstation element)
     {
-        return (newColor.red   != initialColor.red) ||
-               (newColor.green != initialColor.green) ||
-               (newColor.blue  != initialColor.blue);
+        // angles are displayed in degree in the user interface
+        // convert them to radiant for internal use
+
+        double lat = Math.toRadians(Double.parseDouble(latitude.getText()));
+        double lon = Math.toRadians(Double.parseDouble(longitude.getText()));
+        double alt = Double.parseDouble(altitude.getText());
+        double elev = Math.toRadians(Double.parseDouble(elevation.getText()));
+        ICoordinate initialCoordinate = element.getInitialCoordinate();
+
+        return new GeodeticCoordinate(element.getCentralBody(),
+                                      lat, lon, alt, elev,
+                                      initialCoordinate.getTime());
     }
 }

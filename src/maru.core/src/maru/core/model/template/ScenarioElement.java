@@ -3,7 +3,6 @@ package maru.core.model.template;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import maru.IMaruResource;
 import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioProject;
 
@@ -14,7 +13,6 @@ public abstract class ScenarioElement implements IScenarioElement
     private IScenarioElement parent;
     private String name;
     private String comment;
-    private IMaruResource elementGraphic2D;
 
     public ScenarioElement(String name)
     {
@@ -32,12 +30,6 @@ public abstract class ScenarioElement implements IScenarioElement
     public String getElementComment()
     {
         return comment;
-    }
-
-    @Override
-    public IMaruResource getElementGraphic2D()
-    {
-        return elementGraphic2D;
     }
 
     @Override
@@ -88,10 +80,5 @@ public abstract class ScenarioElement implements IScenarioElement
     public void setElementComment(String comment)
     {
         this.comment = comment;
-    }
-
-    public void setElementGraphic2D(IMaruResource elementGraphic2D)
-    {
-        this.elementGraphic2D = elementGraphic2D;
     }
 }

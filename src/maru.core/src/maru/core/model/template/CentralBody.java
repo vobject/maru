@@ -1,20 +1,32 @@
 package maru.core.model.template;
 
+import maru.IMaruResource;
 import maru.core.model.ICentralBody;
 
 public abstract class CentralBody extends ScenarioElement implements ICentralBody
 {
     private static final long serialVersionUID = 1L;
 
+    private IMaruResource texture;
+
     private double gm;
     private double equatorialRadius;
-    private double polarRadius;
-    private double meanRadius;
     private double flattening;
 
     public CentralBody(String name)
     {
         super(name);
+    }
+
+    @Override
+    public IMaruResource getTexture()
+    {
+        return texture;
+    }
+
+    public void setTexture(IMaruResource texture)
+    {
+        this.texture = texture;
     }
 
     @Override
@@ -27,18 +39,6 @@ public abstract class CentralBody extends ScenarioElement implements ICentralBod
     public double getEquatorialRadius()
     {
         return equatorialRadius;
-    }
-
-    @Override
-    public double getPolarRadius()
-    {
-        return polarRadius;
-    }
-
-    @Override
-    public double getMeanRadius()
-    {
-        return meanRadius;
     }
 
     @Override
@@ -55,16 +55,6 @@ public abstract class CentralBody extends ScenarioElement implements ICentralBod
     public void setEquatorialRadius(double equatorialRadius)
     {
         this.equatorialRadius = equatorialRadius;
-    }
-
-    public void setPolarRadius(double polarRadius)
-    {
-        this.polarRadius = polarRadius;
-    }
-
-    public void setMeanRadius(double meanRadius)
-    {
-        this.meanRadius = meanRadius;
     }
 
     public void setFlattening(double flattening)

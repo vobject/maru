@@ -216,13 +216,25 @@ public class UiProjectModelManager extends ScenarioModelAdapter
     }
 
     @Override
-    public void elementColored(IPropagatable element)
+    public void elementColorChanged(IPropagatable element)
     {
         uiProjectChanged(element);
     }
 
     @Override
-    public void elementGraphic2DChanged(IScenarioElement element)
+    public void elementImageChanged(IPropagatable element)
+    {
+        uiProjectChanged(element);
+    }
+
+    @Override
+    public void elementInitialCoordinateChanged(IPropagatable element)
+    {
+        uiProjectChanged(element);
+    }
+
+    @Override
+    public void centralbodyImageChanged(ICentralBody element)
     {
         uiProjectChanged(element);
     }

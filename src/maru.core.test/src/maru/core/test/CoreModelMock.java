@@ -35,18 +35,6 @@ public class CoreModelMock
         }
 
         @Override
-        public double getPolarRadius()
-        {
-            return 0;
-        }
-
-        @Override
-        public double getMeanRadius()
-        {
-            return 0;
-        }
-
-        @Override
         public double getFlattening()
         {
             return 0;

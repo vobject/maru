@@ -23,7 +23,7 @@ public class GeodeticGroundstationPropagator extends Propagator
     public GeodeticCoordinate getCoordinate(IPropagatable element, long time)
     {
         GeodeticGroundstation groundstation = (GeodeticGroundstation) element;
-        GeodeticCoordinate initialCoordinate = (GeodeticCoordinate) groundstation.getInitialCoordinate();
+        GeodeticCoordinate initialCoordinate = groundstation.getInitialCoordinate();
         GeodeticCoordinate newCoordinate = new GeodeticCoordinate(initialCoordinate);
         newCoordinate.setTime(time);
         return newCoordinate;
@@ -35,7 +35,7 @@ public class GeodeticGroundstationPropagator extends Propagator
                                                   long stepSize)
     {
         GeodeticGroundstation groundstation = (GeodeticGroundstation) element;
-        GeodeticCoordinate initialCoordinate = (GeodeticCoordinate) groundstation.getInitialCoordinate();
+        GeodeticCoordinate initialCoordinate = groundstation.getInitialCoordinate();
 
         if ((lastInitialCoordinate != null)
                 && (initialCoordinate.equals(lastInitialCoordinate))
@@ -72,5 +72,14 @@ public class GeodeticGroundstationPropagator extends Propagator
     public String getName()
     {
         return "GeodeticGroundstationPropagator";
+    }
+
+    public void clearCoordinateCache()
+    {
+        coordinates.clear();
+        lastInitialCoordinate = null;
+        lastStartTime = 0;
+        lastStopTime = 0;
+        lastStepSize = 0;
     }
 }

@@ -75,7 +75,7 @@ public class SWTMapDrawer extends AbstractMapDrawer
             mapImage.dispose();
         }
 
-        String path = centralBody.getElementGraphic2D().getPath();
+        String path = centralBody.getTexture().getPath();
         if (PathUtil.isLocalPath(path)) {
             mapImage = new Image(null, path);
         } else {

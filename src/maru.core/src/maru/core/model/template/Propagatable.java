@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+import maru.IMaruResource;
 import maru.core.model.ICentralBody;
 import maru.core.model.ICoordinate;
 import maru.core.model.IPropagatable;
@@ -19,6 +20,7 @@ public abstract class Propagatable extends ScenarioElement implements IPropagata
     private static final long serialVersionUID = 1L;
 
     private RGB elementColor;
+    private IMaruResource elementImage;
 
     private IPropagator propagator;
     private ICoordinate initialCoordinate;
@@ -40,9 +42,22 @@ public abstract class Propagatable extends ScenarioElement implements IPropagata
         elementColor = color;
     }
 
+    @Override
+    public IMaruResource getElementImage()
+    {
+        return elementImage;
+    }
+
+    public void setElementImage(IMaruResource elementImage)
+    {
+        this.elementImage = elementImage;
+    }
+
     public void setInitialCoordinate(ICoordinate coordinate)
     {
         initialCoordinate = coordinate;
+
+        updateCurrentCoordinate();
     }
 
     public void setCurrentCoordinate(ICoordinate coordinate)
@@ -54,6 +69,8 @@ public abstract class Propagatable extends ScenarioElement implements IPropagata
     {
         this.propagator = propagator;
         propagator.addPropagationListener(this);
+
+        updateCurrentCoordinate();
     }
 
     public void addTimeProvider(ITimeProvider provider)
@@ -92,8 +109,6 @@ public abstract class Propagatable extends ScenarioElement implements IPropagata
     public Map<String, String> getPropertyMap()
     {
         Map<String, String> properties = super.getPropertyMap();
-
-        properties.put("Color", elementColor.toString());
 
         properties.put("Initial Pos X", Double.toString(initialCoordinate.getPosition().getX()));
         properties.put("Initial Pos Y", Double.toString(initialCoordinate.getPosition().getY()));
@@ -178,5 +193,21 @@ public abstract class Propagatable extends ScenarioElement implements IPropagata
         for (IPropagationListener listener : propagationListeners) {
             listener.propagationChanged(this, coordinate);
         }
+    }
+
+    protected void updateCurrentCoordinate()
+    {
+        if (propagator == null) {
+            // nothing there that could calculate the current coordinate
+            return;
+        }
+
+        if (initialCoordinate == null) {
+            // no initial coordinate that the current coordinate can be based on
+            return;
+        }
+
+        long currentTime = getScenarioProject().getCurrentTime().getTime();
+        currentCoordinate = propagator.getCoordinate(this, currentTime);
     }
 }

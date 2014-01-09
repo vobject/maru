@@ -16,12 +16,12 @@ import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.map.jobs.gl.GLProjectDrawJob;
+import maru.map.jobs.gl.TextureCache;
 import maru.map.views.GroundtrackBarrier;
 import maru.map.views.GroundtrackPoint;
 import maru.map.views.MapViewParameters;
 import maru.map.views.MapViewSettings;
 import maru.map.views.gl.GLUtils;
-import maru.map.views.gl.TextureCache;
 
 import org.eclipse.swt.graphics.RGB;
 
@@ -29,6 +29,8 @@ import com.sun.opengl.util.texture.Texture;
 
 public class ScenarioDrawJob extends GLProjectDrawJob
 {
+    private class IconSize { int x; int y; };
+
     private final Map<IPropagatable, GroundtrackBarrier> gtBarriers;
 
     public ScenarioDrawJob()
@@ -116,18 +118,18 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
         gl.glColor3ub((byte) color.red, (byte) color.green, (byte) color.blue);
 
-        int iconSize = getElementIconSize(element);
-        IMaruResource resource = element.getElementGraphic2D();
+        IconSize iconSize = getElementIconSize(element);
+        IMaruResource resource = element.getElementImage();
 
         if ((resource != null ) && !resource.getPath().isEmpty())
         {
-            String graphic2dPath = element.getElementGraphic2D().getPath();
-            drawElementTexture(graphic2dPath, mapPos, iconSize);
+            drawElementTexture(resource.getPath(), mapPos, iconSize);
         }
         else
         {
             // fallback for when we cannot load an image for the element
-            iconSize /= 2;
+            iconSize.x /= 2;
+            iconSize.y /= 2;
             drawElementFallback(mapPos, iconSize);
         }
 
@@ -135,7 +137,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         GLUtils.drawText(getTextRenderer(),
                          area.clientAreaWidth,
                          area.clientAreaHeight,
-                         area.mapX + mapPos.X + (iconSize / 2),
+                         area.mapX + mapPos.X + (iconSize.x / 2),
                          area.mapHeight - (mapPos.Y - area.mapY),
                          element.getElementName(),
                          true);
@@ -190,14 +192,22 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         return elementLineStrips;
     }
 
-    private int getElementIconSize(IPropagatable element)
+    private IconSize getElementIconSize(IPropagatable element)
     {
         MapViewParameters area = getParameters();
+        IconSize size = new IconSize();
+
+        // TODO: automatically scale x/y size of the icon
 
         if ((getSelectedElement() != null) && element == getSelectedElement().getUnderlyingElement()) {
-            return (int) (1.5 * area.iconSize);
+            // draw the selected element larger
+            size.x = (int) (1.5 * area.iconSize);
+            size.y = (int) (1.5 * area.iconSize);
+            return size;
         } else {
-            return area.iconSize;
+            size.x = area.iconSize;
+            size.y = area.iconSize;
+            return size;
         }
     }
 
@@ -212,40 +222,40 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         }
     }
 
-    private void drawElementTexture(String graphic2dPath, EquirectangularCoordinate mapPos, int iconSize)
+    private void drawElementTexture(String imagePath, EquirectangularCoordinate mapPos, IconSize iconSize)
     {
         GL gl = getGL();
         MapViewParameters area = getParameters();
         TextureCache textureCache = getTextureCache();
 
-        Texture elementGraphic2D = textureCache.get(graphic2dPath);
+        Texture elementGraphic2D = textureCache.get(imagePath);
 
         elementGraphic2D.enable();
         elementGraphic2D.bind();
 
         gl.glBegin(GL.GL_QUADS);
             gl.glTexCoord2d(0.0, 1.0);
-            gl.glVertex2d(area.mapX + mapPos.X - (iconSize / 2), area.mapHeight - (mapPos.Y - area.mapY) - (iconSize / 2));
+            gl.glVertex2d(area.mapX + mapPos.X - (iconSize.x / 2), area.mapHeight - (mapPos.Y - area.mapY) - (iconSize.y / 2));
 
             gl.glTexCoord2d(1.0, 1.0);
-            gl.glVertex2d(area.mapX + mapPos.X + (iconSize / 2), area.mapHeight - (mapPos.Y - area.mapY) - (iconSize / 2));
+            gl.glVertex2d(area.mapX + mapPos.X + (iconSize.x / 2), area.mapHeight - (mapPos.Y - area.mapY) - (iconSize.y / 2));
 
             gl.glTexCoord2d(1.0, 0.0);
-            gl.glVertex2d(area.mapX + mapPos.X + (iconSize / 2), area.mapHeight - (mapPos.Y - area.mapY) + (iconSize / 2));
+            gl.glVertex2d(area.mapX + mapPos.X + (iconSize.x / 2), area.mapHeight - (mapPos.Y - area.mapY) + (iconSize.y / 2));
 
             gl.glTexCoord2d(0.0, 0.0);
-            gl.glVertex2d(area.mapX + mapPos.X - (iconSize / 2), area.mapHeight - (mapPos.Y - area.mapY) + (iconSize / 2));
+            gl.glVertex2d(area.mapX + mapPos.X - (iconSize.x / 2), area.mapHeight - (mapPos.Y - area.mapY) + (iconSize.y / 2));
         gl.glEnd();
 
         elementGraphic2D.disable();
     }
 
-    private void drawElementFallback(EquirectangularCoordinate mapPos, int iconSize)
+    private void drawElementFallback(EquirectangularCoordinate mapPos, IconSize iconSize)
     {
         GL gl = getGL();
         MapViewParameters area = getParameters();
 
-        gl.glPointSize(iconSize);
+        gl.glPointSize(Math.max(iconSize.x, iconSize.y));
         gl.glBegin(GL.GL_POINTS);
             gl.glVertex2d(area.mapX + mapPos.X, area.mapHeight - (mapPos.Y - area.mapY));
         gl.glEnd();

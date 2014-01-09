@@ -6,7 +6,6 @@ import maru.ui.propertypages.UiPropertyPage;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
 public class TleSatellitePropertyPage extends UiPropertyPage
@@ -23,7 +22,7 @@ public class TleSatellitePropertyPage extends UiPropertyPage
     }
 
     @Override
-    protected Control createContents(Composite parent)
+    protected Composite createContents(Composite parent)
     {
         if (getScenarioElement() == null) {
             new Label(parent, SWT.NONE).setText("The selected element is no TLESatellite.");

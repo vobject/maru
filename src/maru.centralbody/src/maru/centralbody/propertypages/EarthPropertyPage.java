@@ -13,7 +13,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
 public class EarthPropertyPage extends UiPropertyPage
@@ -64,7 +63,7 @@ public class EarthPropertyPage extends UiPropertyPage
                     image = MaruCentralBodyResources.fromName(newImage);
                 }
             }
-            CoreModel.getDefault().setElementGraphics2D(getScenarioElement(), image, true);
+            CoreModel.getDefault().changeCentralBodyImage(getScenarioElement(), image, true);
         }
 
         initDefaults();
@@ -72,7 +71,7 @@ public class EarthPropertyPage extends UiPropertyPage
     }
 
     @Override
-    protected Control createContents(Composite parent)
+    protected Composite createContents(Composite parent)
     {
         Composite container = createControls(parent);
 
@@ -123,9 +122,9 @@ public class EarthPropertyPage extends UiPropertyPage
             return;
         }
 
-        IMaruResource graphic2d = element.getElementGraphic2D();
-        if (graphic2d != null) {
-            initialImage = graphic2d.getName();
+        IMaruResource mapImage = element.getTexture();
+        if (mapImage != null) {
+            initialImage = mapImage.getName();
         } else {
             initialImage = "";
         }
@@ -138,9 +137,9 @@ public class EarthPropertyPage extends UiPropertyPage
             return;
         }
 
-        IMaruResource graphic2d = element.getElementGraphic2D();
-        if (graphic2d != null) {
-            images.setText(graphic2d.getName());
+        IMaruResource mapImage = element.getTexture();
+        if (mapImage != null) {
+            images.setText(mapImage.getName());
         } else {
             images.setText("");
         }

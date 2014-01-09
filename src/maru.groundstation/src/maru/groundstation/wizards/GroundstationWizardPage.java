@@ -73,7 +73,11 @@ public class GroundstationWizardPage extends ScenarioElementWizardNamingPage
     protected String[] getElementImages()
     {
         return new String[] {
-            MaruGroundstationResources.GROUNDSTATION_DEFAULT_128.getName()
+            MaruGroundstationResources.GROUNDSTATION_DEFAULT_1.getName(),
+            MaruGroundstationResources.GROUNDSTATION_DEFAULT_2.getName(),
+            MaruGroundstationResources.GROUNDSTATION_DEFAULT_3.getName(),
+            MaruGroundstationResources.GROUNDSTATION_DEFAULT_4.getName(),
+            MaruGroundstationResources.GROUNDSTATION_DEFAULT_5.getName(),
         };
     }
 

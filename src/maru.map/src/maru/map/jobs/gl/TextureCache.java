@@ -1,4 +1,4 @@
-package maru.map.views.gl;
+package maru.map.jobs.gl;
 
 import java.io.IOException;
 import java.net.URL;

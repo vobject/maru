@@ -11,6 +11,7 @@ import maru.core.model.ICentralBody;
 import maru.map.MaruMapPlugin;
 import maru.map.jobs.gl.GLProjectAnimationJob;
 import maru.map.jobs.gl.GLProjectDrawJob;
+import maru.map.jobs.gl.TextureCache;
 import maru.map.views.AbstractMapDrawer;
 import maru.map.views.gl.jobs.DayNightDrawJob;
 import maru.map.views.gl.jobs.LatLonDrawJob;
@@ -139,7 +140,7 @@ public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
 
     private void updateBackground(ICentralBody centralBody)
     {
-        Texture mapTexture = textureCache.load(centralBody.getElementGraphic2D());
+        Texture mapTexture = textureCache.load(centralBody.getTexture());
         int mapTextureWidth = mapTexture.getImageWidth();
         int mapTextureHeight = mapTexture.getImageHeight();
 

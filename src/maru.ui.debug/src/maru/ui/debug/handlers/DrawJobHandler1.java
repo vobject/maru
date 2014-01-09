@@ -18,7 +18,9 @@ public class DrawJobHandler1 extends AbstractHandler
 //        job.setStartPosition(0, 0);
 //        job.setStopPosition(640, 480);
 
-        MaruMapPlugin.getDefault().registerProjectAnimationJob(job);
+//        EllipsoidDrawJob job = new EllipsoidDrawJob();
+
+//        MaruMapPlugin.getDefault().registerProjectDrawJob(job);
         MaruMapPlugin.getDefault().redraw();
         return null;
     }

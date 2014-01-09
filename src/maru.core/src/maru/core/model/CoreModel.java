@@ -166,14 +166,24 @@ public class CoreModel
         modelManager.addSpacecraft(project, spacecraft, update);
     }
 
-    public void setElementColor(IPropagatable element, RGB color, boolean update)
+    public void changeColor(IPropagatable element, RGB color, boolean update)
     {
-        modelManager.setElementColor(element, color, update);
+        modelManager.changeElementColor(element, color, update);
     }
 
-    public void setElementGraphics2D(IScenarioElement element, IMaruResource graphic2d, boolean update)
+    public void changeImage(IPropagatable element, IMaruResource image, boolean update)
     {
-        modelManager.setElementGraphics2D(element, graphic2d, update);
+        modelManager.changeElementImage(element, image, update);
+    }
+
+    public void changeInitialCoordinate(IPropagatable element, ICoordinate coordinate, boolean update)
+    {
+        modelManager.changeInitialCoordinate(element, coordinate, update);
+    }
+
+    public void changeCentralBodyImage(ICentralBody element, IMaruResource image, boolean update)
+    {
+        modelManager.changeCentralBodyImage(element, image, update);
     }
 
     public void changeCentralBodyGM(ICentralBody element, double gm, boolean update)
@@ -184,16 +194,6 @@ public class CoreModel
     public void changeCentralBodyEquatorialRadius(ICentralBody element, double radius, boolean update)
     {
         modelManager.changeCentralBodyEquatorialRadius(element, radius, update);
-    }
-
-    public void changeCentralBodyMeanRadius(ICentralBody element, double radius, boolean update)
-    {
-        modelManager.changeCentralBodyMeanRadius(element, radius, update);
-    }
-
-    public void changeCentralBodyPolarRadius(ICentralBody element, double radius, boolean update)
-    {
-        modelManager.changeCentralBodyPolarRadius(element, radius, update);
     }
 
     public void changeCentralBodyFlattening(ICentralBody element, double flattening, boolean update)

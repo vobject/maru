@@ -35,7 +35,7 @@ public class MapDrawJob extends GLProjectDrawJob
     private Texture getMapTexture()
     {
         ICentralBody centralBody = getProject().getUnderlyingElement().getCentralBody();
-        String mapImage = centralBody.getElementGraphic2D().getPath();
+        String mapImage = centralBody.getTexture().getPath();
         return getTextureCache().get(mapImage);
     }
 }

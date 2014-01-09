@@ -47,10 +47,10 @@ public class ExternalTleSatelliteWizard extends ScenarioElementWizard
 
         coreModel.addSpacecraft(scenarioProject, satellite, false);
         coreModel.commentElement(satellite, satelliteNamingPage.getElementComment(), false);
-        coreModel.setElementColor(satellite, satelliteNamingPage.getElementColor(), false);
+        coreModel.changeColor(satellite, satelliteNamingPage.getElementColor(), false);
         if (!image.isEmpty()) {
             IMaruPluginResource resource = MaruSpacecraftResources.fromName(image);
-            coreModel.setElementGraphics2D(satellite, resource, false);
+            coreModel.changeImage(satellite, resource, false);
         }
         coreModel.setPropagator(satellite, propagator);
         coreModel.notifyElementAdded(satellite);

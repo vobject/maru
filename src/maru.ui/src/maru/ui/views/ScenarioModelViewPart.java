@@ -84,13 +84,25 @@ public abstract class ScenarioModelViewPart extends ViewPart
     }
 
     @Override
-    public void elementColored(IPropagatable element)
+    public void elementColorChanged(IPropagatable element)
     {
 
     }
 
     @Override
-    public void elementGraphic2DChanged(IScenarioElement element)
+    public void elementImageChanged(IPropagatable element)
+    {
+
+    }
+
+    @Override
+    public void elementInitialCoordinateChanged(IPropagatable element)
+    {
+
+    }
+
+    @Override
+    public void centralbodyImageChanged(ICentralBody element)
     {
 
     }

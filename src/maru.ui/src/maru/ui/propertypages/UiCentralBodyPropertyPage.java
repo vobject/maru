@@ -8,7 +8,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -16,16 +15,12 @@ public class UiCentralBodyPropertyPage extends UiPropertyPage
 {
     private Text gm;
     private Text equatorialRadius;
-    private Text polarRadius;
-    private Text meanRadius;
     private Text flattening;
 
     // use strings to hold the initial values because they can be compared.
     // the job would be trickier with doubles
     private String initialGM;
     private String initialEquatorialRadius;
-    private String initialPolarRadius;
-    private String initialMeanRadius;
     private String initialFlattening;
 
     @Override
@@ -57,18 +52,6 @@ public class UiCentralBodyPropertyPage extends UiPropertyPage
             CoreModel.getDefault().changeCentralBodyEquatorialRadius(element, value, true);
         }
 
-        String newPolarRadius = polarRadius.getText();
-        if (!newPolarRadius.equals(initialPolarRadius)) {
-            double value = Double.parseDouble(newPolarRadius) * 1000.0;
-            CoreModel.getDefault().changeCentralBodyMeanRadius(element, value, true);
-        }
-
-        String newMeanRadius = meanRadius.getText();
-        if (!newMeanRadius.equals(initialMeanRadius)) {
-            double value = Double.parseDouble(newMeanRadius) * 1000.0;
-            CoreModel.getDefault().changeCentralBodyPolarRadius(element, value, true);
-        }
-
         String newFlattening = flattening.getText();
         if (!newFlattening.equals(initialFlattening)) {
             double value = Double.parseDouble(newFlattening);
@@ -81,7 +64,7 @@ public class UiCentralBodyPropertyPage extends UiPropertyPage
     }
 
     @Override
-    protected Control createContents(Composite parent)
+    protected Composite createContents(Composite parent)
     {
         Composite container = createControls(parent);
 
@@ -110,14 +93,6 @@ public class UiCentralBodyPropertyPage extends UiPropertyPage
         equatorialRadius = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.WRAP);
         equatorialRadius.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-        new Label(container, SWT.NONE).setText("Polar Radius (km):");
-        polarRadius = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.WRAP);
-        polarRadius.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-        new Label(container, SWT.NONE).setText("Mean Radius (km):");
-        meanRadius = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.WRAP);
-        meanRadius.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
         new Label(container, SWT.NONE).setText("Flattening:");
         flattening = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.WRAP);
         flattening.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -138,8 +113,6 @@ public class UiCentralBodyPropertyPage extends UiPropertyPage
 
         initialGM = Double.toString(element.getGM());
         initialEquatorialRadius = Double.toString(element.getEquatorialRadius() / 1000.0);
-        initialPolarRadius = Double.toString(element.getPolarRadius() / 1000.0);
-        initialMeanRadius = Double.toString(element.getMeanRadius() / 1000.0);
         initialFlattening = Double.toString(element.getFlattening());
     }
 
@@ -152,8 +125,6 @@ public class UiCentralBodyPropertyPage extends UiPropertyPage
 
         gm.setText(initialGM);
         equatorialRadius.setText(initialEquatorialRadius);
-        polarRadius.setText(initialPolarRadius);
-        meanRadius.setText(initialMeanRadius);
         flattening.setText(initialFlattening);
     }
 }

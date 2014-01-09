@@ -60,7 +60,7 @@ public abstract class OrekitSpacecraft extends Spacecraft
 
             double angle = Vector3D.angle(ps, po);
             double rs = FastMath.asin(SUN_RADIUS_METERS / ps.getNorm());
-            double ro = FastMath.asin(earth.getMeanRadius() / po.getNorm());
+            double ro = FastMath.asin(earth.getEquatorialRadius() / po.getNorm());
 
             return total ? (angle - ro + rs) : (angle - ro - rs);
         }

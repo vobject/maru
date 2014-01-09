@@ -11,8 +11,8 @@ import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
 import maru.core.model.IScenarioProject;
 import maru.groundstation.MaruGroundstationResources;
-import maru.groundstation.earth.GeodeticGroundstation;
 import maru.groundstation.earth.GeodeticCoordinate;
+import maru.groundstation.earth.GeodeticGroundstation;
 import maru.groundstation.earth.GeodeticGroundstationPropagator;
 import maru.spacecraft.MaruSpacecraftResources;
 import maru.spacecraft.ckesatellite.InitialKeplerCoordinate;
@@ -47,7 +47,7 @@ public final class CreateScenarioHelper
     private static String DEFAULT_GROUNDSTATION_NAME = "DebugGroundstation";
     private static String DEFAULT_GROUNDSTATION_COMMENT = "DebugGroundstation Comment";
     private static RGB DEFAULT_GROUNDSTATION_COLOR = new RGB(192, 192, 224);
-    private static IMaruPluginResource DEFAULT_GROUNDSTATION_GRAPHIC2D = MaruGroundstationResources.GROUNDSTATION_DEFAULT_128;
+    private static IMaruPluginResource DEFAULT_GROUNDSTATION_GRAPHIC2D = MaruGroundstationResources.GROUNDSTATION_DEFAULT_1;
     private static double DEFAULT_GROUNDSTATION_LATITUDE_DEG = 49.78186646; // degree
     private static double DEFAULT_GROUNDSTATION_LONGITUDE_DEG = 9.97290914; // degree
     private static double DEFAULT_GROUNDSTATION_ALTITUDE = 274.68; // meter
@@ -56,11 +56,11 @@ public final class CreateScenarioHelper
     private static String DEFAULT_KEPLER_SATELLITE_NAME = "DebugKeplerSatellite";
     private static String DEFAULT_KEPLER_SATELLITE_COMMENT = "DebugKeplerSatellite Comment";
     private static RGB DEFAULT_KEPLER_SATELLITE_COLOR = new RGB(64, 255, 64);
-    private static IMaruPluginResource DEFAULT_KEPLER_SATELLITE_GRAPHIC2D = MaruSpacecraftResources.SPACECRAFT_DEFAULT_128;
+    private static IMaruPluginResource DEFAULT_KEPLER_SATELLITE_GRAPHIC2D = MaruSpacecraftResources.SPACECRAFT_DEFAULT_1;
 
     private static String DEFAULT_TLE_SATELLITE_COMMENT = "DebugTleSatellite Comment";
     private static RGB DEFAULT_TLE_SATELLITE_COLOR = new RGB(64, 96, 255);
-    private static IMaruPluginResource DEFAULT_TLE_SATELLITE_GRAPHIC2D = MaruSpacecraftResources.SPACECRAFT_ISS_128;
+    private static IMaruPluginResource DEFAULT_TLE_SATELLITE_GRAPHIC2D = MaruSpacecraftResources.SPACECRAFT_ISS_1;
 
     public static IScenarioProject createEmpty()
     {
@@ -120,8 +120,8 @@ public final class CreateScenarioHelper
         CoreModel coreModel = MaruCorePlugin.getDefault().getCoreModel();
         coreModel.addGroundstation(scenarioProject, groundstation, false);
         coreModel.commentElement(groundstation, comment, false);
-        coreModel.setElementColor(groundstation, color, false);
-        coreModel.setElementGraphics2D(groundstation, DEFAULT_GROUNDSTATION_GRAPHIC2D, false);
+        coreModel.changeColor(groundstation, color, false);
+        coreModel.changeImage(groundstation, DEFAULT_GROUNDSTATION_GRAPHIC2D, false);
         coreModel.setPropagator(groundstation, propagator);
         coreModel.notifyElementAdded(groundstation);
     }
@@ -138,7 +138,7 @@ public final class CreateScenarioHelper
         double pa = Math.toRadians(0);
         double raan = Math.toRadians(97.3437);
         double anomaly = Math.toRadians(359.948);
-        PositionAngle type = PositionAngle.TRUE;
+        PositionAngle type = PositionAngle.MEAN;
         Frame frame = FramesFactory.getEME2000();
         AbsoluteDate date = OrekitUtils.toAbsoluteDate(scenarioProject.getStartTime());
         double mu = scenarioProject.getCentralBody().getGM();
@@ -152,8 +152,8 @@ public final class CreateScenarioHelper
         CoreModel coreModel = MaruCorePlugin.getDefault().getCoreModel();
         coreModel.addSpacecraft(scenarioProject, satellite, false);
         coreModel.commentElement(satellite, comment, false);
-        coreModel.setElementColor(satellite, color, false);
-        coreModel.setElementGraphics2D(satellite, DEFAULT_KEPLER_SATELLITE_GRAPHIC2D, false);
+        coreModel.changeColor(satellite, color, false);
+        coreModel.changeImage(satellite, DEFAULT_KEPLER_SATELLITE_GRAPHIC2D, false);
         coreModel.setPropagator(satellite, propagator);
         coreModel.notifyElementAdded(satellite);
     }
@@ -173,8 +173,8 @@ public final class CreateScenarioHelper
         CoreModel coreModel = MaruCorePlugin.getDefault().getCoreModel();
         coreModel.addSpacecraft(scenarioProject, satellite, false);
         coreModel.commentElement(satellite, comment, false);
-        coreModel.setElementColor(satellite, color, false);
-        coreModel.setElementGraphics2D(satellite, DEFAULT_TLE_SATELLITE_GRAPHIC2D, false);
+        coreModel.changeColor(satellite, color, false);
+        coreModel.changeImage(satellite, DEFAULT_TLE_SATELLITE_GRAPHIC2D, false);
         coreModel.setPropagator(satellite, propagator);
         coreModel.notifyElementAdded(satellite);
     }

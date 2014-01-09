@@ -31,8 +31,8 @@ public class KeplerSatelliteWizardPage extends ScenarioElementWizardNamingPage
     private Text raanText;
     private Text anomalyText;
     private Combo anomalyTypeCombo;
-    private Text frameText;
     private Text dateText;
+    private Text frameText;
     private Text attractionCoefficientText;
 
     public KeplerSatelliteWizardPage(IScenarioProject project)
@@ -129,8 +129,15 @@ public class KeplerSatelliteWizardPage extends ScenarioElementWizardNamingPage
     protected String[] getElementImages()
     {
         return new String[] {
-            MaruSpacecraftResources.SPACECRAFT_DEFAULT_128.getName(),
-            MaruSpacecraftResources.SPACECRAFT_ISS_128.getName()
+            MaruSpacecraftResources.SPACECRAFT_DEFAULT_1.getName(),
+            MaruSpacecraftResources.SPACECRAFT_DEFAULT_2.getName(),
+            MaruSpacecraftResources.SPACECRAFT_DEFAULT_3.getName(),
+            MaruSpacecraftResources.SPACECRAFT_ISS_1.getName(),
+            MaruSpacecraftResources.SPACECRAFT_ISS_2.getName(),
+            MaruSpacecraftResources.SPACECRAFT_ASTRONAUT_1.getName(),
+            MaruSpacecraftResources.SPACECRAFT_ROCKET_1.getName(),
+            MaruSpacecraftResources.SPACECRAFT_SHUTTLE_1.getName(),
+            MaruSpacecraftResources.SPACECRAFT_SHUTTLE_2.getName(),
         };
     }
 

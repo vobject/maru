@@ -5,8 +5,11 @@ import maru.MaruPluginResource;
 
 public enum MaruGroundstationResources implements IMaruPluginResource
 {
-    GROUNDSTATION_DEFAULT_16("icons/Antenna_16.png", "Antenna 16px"),
-    GROUNDSTATION_DEFAULT_128("icons/Antenna_128.png", "Antenna 128px"),
+    GROUNDSTATION_DEFAULT_1("icons/Antenna_1.png", "Antenna 1"),
+    GROUNDSTATION_DEFAULT_2("icons/Antenna_2.png", "Antenna 2"),
+    GROUNDSTATION_DEFAULT_3("icons/Antenna_3.png", "Antenna 3"),
+    GROUNDSTATION_DEFAULT_4("icons/Antenna_4.png", "Antenna 4"),
+    GROUNDSTATION_DEFAULT_5("icons/Antenna_5.png", "Antenna 5"),
 
     ; // enum constants end
 

@@ -83,7 +83,7 @@
       <page
             class="maru.spacecraft.propertypages.OrekitSpacecraftPropertyPage"
             id="maru.spacecraft.propertypages.orekitspacecraft.3000"
-            name="Orekit">
+            name="Orekit Spacecraft">
          <enabledWhen>
             <instanceof
                   value="maru.ui.model.UiSpacecraft">

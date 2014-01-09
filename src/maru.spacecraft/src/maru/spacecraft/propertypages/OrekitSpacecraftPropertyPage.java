@@ -1,42 +1,39 @@
 package maru.spacecraft.propertypages;
 
 import maru.IMaruResource;
-import maru.core.model.CoreModel;
 import maru.spacecraft.MaruSpacecraftResources;
 import maru.spacecraft.OrekitSpacecraft;
-import maru.ui.propertypages.UiPropertyPage;
+import maru.ui.propertypages.UiPropagatablePropertyPage;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 
-public class OrekitSpacecraftPropertyPage extends UiPropertyPage
+public class OrekitSpacecraftPropertyPage extends UiPropagatablePropertyPage
 {
-    private Combo images;
-    private String initialImage;
-
-    public Combo getImageControl()
-    {
-        return images;
-    }
-
-    public String getInitialImage()
-    {
-        return initialImage;
-    }
-
-    protected String[] getElementImageNames()
+    @Override
+    protected String[] getImageNames()
     {
         // return an empty array be default
         return new String[] {
             "", // empty string allows to disable element image
-            MaruSpacecraftResources.SPACECRAFT_DEFAULT_128.getName(),
-            MaruSpacecraftResources.SPACECRAFT_ISS_128.getName()
+            MaruSpacecraftResources.SPACECRAFT_DEFAULT_1.getName(),
+            MaruSpacecraftResources.SPACECRAFT_DEFAULT_2.getName(),
+            MaruSpacecraftResources.SPACECRAFT_DEFAULT_3.getName(),
+            MaruSpacecraftResources.SPACECRAFT_ISS_1.getName(),
+            MaruSpacecraftResources.SPACECRAFT_ISS_2.getName(),
+            MaruSpacecraftResources.SPACECRAFT_ASTRONAUT_1.getName(),
+            MaruSpacecraftResources.SPACECRAFT_ROCKET_1.getName(),
+            MaruSpacecraftResources.SPACECRAFT_SHUTTLE_1.getName(),
+            MaruSpacecraftResources.SPACECRAFT_SHUTTLE_2.getName(),
         };
+    }
+
+    @Override
+    protected IMaruResource getImageFromName(String name)
+    {
+        return MaruSpacecraftResources.fromName(name);
     }
 
     @Override
@@ -52,26 +49,19 @@ public class OrekitSpacecraftPropertyPage extends UiPropertyPage
             return false;
         }
 
-        String newImage = images.getText();
-        if (!newImage.equals(initialImage))
-        {
-            IMaruResource image = null;
-
-            if (!newImage.isEmpty()) {
-                // change the scenario's 2D graphic
-                image = MaruSpacecraftResources.fromName(newImage);
-            }
-            CoreModel.getDefault().setElementGraphics2D(getScenarioElement(), image, true);
-        }
+        // TODO: SC specific stuff
 
         initDefaults();
         return true;
     }
 
     @Override
-    protected Control createContents(Composite parent)
+    protected Composite createContents(Composite parent)
     {
-        Composite container = createControls(parent);
+        Composite container = super.createContents(parent);
+        addSeparator(container);
+
+        createControls(container);
 
         initDefaults();
         initControls();
@@ -94,23 +84,9 @@ public class OrekitSpacecraftPropertyPage extends UiPropertyPage
         container.setLayout(layout);
         container.setLayoutData(data);
 
-        createImageControl(container);
+        // TODO: Add SC specific controls
 
         return container;
-    }
-
-    private void createImageControl(Composite parent)
-    {
-        GridData data = new GridData();
-        data.horizontalAlignment = GridData.FILL;
-        data.verticalAlignment = GridData.BEGINNING;
-        data.grabExcessHorizontalSpace = true;
-        data.grabExcessVerticalSpace = false;
-
-        new Label(parent, SWT.NONE).setText("Image:");
-        images = new Combo(parent, SWT.READ_ONLY);
-        images.setItems(getElementImageNames());
-        images.setLayoutData(data);
     }
 
     private void initDefaults()
@@ -120,12 +96,7 @@ public class OrekitSpacecraftPropertyPage extends UiPropertyPage
             return;
         }
 
-        IMaruResource graphic2d = element.getElementGraphic2D();
-        if (graphic2d != null) {
-            initialImage = graphic2d.getName();
-        } else {
-            initialImage = "";
-        }
+        // TODO: init SC specific variables
     }
 
     private void initControls()
@@ -135,11 +106,6 @@ public class OrekitSpacecraftPropertyPage extends UiPropertyPage
             return;
         }
 
-        IMaruResource graphic2d = element.getElementGraphic2D();
-        if (graphic2d != null) {
-            images.setText(graphic2d.getName());
-        } else {
-            images.setText("");
-        }
+        // TODO: init SC specific controls
     }
 }

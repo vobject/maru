@@ -5,7 +5,6 @@ import maru.ui.model.UiGroundstation;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
 public class UiGroundstationPropertyPage extends UiPropertyPage
@@ -23,7 +22,7 @@ public class UiGroundstationPropertyPage extends UiPropertyPage
     }
 
     @Override
-    protected Control createContents(Composite parent)
+    protected Composite createContents(Composite parent)
     {
         new Label(parent, SWT.NONE).setText("Groundstation specific properties.");
         return null;

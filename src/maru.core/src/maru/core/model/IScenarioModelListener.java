@@ -35,9 +35,12 @@ public interface IScenarioModelListener
 
     void elementRenamed(IScenarioElement element);
     void elementCommented(IScenarioElement element);
-    void elementColored(IPropagatable element);
-    void elementGraphic2DChanged(IScenarioElement element);
 
+    void elementColorChanged(IPropagatable element);
+    void elementImageChanged(IPropagatable element);
+    void elementInitialCoordinateChanged(IPropagatable element);
+
+    void centralbodyImageChanged(ICentralBody element);
     void centralbodyGmChanged(ICentralBody element);
     void centralbodyEquatorialRadiusChanged(ICentralBody element);
     void centralbodyPolarRadiusChanged(ICentralBody element);

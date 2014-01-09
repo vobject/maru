@@ -1,5 +1,6 @@
 package maru.groundstation.earth;
 
+import maru.core.model.ICoordinate;
 import maru.core.model.template.Groundstation;
 
 public class GeodeticGroundstation extends Groundstation
@@ -15,6 +16,21 @@ public class GeodeticGroundstation extends Groundstation
     public GeodeticCoordinate getInitialCoordinate()
     {
         return (GeodeticCoordinate) super.getInitialCoordinate();
+    }
+
+    @Override
+    public void setInitialCoordinate(ICoordinate coordinate)
+    {
+        // make sure we get coordinates based on the new initial coordinate
+        getPropagator().clearCoordinateCache();
+
+        super.setInitialCoordinate(coordinate);
+    }
+
+    @Override
+    public GeodeticGroundstationPropagator getPropagator()
+    {
+        return (GeodeticGroundstationPropagator) super.getPropagator();
     }
 
     @Override
