@@ -1,6 +1,6 @@
 package maru.spacecraft.wizards;
 
-import maru.IMaruPluginResource;
+import maru.IMaruResource;
 import maru.core.model.CoreModel;
 import maru.core.model.IScenarioProject;
 import maru.spacecraft.MaruSpacecraftResources;
@@ -9,6 +9,7 @@ import maru.spacecraft.ckesatellite.KeplerPropagator;
 import maru.spacecraft.ckesatellite.KeplerSatellite;
 import maru.ui.wizards.ScenarioElementWizard;
 
+import org.eclipse.swt.graphics.RGB;
 import org.orekit.OrekitUtils;
 import org.orekit.frames.Frame;
 import org.orekit.orbits.KeplerianOrbit;
@@ -35,24 +36,28 @@ public class KeplerSatelliteWizard extends ScenarioElementWizard
     @Override
     public boolean performFinish()
     {
-        CoreModel coreModel = CoreModel.getDefault();
-        IScenarioProject scenarioProject = getScenarioProjectFromSelection();
+        IScenarioProject scenario = getScenarioProjectFromSelection();
 
         String name = mainPage.getElementName();
-        InitialKeplerCoordinate coordinate = createInitialCoordinate(scenarioProject);
-        KeplerSatellite satellite = new KeplerSatellite(name, coordinate);
-        KeplerPropagator propagator = new KeplerPropagator();
-        String image = mainPage.getElementImage();
-
-        coreModel.addSpacecraft(scenarioProject, satellite, false);
-        coreModel.commentElement(satellite, mainPage.getElementComment(), false);
-        coreModel.changeColor(satellite, mainPage.getElementColor(), false);
-        if (!image.isEmpty()) {
-            IMaruPluginResource resource = MaruSpacecraftResources.fromName(image);
-            coreModel.changeImage(satellite, resource, false);
+        String comment = mainPage.getElementComment();
+        RGB color = mainPage.getElementColor();
+        String imageName = mainPage.getElementImage();
+        IMaruResource image = null;
+        if ((imageName != null) && !imageName.isEmpty()) {
+            image = MaruSpacecraftResources.fromName(imageName);
         }
-        coreModel.setPropagator(satellite, propagator);
-        coreModel.notifyElementAdded(satellite);
+        InitialKeplerCoordinate initialCoordinate = createInitialCoordinate(scenario);
+        KeplerPropagator propagator = new KeplerPropagator();
+
+        KeplerSatellite satellite = new KeplerSatellite(name);
+        satellite.setElementComment(comment);
+        satellite.setElementColor(color);
+        satellite.setElementImage(image);
+        satellite.setInitialCoordinate(initialCoordinate);
+        satellite.setPropagator(propagator);
+
+        CoreModel coreModel = CoreModel.getDefault();
+        coreModel.addSpacecraft(scenario, satellite, true);
         return true;
     }
 

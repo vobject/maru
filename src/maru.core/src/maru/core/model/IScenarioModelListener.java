@@ -26,13 +26,6 @@ public interface IScenarioModelListener
     // remove all references to the element.
     void elementRemoved(IScenarioElement element);
 
-    // TODO: it is still unclear how to communicate the swapping of an
-    // element. e.g. if the central body is set during planning (not creation)
-    // what happens is that the old central body is removed from the model
-    // and a new one is added. currently the central body is not supposed
-    // to be swapped at planning time, so there is no notification at all
-    // for the described event.
-
     void elementRenamed(IScenarioElement element);
     void elementCommented(IScenarioElement element);
 
@@ -43,11 +36,8 @@ public interface IScenarioModelListener
     void centralbodyImageChanged(ICentralBody element);
     void centralbodyGmChanged(ICentralBody element);
     void centralbodyEquatorialRadiusChanged(ICentralBody element);
-    void centralbodyPolarRadiusChanged(ICentralBody element);
-    void centralbodyMeanRadiusChanged(ICentralBody element);
     void centralbodyFlatteningChanged(ICentralBody element);
 
-    void propagatablesCentralBodyChanged(IScenarioProject element);
     void propagatablesTimeChanged(IScenarioProject element);
 
     void timepointStartChanged(ITimepoint element);

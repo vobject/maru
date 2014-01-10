@@ -21,9 +21,9 @@ public abstract class OrekitSpacecraft extends Spacecraft
     /** Sun radius in meters. From org.orekit.utils.Constants. */
     private static final double SUN_RADIUS_METERS = 695500000.0;
 
-    public OrekitSpacecraft(String name, OrekitCoordinate initialPosition)
+    public OrekitSpacecraft(String name)
     {
-        super(name, initialPosition);
+        super(name);
     }
 
     @Override

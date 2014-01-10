@@ -121,33 +121,11 @@ public class Properties extends ScenarioModelViewPart
     }
 
     @Override
-    public void centralbodyPolarRadiusChanged(ICentralBody element)
-    {
-        if (element == currentElement) {
-            refreshTableContent();
-        }
-    }
-
-    @Override
-    public void centralbodyMeanRadiusChanged(ICentralBody element)
-    {
-        if (element == currentElement) {
-            refreshTableContent();
-        }
-    }
-
-    @Override
     public void centralbodyFlatteningChanged(ICentralBody element)
     {
         if (element == currentElement) {
             refreshTableContent();
         }
-    }
-
-    @Override
-    public void propagatablesCentralBodyChanged(IScenarioProject element)
-    {
-        refreshTableContent();
     }
 
     @Override

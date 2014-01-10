@@ -43,13 +43,13 @@ public class UiElementPropertyPage extends UiPropertyPage
     {
         String newName = name.getText();
         if (!newName.equals(initialName)) {
-            CoreModel.getDefault().renameElement(getScenarioElement(), newName, true);
+            CoreModel.getDefault().changeElementName(getScenarioElement(), newName, true);
         }
 
         String newComment = comment.getText();
         if (!newComment.equals(initialComment)) {
             // change the scenario's comment
-            CoreModel.getDefault().commentElement(getScenarioElement(), newComment, true);
+            CoreModel.getDefault().changeElementComment(getScenarioElement(), newComment, true);
         }
 
         initDefaults();

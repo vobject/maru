@@ -78,13 +78,13 @@ public abstract class UiElement implements IActionFilter
     public void setName(String name)
     {
         CoreModel model = CoreModel.getDefault();
-        model.renameElement(getUnderlyingElement(), name, true);
+        model.changeElementName(getUnderlyingElement(), name, true);
     }
 
     public void setComment(String comment)
     {
         CoreModel model = CoreModel.getDefault();
-        model.commentElement(getUnderlyingElement(), comment, true);
+        model.changeElementComment(getUnderlyingElement(), comment, true);
     }
 
     protected void setSortPriority(UiSortPriority priority)

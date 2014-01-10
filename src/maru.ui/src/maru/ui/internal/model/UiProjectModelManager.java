@@ -252,25 +252,7 @@ public class UiProjectModelManager extends ScenarioModelAdapter
     }
 
     @Override
-    public void centralbodyPolarRadiusChanged(ICentralBody element)
-    {
-        uiProjectChanged(element);
-    }
-
-    @Override
-    public void centralbodyMeanRadiusChanged(ICentralBody element)
-    {
-        uiProjectChanged(element);
-    }
-
-    @Override
     public void centralbodyFlatteningChanged(ICentralBody element)
-    {
-        uiProjectChanged(element);
-    }
-
-    @Override
-    public void propagatablesCentralBodyChanged(IScenarioProject element)
     {
         uiProjectChanged(element);
     }

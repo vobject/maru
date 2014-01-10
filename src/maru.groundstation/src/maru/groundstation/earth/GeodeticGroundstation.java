@@ -7,9 +7,9 @@ public class GeodeticGroundstation extends Groundstation
 {
     private static final long serialVersionUID = 1L;
 
-    public GeodeticGroundstation(String name, GeodeticCoordinate initialPosition)
+    public GeodeticGroundstation(String name)
     {
-        super(name, initialPosition);
+        super(name);
     }
 
     @Override
@@ -25,12 +25,6 @@ public class GeodeticGroundstation extends Groundstation
         getPropagator().clearCoordinateCache();
 
         super.setInitialCoordinate(coordinate);
-    }
-
-    @Override
-    public GeodeticGroundstationPropagator getPropagator()
-    {
-        return (GeodeticGroundstationPropagator) super.getPropagator();
     }
 
     @Override

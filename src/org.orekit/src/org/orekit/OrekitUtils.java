@@ -79,13 +79,14 @@ public final class OrekitUtils
                     return FramesFactory.getEME2000();
                 case TEME:
                     return FramesFactory.getTEME();
+                default:
+                    throw new RuntimeException("Invalid frame type.");
             }
         }
         catch (OrekitException e)
         {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     public static Frame toFrame(org.orekit.frames.Frame frame)
@@ -98,13 +99,14 @@ public final class OrekitUtils
                 return Frame.EME2000;
             } else if (frame == FramesFactory.getTEME()) {
                 return Frame.TEME;
+            } else {
+                throw new RuntimeException("Invalid frame type.");
             }
         }
         catch (OrekitException e)
         {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     public static Position toPosition(Vector3D vec)

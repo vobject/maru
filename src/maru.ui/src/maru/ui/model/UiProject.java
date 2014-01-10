@@ -153,9 +153,6 @@ public class UiProject extends UiParent implements IPropagationListener,
         {
             // swap the current central body for the new one.
             uiCentralBody = new UiCentralBody(this, (ICentralBody) element);
-
-            // make all propagatables adapt to the new central body
-            CoreModel.getDefault().changePropagatablesCentralBody(getUnderlyingElement(), true);
         }
         else if (element instanceof IGroundstation)
         {

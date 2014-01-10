@@ -74,6 +74,7 @@ public class GeodeticGroundstationPropagator extends Propagator
         return "GeodeticGroundstationPropagator";
     }
 
+    @Override
     public void clearCoordinateCache()
     {
         coordinates.clear();

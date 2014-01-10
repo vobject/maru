@@ -122,6 +122,7 @@ public class Sgp4Propagator extends Propagator
         return propagatorName;
     }
 
+    @Override
     public void clearCoordinateCache()
     {
         coordinates.clear();

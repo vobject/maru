@@ -9,14 +9,14 @@ public class TleSatellite extends OrekitSpacecraft
 
     private final String category;
 
-    public TleSatellite(InitialTleCoordinate initialPosition)
+    public TleSatellite(String name)
     {
-        this(initialPosition, "Custom");
+        this(name, "Custom");
     }
 
-    public TleSatellite(InitialTleCoordinate initialCoordinate, String category)
+    public TleSatellite(String name, String category)
     {
-        super(initialCoordinate.getName(), initialCoordinate);
+        super(name);
         this.category = category;
     }
 
@@ -38,12 +38,6 @@ public class TleSatellite extends OrekitSpacecraft
         getPropagator().clearCoordinateCache();
 
         super.setInitialCoordinate(coordinate);
-    }
-
-    @Override
-    public Sgp4Propagator getPropagator()
-    {
-        return (Sgp4Propagator) super.getPropagator();
     }
 
     @Override

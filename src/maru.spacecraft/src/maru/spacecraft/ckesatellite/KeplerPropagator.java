@@ -117,6 +117,7 @@ public class KeplerPropagator extends Propagator
         return "KeplerPropagator";
     }
 
+    @Override
     public void clearCoordinateCache()
     {
         coordinates.clear();

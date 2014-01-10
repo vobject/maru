@@ -12,6 +12,11 @@ public abstract class Propagator implements IPropagator
 {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Listeners that are notified when a new coordinate was calculated.
+     *
+     * A listener is usually the Spacecraft that a Propagator is associated with.
+     */
     private final Collection<IPropagationListener> propagationListeners;
 
     public Propagator()
@@ -50,6 +55,12 @@ public abstract class Propagator implements IPropagator
     {
         ICoordinate position = getCoordinate(element, currentTime);
         notifyPropagationListeners(element, position);
+    }
+
+    @Override
+    public void clearCoordinateCache()
+    {
+
     }
 
     protected void notifyPropagationListeners(IPropagatable element, ICoordinate position)

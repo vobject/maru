@@ -110,20 +110,20 @@ public final class CreateScenarioHelper
         ICentralBody centralBody = scenarioProject.getCentralBody();
         long time = scenarioProject.getCurrentTime().getTime();
 
-        GeodeticCoordinate position =
+        GeodeticGroundstationPropagator propagator = new GeodeticGroundstationPropagator();
+        GeodeticCoordinate initialCoordinate =
             new GeodeticCoordinate(centralBody, latitude, longitude,
                                                 altitude, elevation, time);
 
-        GeodeticGroundstation groundstation = new GeodeticGroundstation(name, position);
-        GeodeticGroundstationPropagator propagator = new GeodeticGroundstationPropagator();
+        GeodeticGroundstation groundstation = new GeodeticGroundstation(name);
+        groundstation.setElementComment(comment);
+        groundstation.setElementColor(color);
+        groundstation.setElementImage(DEFAULT_GROUNDSTATION_GRAPHIC2D);
+        groundstation.setInitialCoordinate(initialCoordinate);
+        groundstation.setPropagator(propagator);
 
         CoreModel coreModel = MaruCorePlugin.getDefault().getCoreModel();
-        coreModel.addGroundstation(scenarioProject, groundstation, false);
-        coreModel.commentElement(groundstation, comment, false);
-        coreModel.changeColor(groundstation, color, false);
-        coreModel.changeImage(groundstation, DEFAULT_GROUNDSTATION_GRAPHIC2D, false);
-        coreModel.setPropagator(groundstation, propagator);
-        coreModel.notifyElementAdded(groundstation);
+        coreModel.addGroundstation(scenarioProject, groundstation, true);
     }
 
     public static void createKeplerSatellite(IScenarioProject scenarioProject)
@@ -145,17 +145,17 @@ public final class CreateScenarioHelper
 
         KeplerianOrbit initialOrbit = new KeplerianOrbit(a, e, i, pa, raan, anomaly, type, frame, date, mu);
         InitialKeplerCoordinate initialCoordinate = new InitialKeplerCoordinate(initialOrbit);
-
-        KeplerSatellite satellite = new KeplerSatellite(name, initialCoordinate);
         KeplerPropagator propagator = new KeplerPropagator();
 
+        KeplerSatellite satellite = new KeplerSatellite(name);
+        satellite.setElementComment(comment);
+        satellite.setElementColor(color);
+        satellite.setElementImage(DEFAULT_KEPLER_SATELLITE_GRAPHIC2D);
+        satellite.setInitialCoordinate(initialCoordinate);
+        satellite.setPropagator(propagator);
+
         CoreModel coreModel = MaruCorePlugin.getDefault().getCoreModel();
-        coreModel.addSpacecraft(scenarioProject, satellite, false);
-        coreModel.commentElement(satellite, comment, false);
-        coreModel.changeColor(satellite, color, false);
-        coreModel.changeImage(satellite, DEFAULT_KEPLER_SATELLITE_GRAPHIC2D, false);
-        coreModel.setPropagator(satellite, propagator);
-        coreModel.notifyElementAdded(satellite);
+        coreModel.addSpacecraft(scenarioProject, satellite, true);
     }
 
     public static void createTleSatellite(IScenarioProject scenarioProject)
@@ -166,16 +166,16 @@ public final class CreateScenarioHelper
         // the fresh TLE data for the ISS
         String url = "http://www.celestrak.com/NORAD/elements/stations.txt";
         InitialTleCoordinate initialCoordinate = TleUtils.parseTleSource(url).get(0);
-
-        TleSatellite satellite = new TleSatellite(initialCoordinate);
         Sgp4Propagator propagator = new Sgp4Propagator();
 
+        TleSatellite satellite = new TleSatellite(initialCoordinate.getName());
+        satellite.setElementComment(comment);
+        satellite.setElementColor(color);
+        satellite.setElementImage(DEFAULT_TLE_SATELLITE_GRAPHIC2D);
+        satellite.setInitialCoordinate(initialCoordinate);
+        satellite.setPropagator(propagator);
+
         CoreModel coreModel = MaruCorePlugin.getDefault().getCoreModel();
-        coreModel.addSpacecraft(scenarioProject, satellite, false);
-        coreModel.commentElement(satellite, comment, false);
-        coreModel.changeColor(satellite, color, false);
-        coreModel.changeImage(satellite, DEFAULT_TLE_SATELLITE_GRAPHIC2D, false);
-        coreModel.setPropagator(satellite, propagator);
-        coreModel.notifyElementAdded(satellite);
+        coreModel.addSpacecraft(scenarioProject, satellite, true);
     }
 }

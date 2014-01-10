@@ -1,6 +1,6 @@
 package maru.groundstation.wizards;
 
-import maru.IMaruPluginResource;
+import maru.IMaruResource;
 import maru.core.MaruCorePlugin;
 import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
@@ -36,38 +36,38 @@ public class GroundstationWizard extends ScenarioElementWizard
     @Override
     public boolean performFinish()
     {
-        CoreModel coreModel = MaruCorePlugin.getDefault().getCoreModel();
-        IScenarioProject scenarioProject = getScenarioProjectFromSelection();
+        IScenarioProject scenario = getScenarioProjectFromSelection();
 
-        ICentralBody centralBody = scenarioProject.getCentralBody();
-        long time = scenarioProject.getCurrentTime().getTime();
+        ICentralBody centralBody = scenario.getCentralBody();
+        long time = scenario.getCurrentTime().getTime();
 
         double latitude = mainPage.getLatitude();
         double longitude = mainPage.getLongitude();
         double altitude = mainPage.getAltitude();
         double elevation = mainPage.getElevation();
 
-        GeodeticCoordinate position =
-            new GeodeticCoordinate(centralBody, latitude, longitude,
-                                                altitude, elevation, time);
-
         String name = mainPage.getElementName();
         String comment = mainPage.getElementComment();
         RGB color = mainPage.getElementColor();
-        String image = mainPage.getElementImage();
-
-        GeodeticGroundstation groundstation = new GeodeticGroundstation(name, position);
+        String imageName = mainPage.getElementImage();
+        IMaruResource image = null;
+        if ((imageName != null) && !imageName.isEmpty()) {
+            image = MaruGroundstationResources.fromName(imageName);
+        }
+        GeodeticCoordinate initialCoordinate =
+            new GeodeticCoordinate(centralBody, latitude, longitude,
+                                   altitude, elevation, time);
         GeodeticGroundstationPropagator propagator = new GeodeticGroundstationPropagator();
 
-        coreModel.addGroundstation(scenarioProject, groundstation, false);
-        coreModel.commentElement(groundstation, comment, false);
-        coreModel.changeColor(groundstation, color, false);
-        if (!image.isEmpty()) {
-            IMaruPluginResource resource = MaruGroundstationResources.fromName(image);
-            coreModel.changeImage(groundstation, resource, false);
-        }
-        coreModel.setPropagator(groundstation, propagator);
-        coreModel.notifyElementAdded(groundstation);
+        GeodeticGroundstation groundstation = new GeodeticGroundstation(name);
+        groundstation.setElementComment(comment);
+        groundstation.setElementColor(color);
+        groundstation.setElementImage(image);
+        groundstation.setInitialCoordinate(initialCoordinate);
+        groundstation.setPropagator(propagator);
+
+        CoreModel coreModel = MaruCorePlugin.getDefault().getCoreModel();
+        coreModel.addGroundstation(scenario, groundstation, true);
         return true;
     }
 }

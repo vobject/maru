@@ -10,9 +10,9 @@ public class KeplerSatellite extends OrekitSpacecraft
 {
     private static final long serialVersionUID = 1L;
 
-    public KeplerSatellite(String name, InitialKeplerCoordinate initialPosition)
+    public KeplerSatellite(String name)
     {
-        super(name, initialPosition);
+        super(name);
     }
 
     @Override
@@ -28,12 +28,6 @@ public class KeplerSatellite extends OrekitSpacecraft
         getPropagator().clearCoordinateCache();
 
         super.setInitialCoordinate(coordinate);
-    }
-
-    @Override
-    public KeplerPropagator getPropagator()
-    {
-        return (KeplerPropagator) super.getPropagator();
     }
 
     @Override

@@ -59,7 +59,7 @@ public class CoreModelMock
 
         public DummyGroundstation()
         {
-            super("DummyGroundstation", null);
+            super("DummyGroundstation");
         }
 
         @Override
@@ -75,7 +75,7 @@ public class CoreModelMock
 
         public DummySatellite()
         {
-            super("DummySatellite", null);
+            super("DummySatellite");
         }
 
         @Override

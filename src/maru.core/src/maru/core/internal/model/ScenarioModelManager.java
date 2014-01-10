@@ -31,36 +31,9 @@ import org.eclipse.swt.graphics.RGB;
 
 final public class ScenarioModelManager implements IResourceChangeListener
 {
-    private enum ScenarioEvent
+    interface IModelNotification
     {
-        SCENARIO_CREATED,
-        SCENARIO_ADDED,
-        SCENARIO_REMOVED,
-
-        ELEMENT_ADDED,
-        ELEMENT_REMOVED,
-        ELEMENT_RENAMED,
-        ELEMENT_COMMENTED,
-
-        PROPAGATABLE_COLOR_CHANGED,
-        PROPAGATABLE_IMAGE_CHANGED,
-        PROPAGATABLE_INITIAL_COORDINATE_CHANGED,
-
-        CENTRALBODY_IMAGE_CHANGED,
-        CENTRALBODY_GM_CHANGED,
-        CENTRALBODY_EQUATORIAL_RADIUS_CHANGED,
-        CENTRALBODY_FLATTENING_CHANGED,
-
-        PROPAGATABLES_CENTRALBODY_CHANGED,
-        PROPAGATABLES_TIME_CHANGED,
-
-        TIMEPOINT_START_CHANGED,
-        TIMEPOINT_STOP_CHANGED,
-        TIMEPOINT_CURRENT_CHANGED,
-
-        TIMEPOINT_ADDED,
-        TIMEPOINT_REMOVED,
-        TIMEPOINT_CHANGED
+        void notifyListener(IScenarioModelListener listener);
     }
 
     private final ScenarioModel model;
@@ -143,248 +116,457 @@ final public class ScenarioModelManager implements IResourceChangeListener
         return model.getScenarioProject(name);
     }
 
-    public IScenarioProject createProject(IProject project,
-                                          Timepoint start,
-                                          Timepoint stop,
-                                          String comment,
-                                          ICentralBody centralBody)
+    public void createProject(IProject project,
+                              Timepoint start,
+                              Timepoint stop,
+                              String comment,
+                              ICentralBody centralBody,
+                              boolean update)
     {
-        ScenarioProjectStorage scenarioStorage =
+        ScenarioProjectStorage storage =
             new ScenarioProjectStorage(model, project,
                                        start, stop,
                                        comment, centralBody);
-        ScenarioProject scenarioProject = scenarioStorage.getScenarioProject();
 
-        model.addScenarioProject(scenarioProject);
-        projectStorages.put(scenarioProject, scenarioStorage);
-        return scenarioProject;
+        final ScenarioProject scenario = storage.getScenarioProject();
+
+        model.addScenarioProject(scenario);
+        projectStorages.put(scenario, storage);
+
+        if (!update) {
+            return;
+        }
+
+        // save all changes to disk and notify all listeners
+        // tell the listener that we added a new project to the core model
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.scenarioCreated(scenario);
+            }
+        }, scenario, true);
     }
 
-    public IScenarioProject createProject(IProject project)
+    public void loadProject(IProject project, boolean update)
     {
         ScenarioProjectStorage scenarioStorage = new ScenarioProjectStorage(model, project);
-        ScenarioProject scenarioProject = scenarioStorage.getScenarioProject();
+        final ScenarioProject scenario = scenarioStorage.getScenarioProject();
 
-        model.addScenarioProject(scenarioProject);
-        projectStorages.put(scenarioProject, scenarioStorage);
-        return scenarioProject;
+        model.addScenarioProject(scenario);
+        projectStorages.put(scenario, scenarioStorage);
+
+        if (!update) {
+            return;
+        }
+
+        // tell the listener that we added this project to the core model
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.scenarioAdded(scenario);
+            }
+        }, scenario, false);
     }
 
     public void removeProject(IProject project, boolean update)
     {
-        IScenarioProject scenarioProject = model.getScenarioProject(project.getName());
+        final IScenarioProject scenario = model.getScenarioProject(project.getName());
 
         // throw away the reference to the storage file
-        projectStorages.remove(scenarioProject);
+        projectStorages.remove(scenario);
 
         // remove the project from the model
-        model.removeScenarioProject(scenarioProject);
+        model.removeScenarioProject(scenario);
 
-        if (update) {
-            // tell the listener (UI) that we removed this project
-            notifyScenarioRemoved(scenarioProject);
+        if (!update) {
+            return;
         }
+
+        // tell the listener (UI) that we removed this project
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.scenarioRemoved(scenario);
+            }
+        }, scenario, false);
     }
 
-    public void renameElement(IScenarioElement element, String name, boolean update)
-    {
-        ((ScenarioElement) element).setElementName(name);
-
-        if (update) {
-            notifyElementRenamed(element);
-        }
-    }
-
-    public void removeElement(IScenarioElement element, boolean update)
+    public void removeElement(final IScenarioElement element, boolean update)
     {
         ((Parent) element.getParent()).removeChild(element);
 
-        if (update) {
-            notifyElementRemoved(element);
+        if (!update) {
+            return;
         }
+
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementRemoved(element);
+            }
+        }, element, true);
     }
 
-    public void commentElement(IScenarioElement element, String comment, boolean update)
+    public void changeElementName(final IScenarioElement element, String name, boolean update)
+    {
+        ((ScenarioElement) element).setElementName(name);
+
+        if (!update) {
+            return;
+        }
+
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementRenamed(element);
+            }
+        }, element, true);
+    }
+
+    public void changeElementComment(final IScenarioElement element, String comment, boolean update)
     {
         ((ScenarioElement) element).setElementComment(comment);
 
-        if (update) {
-            notifyElementCommented(element);
+        if (!update) {
+            return;
         }
+
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementCommented(element);
+            }
+        }, element, true);
     }
 
-    public void addTimepoint(IScenarioProject project, long time, boolean update)
+    public void addTimepoint(IScenarioProject scenario, long time, boolean update)
     {
-        ScenarioProject scenarioProject = (ScenarioProject) project;
-        Timepoint tp = new Timepoint(time);
+        final Timepoint tp = new Timepoint(time);
 
-        scenarioProject.addTimepoint(tp);
+        ((ScenarioProject) scenario).addTimepoint(tp);
 
-        if (update) {
-            if (scenarioProject.getStartTime() == tp) {
-                notifyStartChanged(tp);
-            } else if (scenarioProject.getStopTime() == tp) {
-                notifyStopChanged(tp);
-            } else {
-                notifyTimepointAdded(tp);
-            }
+        if (!update) {
+            return;
+        }
+
+        boolean startChanged = scenario.getStartTime() == tp;
+        boolean stopChanged = scenario.getStopTime() == tp;
+
+        if (startChanged)
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointStartChanged(tp);
+                }
+            }, tp, true);
+        }
+        else if (stopChanged)
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointStopChanged(tp);
+                }
+            }, tp, true);
+        }
+        else
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointAdded(tp);
+                }
+            }, tp, true);
         }
     }
 
     public void removeTimepoint(ITimepoint timepoint, boolean update)
     {
-        ScenarioProject scenarioProject = (ScenarioProject) timepoint.getScenarioProject();
-        Timepoint tp = (Timepoint) timepoint;
+        ScenarioProject scenario = (ScenarioProject) timepoint.getScenarioProject();
+        final Timepoint tp = (Timepoint) timepoint;
 
-        boolean startChanged = scenarioProject.getStartTime() == tp;
-        boolean stopChanged = scenarioProject.getStopTime() == tp;
+        scenario.removeTimepoint(tp);
 
-        scenarioProject.removeTimepoint(tp);
+        if (!update) {
+            return;
+        }
 
-        if (update) {
-            if (startChanged) {
-                notifyStartChanged(scenarioProject.getStartTime());
-            } else if (stopChanged) {
-                notifyStopChanged(scenarioProject.getStopTime());
-            } else {
-                notifyTimepointRemoved(tp);
-            }
+        boolean startChanged = scenario.getStartTime() == tp;
+        boolean stopChanged = scenario.getStopTime() == tp;
+
+        if (startChanged)
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointStartChanged(tp);
+                }
+            }, tp, true);
+        }
+        else if (stopChanged)
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointStopChanged(tp);
+                }
+            }, tp, true);
+        }
+        else
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointRemoved(tp);
+                }
+            }, tp, true);
         }
     }
 
     public void changeTimepoint(ITimepoint timepoint, long time, boolean update)
     {
-        ScenarioProject scenarioProject = (ScenarioProject) timepoint.getScenarioProject();
-        Timepoint scenarioTimepoint = (Timepoint) timepoint;
+        ScenarioProject scenario = (ScenarioProject) timepoint.getScenarioProject();
+        final Timepoint tp = (Timepoint) timepoint;
 
-        scenarioProject.changeTimepoint(scenarioTimepoint, time);
+        scenario.changeTimepoint(tp, time);
 
-        if (update) {
-            if (scenarioProject.getStartTime() == scenarioTimepoint) {
-                notifyStartChanged(scenarioTimepoint);
-            } else if (scenarioProject.getStopTime() == scenarioTimepoint) {
-                notifyStopChanged(scenarioTimepoint);
-            } else if (scenarioProject.getCurrentTime() == scenarioTimepoint) {
-                notifyCurrentChanged(scenarioTimepoint);
-            } else {
-                notifyTimepointChanged(scenarioTimepoint);
-            }
+        if (!update) {
+            return;
+        }
+
+        boolean startChanged = scenario.getStartTime() == tp;
+        boolean stopChanged = scenario.getStopTime() == tp;
+        boolean currentChanged = scenario.getCurrentTime() == tp;
+
+        if (startChanged)
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointStartChanged(tp);
+                }
+            }, tp, true);
+        }
+        else if (stopChanged)
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointStopChanged(tp);
+                }
+            }, tp, true);
+        }
+        else if (currentChanged)
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointCurrentChanged(tp);
+                }
+            }, tp, false);
+        }
+        else
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointChanged(tp);
+                }
+            }, tp, true);
         }
     }
 
-    public void changePropagatablesCentralBody(IScenarioProject project, boolean update)
+    public void changePropagatablesTime(final IScenarioProject scenario, long time, boolean update)
     {
-        for (IPropagatable element : project.getPropagatables()) {
-            element.centralbodyChanged();
-        }
-
-        if (update) {
-            notifyPropagatablesCentralBodyChanged(project);
-        }
-    }
-
-    public void changePropagatablesTime(IScenarioProject project, long time, boolean update)
-    {
-        for (IPropagatable element : project.getPropagatables()) {
+        for (IPropagatable element : scenario.getPropagatables()) {
             element.currentTimeChanged(time);
         }
 
-        if (update) {
-            notifyPropagatablesTimeChanged(project);
+        if (!update) {
+            return;
         }
+
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.propagatablesTimeChanged(scenario);
+            }
+        }, scenario, false);
     }
 
-    public void addGroundstation(IScenarioProject project, IGroundstation groundstation, boolean update)
+    public void addGroundstation(IScenarioProject scenario, final IGroundstation groundstation, boolean update)
     {
-        ((GroundstationContainer) project.getGroundstationContainer()).addGroundstation(groundstation);
+        ((GroundstationContainer) scenario.getGroundstationContainer()).addGroundstation(groundstation);
 
-        if (update) {
-            notifyElementAdded(groundstation);
+        if (!update) {
+            return;
         }
+
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementAdded(groundstation);
+            }
+        }, groundstation, true);
     }
 
-    public void addSpacecraft(IScenarioProject project, ISpacecraft spacecraft, boolean update)
+    public void addSpacecraft(IScenarioProject scenario, final ISpacecraft spacecraft, boolean update)
     {
-        ((SpacecraftContainer) project.getSpacecraftContainer()).addSpacecraft(spacecraft);
+        ((SpacecraftContainer) scenario.getSpacecraftContainer()).addSpacecraft(spacecraft);
 
-        if (update) {
-            notifyElementAdded(spacecraft);
+        if (!update) {
+            return;
         }
+
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementAdded(spacecraft);
+            }
+        }, spacecraft, true);
     }
 
-    public void changeElementColor(IPropagatable element, RGB color, boolean update)
+    public void changeElementColor(final IPropagatable element, RGB color, boolean update)
     {
         ((Propagatable) element).setElementColor(color);
 
-        if (update) {
-            notifyElementColorChanged(element);
+        if (!update) {
+            return;
         }
+
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementColorChanged(element);
+            }
+        }, element, true);
     }
 
-    public void changeElementImage(IPropagatable element, IMaruResource image, boolean update)
+    public void changeElementImage(final IPropagatable element, IMaruResource image, boolean update)
     {
         ((Propagatable) element).setElementImage(image);
 
-        if (update) {
-            notifyElementImageChanged(element);
+        if (!update) {
+            return;
         }
+
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementImageChanged(element);
+            }
+        }, element, true);
     }
 
-    public void changeInitialCoordinate(IPropagatable element, ICoordinate coordinate, boolean update)
+    public void changeInitialCoordinate(final IPropagatable element, ICoordinate coordinate, boolean update)
     {
         ((Propagatable) element).setInitialCoordinate(coordinate);
 
-        if (update) {
-            notifyInitialCoordinateChanged(element);
+        if (!update) {
+            return;
         }
+
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementInitialCoordinateChanged(element);
+            }
+        }, element, true);
     }
 
-    public void changeCentralBodyImage(ICentralBody element, IMaruResource image, boolean update)
+    public void changeCentralBodyImage(final ICentralBody element, IMaruResource image, boolean update)
     {
         ((CentralBody) element).setTexture(image);
 
-        if (update) {
-            notifyCentralBodyImageChanged(element);
+        if (!update) {
+            return;
         }
+
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.centralbodyImageChanged(element);
+            }
+        }, element, true);
     }
 
-    public void changeCentralBodyGM(ICentralBody element, double gm, boolean update)
+    public void changeCentralBodyGM(final ICentralBody element, double gm, boolean update)
     {
         ((CentralBody) element).setGM(gm);
 
-        if (update) {
-            notifyCentralBodyGmChanged(element);
+        // make all propagatables adapt to the new central body
+        IScenarioProject scenario = element.getScenarioProject();
+        for (IPropagatable propagatable : scenario.getPropagatables()) {
+            propagatable.centralbodyChanged();
         }
+
+        if (!update) {
+            return;
+        }
+
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.centralbodyGmChanged(element);
+            }
+        }, element, true);
     }
 
-    public void changeCentralBodyEquatorialRadius(ICentralBody element, double radius, boolean update)
+    public void changeCentralBodyEquatorialRadius(final ICentralBody element, double radius, boolean update)
     {
         ((CentralBody) element).setEquatorialRadius(radius);
 
-        if (update) {
-            notifyCentralBodyEquatorialRadiusChanged(element);
+        // make all propagatables adapt to the new central body
+        IScenarioProject scenario = element.getScenarioProject();
+        for (IPropagatable propagatable : scenario.getPropagatables()) {
+            propagatable.centralbodyChanged();
         }
+
+        if (!update) {
+            return;
+        }
+
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.centralbodyEquatorialRadiusChanged(element);
+            }
+        }, element, true);
     }
 
-    public void changeCentralBodyFlattening(ICentralBody element, double flattening, boolean update)
+    public void changeCentralBodyFlattening(final ICentralBody element, double flattening, boolean update)
     {
         ((CentralBody) element).setFlattening(flattening);
 
-        if (update) {
-            notifyCentralBodyFlatteningChanged(element);
+        // make all propagatables adapt to the new central body
+        IScenarioProject scenario = element.getScenarioProject();
+        for (IPropagatable propagatable : scenario.getPropagatables()) {
+            propagatable.centralbodyChanged();
         }
+
+        if (!update) {
+            return;
+        }
+
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.centralbodyFlatteningChanged(element);
+            }
+        }, element, true);
     }
 
-    public void addTimeProvider(IScenarioProject project, ITimeProvider provider)
+    public void addTimeProvider(IScenarioProject scenario, ITimeProvider provider)
     {
-        for (IPropagatable element : ((ScenarioProject) project).getPropagatables()) {
+        for (IPropagatable element : ((ScenarioProject) scenario).getPropagatables()) {
             ((Propagatable) element).addTimeProvider(provider);
         }
     }
 
-    public void removeTimeProvider(IScenarioProject project, ITimeProvider provider)
+    public void removeTimeProvider(IScenarioProject scenario, ITimeProvider provider)
     {
-        for (IPropagatable element : ((ScenarioProject) project).getPropagatables()) {
+        for (IPropagatable element : ((ScenarioProject) scenario).getPropagatables()) {
             ((Propagatable) element).removeTimeProvider(provider);
         }
     }
@@ -399,16 +581,16 @@ final public class ScenarioModelManager implements IResourceChangeListener
         ((Propagatable) element).removeTimeProvider(provider);
     }
 
-    public void addPropagationListener(IScenarioProject project, IPropagationListener listener)
+    public void addPropagationListener(IScenarioProject scenario, IPropagationListener listener)
     {
-        for (IPropagatable element : ((ScenarioProject) project).getPropagatables()) {
+        for (IPropagatable element : ((ScenarioProject) scenario).getPropagatables()) {
             ((Propagatable) element).addPropagationListener(listener);
         }
     }
 
-    public void removePropagationListener(IScenarioProject project, IPropagationListener listener)
+    public void removePropagationListener(IScenarioProject scenario, IPropagationListener listener)
     {
-        for (IPropagatable element : ((ScenarioProject) project).getPropagatables()) {
+        for (IPropagatable element : ((ScenarioProject) scenario).getPropagatables()) {
             ((Propagatable) element).removePropagationListener(listener);
         }
     }
@@ -423,137 +605,9 @@ final public class ScenarioModelManager implements IResourceChangeListener
         ((Propagatable) element).removePropagationListener(listener);
     }
 
-    public void setPropagator(IPropagatable element, Propagator propagator)
+    public void changePropagator(IPropagatable element, Propagator propagator)
     {
         ((Propagatable) element).setPropagator(propagator);
-    }
-
-    public void notifyScenarioCreated(IScenarioProject project)
-    {
-        writeProjectStorage(project);
-        notifyScenarioElementListeners(ScenarioEvent.SCENARIO_CREATED, project);
-    }
-
-    public void notifyScenarioAdded(IScenarioProject project)
-    {
-        notifyScenarioElementListeners(ScenarioEvent.SCENARIO_ADDED, project);
-    }
-
-    public void notifyScenarioRemoved(IScenarioProject project)
-    {
-        notifyScenarioElementListeners(ScenarioEvent.SCENARIO_REMOVED, project);
-    }
-
-    public void notifyElementAdded(IScenarioElement element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.ELEMENT_ADDED, element);
-    }
-
-    public void notifyElementRemoved(IScenarioElement element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.ELEMENT_REMOVED, element);
-    }
-
-    private void notifyElementRenamed(IScenarioElement element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.ELEMENT_RENAMED, element);
-    }
-
-    private void notifyElementCommented(IScenarioElement element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.ELEMENT_COMMENTED, element);
-    }
-
-    private void notifyElementColorChanged(IPropagatable element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.PROPAGATABLE_COLOR_CHANGED, element);
-    }
-
-    private void notifyElementImageChanged(IPropagatable element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.PROPAGATABLE_IMAGE_CHANGED, element);
-    }
-
-    private void notifyInitialCoordinateChanged(IPropagatable element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.PROPAGATABLE_INITIAL_COORDINATE_CHANGED, element);
-    }
-
-    private void notifyCentralBodyImageChanged(ICentralBody element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.CENTRALBODY_IMAGE_CHANGED, element);
-    }
-
-    private void notifyCentralBodyGmChanged(ICentralBody element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.CENTRALBODY_GM_CHANGED, element);
-    }
-
-    private void notifyCentralBodyEquatorialRadiusChanged(ICentralBody element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.CENTRALBODY_EQUATORIAL_RADIUS_CHANGED, element);
-    }
-
-    private void notifyCentralBodyFlatteningChanged(ICentralBody element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.CENTRALBODY_FLATTENING_CHANGED, element);
-    }
-
-    private void notifyStartChanged(ITimepoint element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.TIMEPOINT_START_CHANGED, element);
-    }
-
-    private void notifyStopChanged(ITimepoint element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.TIMEPOINT_STOP_CHANGED, element);
-    }
-
-    private void notifyCurrentChanged(ITimepoint element)
-    {
-        notifyScenarioElementListeners(ScenarioEvent.TIMEPOINT_CURRENT_CHANGED, element);
-    }
-
-    private void notifyPropagatablesCentralBodyChanged(IScenarioProject element)
-    {
-        writeProjectStorage(element);
-        notifyScenarioElementListeners(ScenarioEvent.PROPAGATABLES_CENTRALBODY_CHANGED, element);
-    }
-
-    private void notifyPropagatablesTimeChanged(IScenarioProject element)
-    {
-        notifyScenarioElementListeners(ScenarioEvent.PROPAGATABLES_TIME_CHANGED, element);
-    }
-
-    private void notifyTimepointAdded(ITimepoint element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.TIMEPOINT_ADDED, element);
-    }
-
-    private void notifyTimepointRemoved(ITimepoint element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.TIMEPOINT_REMOVED, element);
-    }
-
-    private void notifyTimepointChanged(ITimepoint element)
-    {
-        writeProjectStorage(element.getScenarioProject());
-        notifyScenarioElementListeners(ScenarioEvent.TIMEPOINT_CHANGED, element);
     }
 
     @Override
@@ -570,87 +624,16 @@ final public class ScenarioModelManager implements IResourceChangeListener
         removeProject((IProject) event.getResource(), true);
     }
 
-    private void notifyScenarioElementListeners(ScenarioEvent type, IScenarioElement element)
+    private void notifyModelListeners(IModelNotification notification,
+                                      IScenarioElement element,
+                                      boolean writeToDisk)
     {
-        for (IScenarioModelListener listener : listeners)
-        {
-            switch (type)
-            {
-                case SCENARIO_CREATED:
-                    listener.scenarioCreated((IScenarioProject) element);
-                    break;
-                case SCENARIO_ADDED:
-                    listener.scenarioAdded((IScenarioProject) element);
-                    break;
-                case SCENARIO_REMOVED:
-                    listener.scenarioRemoved((IScenarioProject) element);
-                    break;
+        if (writeToDisk) {
+            writeProjectStorage(element.getScenarioProject());
+        }
 
-                case ELEMENT_ADDED:
-                    listener.elementAdded(element);
-                    break;
-                case ELEMENT_REMOVED:
-                    listener.elementRemoved(element);
-                    break;
-                case ELEMENT_RENAMED:
-                    listener.elementRenamed(element);
-                    break;
-                case ELEMENT_COMMENTED:
-                    listener.elementCommented(element);
-                    break;
-
-                case PROPAGATABLE_COLOR_CHANGED:
-                    listener.elementColorChanged((IPropagatable) element);
-                    break;
-                case PROPAGATABLE_IMAGE_CHANGED:
-                    listener.elementImageChanged((IPropagatable) element);
-                    break;
-                case PROPAGATABLE_INITIAL_COORDINATE_CHANGED:
-                    listener.elementInitialCoordinateChanged((IPropagatable) element);
-                    break;
-
-                case CENTRALBODY_IMAGE_CHANGED:
-                    listener.centralbodyImageChanged((ICentralBody) element);
-                    break;
-                case CENTRALBODY_GM_CHANGED:
-                    listener.centralbodyGmChanged((ICentralBody) element);
-                    break;
-                case CENTRALBODY_EQUATORIAL_RADIUS_CHANGED:
-                    listener.centralbodyEquatorialRadiusChanged((ICentralBody) element);
-                    break;
-                case CENTRALBODY_FLATTENING_CHANGED:
-                    listener.centralbodyFlatteningChanged((ICentralBody) element);
-                    break;
-
-                case PROPAGATABLES_CENTRALBODY_CHANGED:
-                    listener.propagatablesCentralBodyChanged((IScenarioProject) element);
-                    break;
-                case PROPAGATABLES_TIME_CHANGED:
-                    listener.propagatablesTimeChanged((IScenarioProject) element);
-                    break;
-
-                case TIMEPOINT_START_CHANGED:
-                    listener.timepointStartChanged((ITimepoint) element);
-                    break;
-                case TIMEPOINT_STOP_CHANGED:
-                    listener.timepointStopChanged((ITimepoint) element);
-                    break;
-                case TIMEPOINT_CURRENT_CHANGED:
-                    listener.timepointCurrentChanged((ITimepoint) element);
-                    break;
-
-                case TIMEPOINT_ADDED:
-                    listener.timepointAdded((ITimepoint) element);
-                    break;
-                case TIMEPOINT_REMOVED:
-                    listener.timepointRemoved((ITimepoint) element);
-                    break;
-                case TIMEPOINT_CHANGED:
-                    listener.timepointChanged((ITimepoint) element);
-                    break;
-                default:
-                    break;
-            }
+        for (IScenarioModelListener listener : listeners) {
+            notification.notifyListener(listener);
         }
     }
 

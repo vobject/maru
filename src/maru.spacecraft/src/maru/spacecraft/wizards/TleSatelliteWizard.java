@@ -1,6 +1,6 @@
 package maru.spacecraft.wizards;
 
-import maru.IMaruPluginResource;
+import maru.IMaruResource;
 import maru.core.model.CoreModel;
 import maru.core.model.IScenarioProject;
 import maru.spacecraft.MaruSpacecraftResources;
@@ -9,6 +9,7 @@ import maru.spacecraft.tlesatellite.Sgp4Propagator;
 import maru.spacecraft.tlesatellite.TleSatellite;
 import maru.ui.wizards.ScenarioElementWizard;
 
+import org.eclipse.swt.graphics.RGB;
 import org.orekit.errors.OrekitException;
 import org.orekit.propagation.analytical.tle.TLE;
 
@@ -35,31 +36,35 @@ public class TleSatelliteWizard extends ScenarioElementWizard
     @Override
     public boolean performFinish()
     {
-        CoreModel coreModel = CoreModel.getDefault();
-        IScenarioProject scenarioProject = getScenarioProjectFromSelection();
+        IScenarioProject scenario = getScenarioProjectFromSelection();
 
-        InitialTleCoordinate position;
+        InitialTleCoordinate initialCoordinate;
         try {
-            position = createInitialPosition();
+            initialCoordinate = createInitialPosition();
         }
         catch (OrekitException e) {
             e.printStackTrace();
             return false;
         }
 
-        TleSatellite satellite = new TleSatellite(position);
-        Sgp4Propagator propagator = new Sgp4Propagator();
-        String image = mainPage.getElementImage();
-
-        coreModel.addSpacecraft(scenarioProject, satellite, false);
-        coreModel.commentElement(satellite, mainPage.getElementComment(), false);
-        coreModel.changeColor(satellite, mainPage.getElementColor(), false);
-        if (!image.isEmpty()) {
-            IMaruPluginResource resource = MaruSpacecraftResources.fromName(image);
-            coreModel.changeImage(satellite, resource, false);
+        String comment = mainPage.getElementComment();
+        RGB color = mainPage.getElementColor();
+        String imageName = mainPage.getElementImage();
+        IMaruResource image = null;
+        if ((imageName != null) && !imageName.isEmpty()) {
+            image = MaruSpacecraftResources.fromName(imageName);
         }
-        coreModel.setPropagator(satellite, propagator);
-        coreModel.notifyElementAdded(satellite);
+        Sgp4Propagator propagator = new Sgp4Propagator();
+
+        TleSatellite satellite = new TleSatellite(initialCoordinate.getName());
+        satellite.setElementComment(comment);
+        satellite.setElementColor(color);
+        satellite.setElementImage(image);
+        satellite.setInitialCoordinate(initialCoordinate);
+        satellite.setPropagator(propagator);
+
+        CoreModel coreModel = CoreModel.getDefault();
+        coreModel.addSpacecraft(scenario, satellite, true);
         return true;
     }
 

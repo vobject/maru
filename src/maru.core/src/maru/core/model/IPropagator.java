@@ -9,4 +9,6 @@ public interface IPropagator extends IPropagatableTimeListener, Serializable
 
     ICoordinate getCoordinate(IPropagatable element, long time);
     Collection<ICoordinate> getCoordinates(IPropagatable element, long start, long stop, long stepSize);
+
+    void clearCoordinateCache();
 }

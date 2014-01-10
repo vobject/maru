@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import maru.core.model.ISpacecraft;
 import maru.core.model.ISpacecraftContainer;
-import maru.core.model.template.Spacecraft;
+import maru.core.model.template.ScenarioElement;
 
 public class SpacecraftContainer extends Parent implements ISpacecraftContainer
 {
@@ -21,14 +21,19 @@ public class SpacecraftContainer extends Parent implements ISpacecraftContainer
         return this.<ISpacecraft>castCollection(getChildren());
     }
 
-    public void addSpacecraft(ISpacecraft sat)
+    public void addSpacecraft(ISpacecraft sc)
     {
-        ((Spacecraft) sat).setParent(this);
-        addChild(sat);
+        ((ScenarioElement) sc).setParent(this);
+
+        sc.startTimeChanged(getScenarioProject().getStartTime().getTime());
+        sc.stopTimeChanged(getScenarioProject().getStopTime().getTime());
+        sc.currentTimeChanged(getScenarioProject().getCurrentTime().getTime());
+
+        addChild(sc);
     }
 
-    public void removeSpacecraft(ISpacecraft sat)
+    public void removeSpacecraft(ISpacecraft sc)
     {
-        removeChild(sat);
+        removeChild(sc);
     }
 }

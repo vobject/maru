@@ -65,8 +65,7 @@ public class CoreModel
     public IScenarioProject getScenarioProject(IProject project)
     {
         if (!hasProject(project)) {
-            IScenarioProject scenarioProject = modelManager.createProject(project);
-            modelManager.notifyScenarioAdded(scenarioProject);
+            modelManager.loadProject(project, true);
         }
         return modelManager.getProject(project);
     }
@@ -95,16 +94,13 @@ public class CoreModel
                 Timepoint startTimepoint = new Timepoint("Start", startTime);
                 Timepoint stopTimepoint = new Timepoint("Stop", stopTime);
 
-                // create scenario storage file and load populate the scenario model
-                IScenarioProject scenarioProject =
-                    modelManager.createProject(project,
-                                               startTimepoint,
-                                               stopTimepoint,
-                                               comment,
-                                               centralBody);
-
-                // save all changes to disk and notify all listeners
-                modelManager.notifyScenarioCreated(scenarioProject);
+                // create scenario storage file and load the scenario model
+                modelManager.createProject(project,
+                                           startTimepoint,
+                                           stopTimepoint,
+                                           comment,
+                                           centralBody,
+                                           true);
             }
         }, null);
 
@@ -116,19 +112,19 @@ public class CoreModel
         modelManager.removeProject(project, update);
     }
 
-    public void renameElement(IScenarioElement element, String name, boolean update)
-    {
-        modelManager.renameElement(element, name, update);
-    }
-
     public void removeElement(IScenarioElement element, boolean update)
     {
         modelManager.removeElement(element, update);
     }
 
-    public void commentElement(IScenarioElement element, String comment, boolean update)
+    public void changeElementName(IScenarioElement element, String name, boolean update)
     {
-        modelManager.commentElement(element, comment, update);
+        modelManager.changeElementName(element, name, update);
+    }
+
+    public void changeElementComment(IScenarioElement element, String comment, boolean update)
+    {
+        modelManager.changeElementComment(element, comment, update);
     }
 
     public void addTimepoint(IScenarioProject project, long time, boolean update)
@@ -146,11 +142,17 @@ public class CoreModel
         modelManager.changeTimepoint(timepoint, time, update);
     }
 
-    public void changePropagatablesCentralBody(IScenarioProject project, boolean update)
-    {
-        modelManager.changePropagatablesCentralBody(project, update);
-    }
-
+    /**
+     * Change the current time for all propagatable element in a scenario.
+     * <br><br>
+     * This is not the same as changing the current time of the scenario. The
+     * scenario's current time will not be affected by this message, but only
+     * the propagatable elements such as ground stations and spacecrafts.
+     * <br><br>
+     * This message is usually used when real-time mode is active where the
+     * scenario may not be modified but its propagatable elements must appear
+     * as if its current time were.
+     */
     public void changePropagatablesTime(IScenarioProject project, long time, boolean update)
     {
         modelManager.changePropagatablesTime(project, time, update);
@@ -241,28 +243,8 @@ public class CoreModel
         modelManager.removePropagationListener(element, listener);
     }
 
-    public void setPropagator(IPropagatable element, Propagator propagator)
+    public void changePropagator(IPropagatable element, Propagator propagator)
     {
-        modelManager.setPropagator(element, propagator);
-    }
-
-    public void notifyScenarioAdded(IScenarioProject project)
-    {
-        modelManager.notifyScenarioAdded(project);
-    }
-
-    public void notifyScenarioRemoved(IScenarioProject project)
-    {
-        modelManager.notifyScenarioRemoved(project);
-    }
-
-    public void notifyElementAdded(IScenarioElement element)
-    {
-        modelManager.notifyElementAdded(element);
-    }
-
-    public void notifyElementRemoved(IScenarioElement element)
-    {
-        modelManager.notifyElementRemoved(element);
+        modelManager.changePropagator(element, propagator);
     }
 }

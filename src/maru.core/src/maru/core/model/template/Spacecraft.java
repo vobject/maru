@@ -1,15 +1,14 @@
 package maru.core.model.template;
 
-import maru.core.model.ICoordinate;
 import maru.core.model.ISpacecraft;
 
 public abstract class Spacecraft extends Propagatable implements ISpacecraft
 {
     private static final long serialVersionUID = 1L;
 
-    public Spacecraft(String name, ICoordinate initialPosition)
+    public Spacecraft(String name)
     {
-        super(name, initialPosition);
+        super(name);
     }
 
     @Override

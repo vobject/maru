@@ -81,25 +81,7 @@ public abstract class ScenarioModelAdapter implements IScenarioModelListener
     }
 
     @Override
-    public void centralbodyPolarRadiusChanged(ICentralBody element)
-    {
-
-    }
-
-    @Override
-    public void centralbodyMeanRadiusChanged(ICentralBody element)
-    {
-
-    }
-
-    @Override
     public void centralbodyFlatteningChanged(ICentralBody element)
-    {
-
-    }
-
-    @Override
-    public void propagatablesCentralBodyChanged(IScenarioProject element)
     {
 
     }
