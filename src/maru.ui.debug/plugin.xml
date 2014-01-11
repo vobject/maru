@@ -45,6 +45,9 @@
             <command
                   commandId="maru.ui.debug.commands.drawjob1">
             </command>
+            <command
+                  commandId="maru.ui.debug.commands.centralbodyshapejob">
+            </command>
          </menu>
       </menuContribution>
    </extension>
@@ -90,6 +93,10 @@
             id="maru.ui.debug.commands.drawjob1"
             name="DrawJob 1">
       </command>
+      <command
+            id="maru.ui.debug.commands.centralbodyshapejob"
+            name="Show Central Body Shape">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -132,6 +139,10 @@
       <handler
             class="maru.ui.debug.handlers.DrawJobHandler1"
             commandId="maru.ui.debug.commands.drawjob1">
+      </handler>
+      <handler
+            class="maru.ui.debug.handlers.CentralBodyShapeHandler"
+            commandId="maru.ui.debug.commands.centralbodyshapejob">
       </handler>
    </extension>
 
