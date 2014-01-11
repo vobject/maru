@@ -1,5 +1,8 @@
 package maru.report.views;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
 import maru.ui.MaruUIPlugin;
 import maru.ui.model.IUiProjectModelListener;
 import maru.ui.model.IUiProjectSelectionListener;
@@ -18,6 +21,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
@@ -38,6 +42,7 @@ public class ReportView extends ViewPart implements IUiProjectSelectionListener,
     private Combo reportTypeCombo;
     private ReportTypeControl currentReportType;
     private Button startButton;
+    private Button saveButton;
 
     @Override
     public void createPartControl(Composite parent)
@@ -102,7 +107,6 @@ public class ReportView extends ViewPart implements IUiProjectSelectionListener,
 
         createScenarioLabel(settinsgContainer);
         createReportTypeControl(settinsgContainer);
-        createAnalyseControl(settinsgContainer);
 
         // default report type
         currentReportType = new PropagationReportControl(settinsgContainer);
@@ -131,6 +135,7 @@ public class ReportView extends ViewPart implements IUiProjectSelectionListener,
         GridData reportTypeData = new GridData();
         reportTypeData.horizontalAlignment = GridData.FILL;
         reportTypeData.grabExcessHorizontalSpace = true;
+        reportTypeData.horizontalSpan = 2;
 
         reportTypeCombo = new Combo(container, SWT.READ_ONLY);
         reportTypeCombo.setLayoutData(reportTypeData);
@@ -155,6 +160,9 @@ public class ReportView extends ViewPart implements IUiProjectSelectionListener,
                 }
                 // Add more report types here.
 
+                createStartButtonControl(container);
+                createSaveButtonControl(container);
+
                 UiProject currentProject = UiModel.getDefault().getCurrentUiProject();
                 if (currentProject != null) {
                     currentReportType.setCurrentProject(currentProject);
@@ -167,16 +175,21 @@ public class ReportView extends ViewPart implements IUiProjectSelectionListener,
         });
     }
 
-    private void createAnalyseControl(Composite container)
+    private void createStartButtonControl(Composite container)
     {
-        GridData startBtnData = new GridData();
-        startBtnData.horizontalAlignment = GridData.FILL;
-        startBtnData.verticalAlignment = GridData.END;
-        startBtnData.grabExcessHorizontalSpace = true;
+        if (startButton != null) {
+            startButton.dispose();
+        }
+
+        GridData data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.verticalAlignment = GridData.END;
+        data.grabExcessHorizontalSpace = true;
+        data.horizontalSpan = 2;
 
         startButton = new Button(container, SWT.PUSH);
         startButton.setText("Create Report");
-        startButton.setLayoutData(startBtnData);
+        startButton.setLayoutData(data);
         startButton.setEnabled(false);
         startButton.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -187,10 +200,53 @@ public class ReportView extends ViewPart implements IUiProjectSelectionListener,
         });
     }
 
+    private void createSaveButtonControl(Composite container)
+    {
+        if (saveButton != null) {
+            saveButton.dispose();
+        }
+
+        GridData data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.verticalAlignment = GridData.END;
+        data.grabExcessHorizontalSpace = true;
+        data.horizontalSpan = 2;
+
+        saveButton = new Button(container, SWT.PUSH);
+        saveButton.setText("Save Report");
+        saveButton.setLayoutData(data);
+        saveButton.setEnabled(true);
+        saveButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                String[] filterNames = new String[] {"Text Files", "All Files (*.*)"};
+                String[] filterExt = new String[] {"*.txt", "*.*"};
+
+                FileDialog saveDlg = new FileDialog(getSite().getShell(), SWT.SAVE);
+                saveDlg.setFilterNames(filterNames);
+                saveDlg.setFilterExtensions(filterExt);
+                saveDlg.setOverwrite(true);
+                saveDlg.setFileName("report.txt");
+
+                String savePath = saveDlg.open();
+                if (savePath == null) {
+                    return; // user aborted
+                }
+
+                try (PrintWriter saveFile = new PrintWriter(savePath)) {
+                    saveFile.print(outputText.getText());
+                } catch (FileNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }
+
     @Override
     public void setFocus()
     {
-        startButton.setFocus();
+        reportTypeCombo.setFocus();
     }
 
     @Override
@@ -206,7 +262,10 @@ public class ReportView extends ViewPart implements IUiProjectSelectionListener,
     {
         currentReportType.setCurrentProject(project);
         selectedScenario.setText(project.getName());
-        startButton.setEnabled(true);
+
+        if (startButton != null) {
+            startButton.setEnabled(true);
+        }
     }
 
     @Override
@@ -214,7 +273,10 @@ public class ReportView extends ViewPart implements IUiProjectSelectionListener,
     {
         currentReportType.setCurrentProject(project);
         selectedScenario.setText(project.getName());
-        startButton.setEnabled(true);
+
+        if (startButton != null) {
+            startButton.setEnabled(true);
+        }
     }
 
     @Override
