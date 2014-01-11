@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.GLContext;
 
 import maru.core.model.ICentralBody;
@@ -21,14 +22,14 @@ import maru.ui.model.UiProject;
 
 import org.eclipse.swt.widgets.Display;
 
-import com.sun.opengl.util.j2d.TextRenderer;
-import com.sun.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.awt.TextRenderer;
+import com.jogamp.opengl.util.texture.Texture;
 
 public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
 {
     private static final int DEFAULT_ANIMATION_SPEED = 1000 / 30; // 30 fps
 
-    private GL gl;
+    private GL2 gl;
     private final TextRenderer text;
     private final TextureCache textureCache;
 
@@ -41,7 +42,7 @@ public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
 
         // render with the operating systems default font at 12pt.
         text = new TextRenderer(new java.awt.Font(Display.getCurrent().getSystemFont().getFontData()[0].getName(), java.awt.Font.PLAIN, 12), true, false);
-        textureCache = new TextureCache();
+        textureCache = new TextureCache(parent.getGlContext().getGL().getGL2());
 
         projectDrawJobs = new ArrayList<>();
         postAnimationJobs = new ArrayList<>();
@@ -150,11 +151,11 @@ public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
     private void updateAntiAliasing()
     {
         if (getSettings().getAntiAliasing()) {
-            gl.glEnable(GL.GL_LINE_SMOOTH);
-            gl.glEnable(GL.GL_POINT_SMOOTH);
+            gl.glEnable(GL2.GL_LINE_SMOOTH);
+            gl.glEnable(GL2.GL_POINT_SMOOTH);
         } else {
-            gl.glDisable(GL.GL_LINE_SMOOTH);
-            gl.glDisable(GL.GL_POINT_SMOOTH);
+            gl.glDisable(GL2.GL_LINE_SMOOTH);
+            gl.glDisable(GL2.GL_POINT_SMOOTH);
         }
     }
 
@@ -162,7 +163,7 @@ public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
     protected void updateContext(Object context)
     {
         GLContext glContext = (GLContext) context;
-        gl = glContext.getGL();
+        gl = glContext.getGL().getGL2();
 
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glColor3f(1.0f, 1.0f, 1.0f);

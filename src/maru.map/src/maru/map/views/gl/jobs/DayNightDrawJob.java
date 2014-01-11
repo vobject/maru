@@ -1,6 +1,6 @@
 package maru.map.views.gl.jobs;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import maru.core.units.DaylengthDefinition;
 import maru.core.utils.DayLengthUtil;
@@ -69,7 +69,7 @@ public class DayNightDrawJob extends GLProjectDrawJob
 
     private void drawDayNightTimes(int x, DayLength[] dayTimes)
     {
-        GL gl = getGL();
+        GL2 gl = getGL();
         MapViewParameters params = getParameters();
         MapViewSettings settings = getSettings();
 
@@ -83,7 +83,7 @@ public class DayNightDrawJob extends GLProjectDrawJob
             }
 
             if (dayTime.hours >= 24.0) {
-                gl.glBegin(GL.GL_LINES);
+                gl.glBegin(GL2.GL_LINES);
                 gl.glVertex2i(params.mapX, params.mapHeight - dayTime.verticalPixel + params.mapY);
                 gl.glVertex2i(params.mapX + params.mapWidth, params.mapHeight - dayTime.verticalPixel + params.mapY);
                 gl.glEnd();
@@ -94,14 +94,14 @@ public class DayNightDrawJob extends GLProjectDrawJob
             int leftPx = x - xLenHalf;
             int rightPx = x + xLenHalf;
 
-            gl.glBegin(GL.GL_LINES);
+            gl.glBegin(GL2.GL_LINES);
             gl.glVertex2i(params.mapX + x - xLenHalf, params.mapHeight - dayTime.verticalPixel + params.mapY);
             gl.glVertex2i(params.mapX + x + xLenHalf, params.mapHeight - dayTime.verticalPixel + params.mapY);
             gl.glEnd();
 
             if (leftPx < 0)
             {
-                gl.glBegin(GL.GL_LINES);
+                gl.glBegin(GL2.GL_LINES);
                 gl.glVertex2i(params.mapX + params.mapWidth - Math.abs(leftPx), params.mapHeight - dayTime.verticalPixel + params.mapY);
                 gl.glVertex2i(params.mapX + params.mapWidth, params.mapHeight - dayTime.verticalPixel + params.mapY);
                 gl.glEnd();
@@ -109,7 +109,7 @@ public class DayNightDrawJob extends GLProjectDrawJob
 
             if (rightPx > params.mapWidth)
             {
-                gl.glBegin(GL.GL_LINES);
+                gl.glBegin(GL2.GL_LINES);
                 gl.glVertex2i(params.mapX, params.mapHeight - dayTime.verticalPixel + params.mapY);
                 gl.glVertex2i(params.mapX + rightPx - params.mapWidth, params.mapHeight - dayTime.verticalPixel + params.mapY);
                 gl.glEnd();

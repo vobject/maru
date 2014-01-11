@@ -3,14 +3,14 @@ package maru.map.views.gl.jobs;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import maru.map.MaruMapResources;
 import maru.map.jobs.gl.GLProjectAnimationJob;
 import maru.map.views.MapViewParameters;
 import maru.map.views.gl.GLUtils;
 
-import com.sun.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.Texture;
 
 /**
  * Experimental animated sprite draw job class.
@@ -76,7 +76,7 @@ public class SpriteAnimationJob extends GLProjectAnimationJob
     @Override
     public void draw()
     {
-        GL gl = getGL();
+        GL2 gl = getGL();
         MapViewParameters area = getParameters();
 
         if (isDone()) {

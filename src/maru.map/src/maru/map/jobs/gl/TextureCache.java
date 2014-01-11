@@ -5,21 +5,24 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.media.opengl.GL2;
 import javax.media.opengl.GLException;
 
 import maru.IMaruResource;
 import maru.core.utils.PathUtil;
 import maru.map.MaruMapResources;
 
-import com.sun.opengl.util.texture.Texture;
-import com.sun.opengl.util.texture.TextureIO;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureIO;
 
 public class TextureCache
 {
+    private final GL2 gl;
     private final Map<String, Texture> textures;
 
-    public TextureCache()
+    public TextureCache(GL2 gl)
     {
+        this.gl = gl;
         this.textures = new HashMap<>();
     }
 
@@ -63,7 +66,7 @@ public class TextureCache
     {
         if (textures.containsKey(path)) {
             // dispose the texture previously save under that id.
-            textures.get(path).dispose();
+            textures.get(path).destroy(gl);
         }
 
         try
@@ -85,7 +88,7 @@ public class TextureCache
     public void clear()
     {
         for (Texture texture : textures.values()) {
-            texture.dispose();
+            texture.destroy(gl);
         }
         textures.clear();
     }

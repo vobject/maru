@@ -2,7 +2,7 @@ package maru.ui.debug.handlers;
 
 import java.util.Random;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import maru.map.jobs.gl.GLProjectAnimationJob;
 import maru.map.views.MapViewParameters;
@@ -44,7 +44,7 @@ public class MovingAnimationJob extends GLProjectAnimationJob
     @Override
     public void draw()
     {
-        GL gl = getGL();
+        GL2 gl = getGL();
         MapViewParameters area = getParameters();
         Random rand = new Random();
 
@@ -80,7 +80,7 @@ public class MovingAnimationJob extends GLProjectAnimationJob
         gl.glColor3f(1.0f, 1.0f, 1.0f);
         gl.glPointSize(32);
 
-        gl.glBegin(GL.GL_POINTS);
+        gl.glBegin(GL2.GL_POINTS);
         gl.glVertex2d(currentPosX, area.clientAreaHeight - currentPosY);
         gl.glEnd();
     }

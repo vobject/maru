@@ -1,8 +1,9 @@
 package maru.map.views.gl;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.GLContext;
 import javax.media.opengl.GLDrawableFactory;
+import javax.media.opengl.GLProfile;
 
 import maru.centralbody.projection.EquirectangularProjector;
 import maru.map.views.AbstractMapView;
@@ -35,7 +36,10 @@ public class GLMapView extends AbstractMapView
         getContainer().setLayout(new FillLayout());
         getContainer().setCurrent();
 
-        setGlContext(GLDrawableFactory.getFactory().createExternalGLContext());
+        GLProfile glProfile = GLProfile.getDefault();
+        GLDrawableFactory glFactory = GLDrawableFactory.getFactory(glProfile);
+
+        setGlContext(glFactory.createExternalGLContext());
         getGlContext().makeCurrent();
         initGLContext();
 
@@ -83,14 +87,14 @@ public class GLMapView extends AbstractMapView
 
     private void initGLContext()
     {
-        GL gl = glContext.getGL();
+        GL2 gl = glContext.getGL().getGL2();
 
-        gl.glDisable(GL.GL_LIGHTING);
-        gl.glDisable(GL.GL_DEPTH_TEST);
-        gl.glDisable(GL.GL_MULTISAMPLE);
-        gl.glEnable(GL.GL_BLEND);
-        gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-        gl.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_FASTEST);
+        gl.glDisable(GL2.GL_LIGHTING);
+        gl.glDisable(GL2.GL_DEPTH_TEST);
+        gl.glDisable(GL2.GL_MULTISAMPLE);
+        gl.glEnable(GL2.GL_BLEND);
+        gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+        gl.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_FASTEST);
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     }
 
@@ -120,7 +124,7 @@ public class GLMapView extends AbstractMapView
             {
                 Rectangle rect = getContainer().getClientArea();
 
-                GLUtils.setupGL(glContext.getGL(), rect.width, rect.height);
+                GLUtils.setupGL(glContext.getGL().getGL2(), rect.width, rect.height);
                 getMapDrawer().getParameters().setClientArea(rect.width, rect.height);
             }
         });

@@ -1,29 +1,29 @@
 package maru.map.views.gl.jobs;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import maru.map.jobs.gl.GLProjectDrawJob;
 import maru.map.utils.MapUtils;
 import maru.map.views.MapViewParameters;
 import maru.map.views.gl.GLUtils;
 
-import com.sun.opengl.util.j2d.TextRenderer;
+import com.jogamp.opengl.util.awt.TextRenderer;
 
 public class LatLonDrawJob extends GLProjectDrawJob
 {
     @Override
     public void draw()
     {
-        GL gl = getGL();
+        GL2 gl = getGL();
         TextRenderer text = getTextRenderer();
         MapViewParameters area = getParameters();
         double stepSize = getSettings().getLatLonStepSize();
 
-        gl.glPushAttrib(GL.GL_LINE_BIT);
-        gl.glDisable(GL.GL_LINE_SMOOTH);
+        gl.glPushAttrib(GL2.GL_LINE_BIT);
+        gl.glDisable(GL2.GL_LINE_SMOOTH);
         gl.glLineWidth(1.0f);
         gl.glLineStipple(3, (short) 0x8888);
-        gl.glEnable(GL.GL_LINE_STIPPLE);
+        gl.glEnable(GL2.GL_LINE_STIPPLE);
 
         for (double lon = -180.0 + stepSize; lon < 180.0; lon += stepSize)
         {
@@ -39,7 +39,7 @@ public class LatLonDrawJob extends GLProjectDrawJob
 
             gl.glColor4f(1.0f, 1.0f, 1.0f, 0.3f);
 
-            gl.glBegin(GL.GL_LINES);
+            gl.glBegin(GL2.GL_LINES);
             gl.glVertex2i(area.mapX + x, area.mapHeight + area.mapY);
             gl.glVertex2i(area.mapX + x, area.mapY);
             gl.glEnd();
@@ -59,7 +59,7 @@ public class LatLonDrawJob extends GLProjectDrawJob
 
             gl.glColor4f(1.0f, 1.0f, 1.0f, 0.3f);
 
-            gl.glBegin(GL.GL_LINES);
+            gl.glBegin(GL2.GL_LINES);
             gl.glVertex2i(area.mapX, area.mapHeight - y + area.mapY);
             gl.glVertex2i(area.mapX + area.mapWidth, area.mapHeight - y + area.mapY);
             gl.glEnd();

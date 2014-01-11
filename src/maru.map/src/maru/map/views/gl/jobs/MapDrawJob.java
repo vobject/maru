@@ -1,20 +1,20 @@
 package maru.map.views.gl.jobs;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import maru.core.model.ICentralBody;
 import maru.map.jobs.gl.GLProjectDrawJob;
 import maru.map.views.MapViewParameters;
 import maru.map.views.gl.GLUtils;
 
-import com.sun.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.Texture;
 
 public class MapDrawJob extends GLProjectDrawJob
 {
     @Override
     public void draw()
     {
-        GL gl = getGL();
+        GL2 gl = getGL();
         MapViewParameters area = getParameters();
 
         Texture mapTexture = getMapTexture();

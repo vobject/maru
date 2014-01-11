@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import maru.IMaruResource;
 import maru.MaruException;
@@ -16,7 +16,6 @@ import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.map.jobs.gl.GLProjectDrawJob;
-import maru.map.jobs.gl.TextureCache;
 import maru.map.views.GroundtrackBarrier;
 import maru.map.views.GroundtrackPoint;
 import maru.map.views.MapViewParameters;
@@ -25,7 +24,7 @@ import maru.map.views.gl.GLUtils;
 
 import org.eclipse.swt.graphics.RGB;
 
-import com.sun.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.Texture;
 
 public class ScenarioDrawJob extends GLProjectDrawJob
 {
@@ -79,14 +78,14 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
     private void drawGroundtrack(IPropagatable element, GroundtrackBarrier barrier, RGB day, RGB night)
     {
-        GL gl = getGL();
+        GL2 gl = getGL();
         MapViewParameters area = getParameters();
 
         gl.glLineWidth(2.0f);
 
         for (ArrayList<GroundtrackPoint> lineStrips : getGroundtrack(element, barrier))
         {
-            gl.glBegin(GL.GL_LINE_STRIP);
+            gl.glBegin(GL2.GL_LINE_STRIP);
 
             for (GroundtrackPoint lineStrip : lineStrips)
             {
@@ -113,7 +112,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
             return;
         }
 
-        GL gl = getGL();
+        GL2 gl = getGL();
         MapViewParameters area = getParameters();
 
         gl.glColor3ub((byte) color.red, (byte) color.green, (byte) color.blue);
@@ -224,39 +223,23 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
     private void drawElementTexture(String imagePath, EquirectangularCoordinate mapPos, IconSize iconSize)
     {
-        GL gl = getGL();
+        GL2 gl = getGL();
         MapViewParameters area = getParameters();
-        TextureCache textureCache = getTextureCache();
+        Texture texture = getTextureCache().get(imagePath);
 
-        Texture elementGraphic2D = textureCache.get(imagePath);
-
-        elementGraphic2D.enable();
-        elementGraphic2D.bind();
-
-        gl.glBegin(GL.GL_QUADS);
-            gl.glTexCoord2d(0.0, 1.0);
-            gl.glVertex2d(area.mapX + mapPos.X - (iconSize.x / 2), area.mapHeight - (mapPos.Y - area.mapY) - (iconSize.y / 2));
-
-            gl.glTexCoord2d(1.0, 1.0);
-            gl.glVertex2d(area.mapX + mapPos.X + (iconSize.x / 2), area.mapHeight - (mapPos.Y - area.mapY) - (iconSize.y / 2));
-
-            gl.glTexCoord2d(1.0, 0.0);
-            gl.glVertex2d(area.mapX + mapPos.X + (iconSize.x / 2), area.mapHeight - (mapPos.Y - area.mapY) + (iconSize.y / 2));
-
-            gl.glTexCoord2d(0.0, 0.0);
-            gl.glVertex2d(area.mapX + mapPos.X - (iconSize.x / 2), area.mapHeight - (mapPos.Y - area.mapY) + (iconSize.y / 2));
-        gl.glEnd();
-
-        elementGraphic2D.disable();
+        GLUtils.drawTexture(gl, texture,
+            area.mapX + mapPos.X - (iconSize.x / 2),
+            area.mapHeight - (mapPos.Y - area.mapY) - (iconSize.y / 2),
+            iconSize.x, iconSize.y);
     }
 
     private void drawElementFallback(EquirectangularCoordinate mapPos, IconSize iconSize)
     {
-        GL gl = getGL();
+        GL2 gl = getGL();
         MapViewParameters area = getParameters();
 
         gl.glPointSize(Math.max(iconSize.x, iconSize.y));
-        gl.glBegin(GL.GL_POINTS);
+        gl.glBegin(GL2.GL_POINTS);
             gl.glVertex2d(area.mapX + mapPos.X, area.mapHeight - (mapPos.Y - area.mapY));
         gl.glEnd();
     }
