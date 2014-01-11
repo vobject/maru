@@ -2,18 +2,22 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Orekit
 Bundle-SymbolicName: org.orekit;singleton:=true
-Bundle-Version: 6.0.0
-Bundle-ClassPath: .,orekit-6.0.jar
+Bundle-Version: 6.1.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.osgi,
  org.eclipse.core.runtime,
  org.apache.commons.math3;bundle-version="3.2.0",
  maru.core
+Bundle-Activator: org.orekit.OrekitPlugin
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: CS Systèmes d'Information
+Bundle-ClassPath: .,orekit-6.1.jar
 Export-Package: org.orekit,
  org.orekit.attitudes,
  org.orekit.bodies,
  org.orekit.data,
  org.orekit.errors,
+ org.orekit.files.ccsds,
  org.orekit.files.general,
  org.orekit.files.sp3,
  org.orekit.forces,
@@ -23,6 +27,7 @@ Export-Package: org.orekit,
  org.orekit.forces.maneuvers,
  org.orekit.forces.radiation,
  org.orekit.frames,
+ org.orekit.models,
  org.orekit.models.earth,
  org.orekit.orbits,
  org.orekit.propagation,
@@ -30,6 +35,7 @@ Export-Package: org.orekit,
  org.orekit.propagation.analytical.tle,
  org.orekit.propagation.conversion,
  org.orekit.propagation.events,
+ org.orekit.propagation.events.handlers,
  org.orekit.propagation.integration,
  org.orekit.propagation.numerical,
  org.orekit.propagation.sampling,
@@ -38,6 +44,3 @@ Export-Package: org.orekit,
  org.orekit.propagation.semianalytical.dsst.utilities,
  org.orekit.time,
  org.orekit.utils
-Bundle-Activator: org.orekit.OrekitPlugin
-Bundle-ActivationPolicy: lazy
-Bundle-Vendor: CS Systèmes d'Information
