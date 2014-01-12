@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.swt.graphics.RGB;
 
@@ -38,6 +39,13 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     private final ScenarioModel model;
 
+    /**
+     * Remember the project mentioned by the PRE_DELETE workspace message.
+     * As soon as the post-delete message arrives, they are removed from
+     * the data model and the scenario model listener notified.
+     */
+    private final ArrayList<IProject> projectsToBeDeleted;
+
     private final Map<IScenarioProject, ScenarioProjectStorage> projectStorages;
     private final Collection<IScenarioModelListener> listeners;
 
@@ -48,6 +56,7 @@ final public class ScenarioModelManager implements IResourceChangeListener
         model = new ScenarioModel();
         projectStorages = new HashMap<>();
         listeners = new ArrayList<>();
+        projectsToBeDeleted = new ArrayList<>();
     }
 
     public static ScenarioModelManager getDefault()
@@ -59,7 +68,8 @@ final public class ScenarioModelManager implements IResourceChangeListener
                 if (manager == null)
                 {
                     manager = new ScenarioModelManager();
-                    ResourcesPlugin.getWorkspace().addResourceChangeListener(manager, IResourceChangeEvent.PRE_DELETE);
+                    ResourcesPlugin.getWorkspace().addResourceChangeListener(manager, IResourceChangeEvent.PRE_DELETE |
+                                                                                      IResourceChangeEvent.POST_CHANGE);
                 }
             }
         }
@@ -613,6 +623,12 @@ final public class ScenarioModelManager implements IResourceChangeListener
     @Override
     public void resourceChanged(IResourceChangeEvent event)
     {
+        handlePreDeleteProjectEvent(event);
+        handlePostDeleteProjectEvent(event);
+    }
+
+    private void handlePreDeleteProjectEvent(IResourceChangeEvent event)
+    {
         if (event.getType() != IResourceChangeEvent.PRE_DELETE) {
             return;
         }
@@ -621,7 +637,35 @@ final public class ScenarioModelManager implements IResourceChangeListener
             return;
         }
 
-        removeProject((IProject) event.getResource(), true);
+        // eclipse is telling us that a project is about to be deleted.
+        // we save a reference to the affected project and wait for the
+        // post-delete message which does not come with an IProject reference.
+        projectsToBeDeleted.add((IProject) event.getResource());
+    }
+
+    private void handlePostDeleteProjectEvent(IResourceChangeEvent event)
+    {
+        if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
+            return;
+        }
+
+        IResourceDelta delta = event.getDelta();
+        if (delta == null) {
+            return;
+        }
+
+        int kind = delta.getKind();
+        IResourceDelta[] children = delta.getAffectedChildren(IResourceDelta.REMOVED);
+
+        if ((kind != IResourceDelta.CHANGED) || (children.length == 0)) {
+            return;
+        }
+
+        for (IProject project : projectsToBeDeleted)
+        {
+            removeProject(project, true);
+        }
+        projectsToBeDeleted.clear();
     }
 
     private void notifyModelListeners(IModelNotification notification,

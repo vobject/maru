@@ -111,29 +111,7 @@ public class ContentProvider extends BaseWorkbenchContentProvider
         @Override
         public void scenarioRemoved(IScenarioProject project)
         {
-            // FIXME: this is broken again!
-
-            // HACK: this refresh of the explorer is badly timed.
-            // it will try to read the children of the project that
-            // was just deleted but fail in the process because
-            // .scenproject file does not exist anymore.
-            // the 1000ms delay makes sure(?!?) that the project is
-            // removed from all eclipse caches so that it will not be
-            // asked for its children during the following refresh.
-            Display.getDefault().asyncExec(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    try { Thread.sleep(1000); }
-                    catch (InterruptedException e)  { }
-
-                    if (viewer.getControl().isDisposed()) {
-                        return;
-                    }
-                    viewer.refresh();
-                }
-            });
+            refreshViewer(project, false);
         }
 
         @Override
@@ -259,10 +237,10 @@ public class ContentProvider extends BaseWorkbenchContentProvider
         }
 
         CoreModel coreModel = CoreModel.getDefault();
-        IScenarioProject scenarioProject = coreModel.getScenarioProject(project);
+        IScenarioProject scenario = coreModel.getScenarioProject(project);
 
         UiModel uiModel = UiModel.getDefault();
-        UiProject uiProject = uiModel.getUiProject(scenarioProject);
+        UiProject uiProject = uiModel.getUiProject(scenario);
         return uiProject.getChildren().toArray();
     }
 

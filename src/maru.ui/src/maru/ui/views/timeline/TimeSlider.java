@@ -46,12 +46,22 @@ public class TimeSlider
         // allow for notifications
         enabled = true;
 
-        slider.setEnabled(true);
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                slider.setEnabled(true);
+            }
+        });
     }
 
     public void disable()
     {
-        slider.setEnabled(false);
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                slider.setEnabled(false);
+            }
+        });
 
         // disable listener notifications
         enabled = false;
@@ -59,12 +69,22 @@ public class TimeSlider
 
     public void disableForRealtime()
     {
-        slider.setEnabled(false);
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                slider.setEnabled(false);
+            }
+        });
     }
 
     public void setFocus()
     {
-        slider.setFocus();
+        Display.getDefault().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                slider.setFocus();
+            }
+        });
     }
 
     public void changeRange(long startTime, long stopTime)
@@ -74,10 +94,9 @@ public class TimeSlider
 
         final long periodSec = stopTime - startTime;
 
-        Display.getCurrent().syncExec(new Runnable() {
+        Display.getDefault().asyncExec(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 slider.setMinimum(0);
                 slider.setMaximum((int) periodSec);
                 slider.setPageIncrement(slider.getMaximum() / 200);
@@ -174,10 +193,9 @@ public class TimeSlider
         final long advanceSec = currentTime - startTime;
 
         slider.removeListener(SWT.Selection, sliderListener);
-        Display.getCurrent().syncExec(new Runnable() {
+        Display.getDefault().asyncExec(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 slider.setSelection((int) advanceSec);
             }
         });

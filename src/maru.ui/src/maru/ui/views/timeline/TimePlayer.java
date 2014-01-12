@@ -35,7 +35,7 @@ class TimePlayer
             }
             notifyPlayback();
 
-            Display display = Display.getCurrent();
+            Display display = Display.getDefault();
             if (!display.isDisposed()) {
                 double waitTime = 1000.0 * currentStepSize / currentMultiplicator;
                 display.timerExec((int) waitTime, this);
@@ -90,12 +90,18 @@ class TimePlayer
     public void disable()
     {
         stop();
-        record.setEnabled(false);
-        previousTimepoint.setEnabled(false);
-        playBackward.setEnabled(false);
-        pause.setEnabled(false);
-        playForward.setEnabled(false);
-        nextTimepoint.setEnabled(false);
+
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                record.setEnabled(false);
+                previousTimepoint.setEnabled(false);
+                playBackward.setEnabled(false);
+                pause.setEnabled(false);
+                playForward.setEnabled(false);
+                nextTimepoint.setEnabled(false);
+            }
+        });
 
         if (realtimeEnabled)
         {
@@ -108,18 +114,30 @@ class TimePlayer
     public void disableForRealtime()
     {
         stop();
-        record.setEnabled(false);
-        previousTimepoint.setEnabled(false);
-        playBackward.setEnabled(false);
-        pause.setEnabled(false);
-        playForward.setEnabled(false);
-        nextTimepoint.setEnabled(false);
+
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                record.setEnabled(false);
+                previousTimepoint.setEnabled(false);
+                playBackward.setEnabled(false);
+                pause.setEnabled(false);
+                playForward.setEnabled(false);
+                nextTimepoint.setEnabled(false);
+            }
+        });
     }
 
     public void stop()
     {
         currentState = PlaybackState.PAUSE;
-        Display.getCurrent().timerExec(-1, playbackTimer);
+
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                Display.getDefault().timerExec(-1, playbackTimer);
+            }
+        });
     }
 
     public void changeSpeedMultiplicator(double multiplicator)
@@ -306,24 +324,39 @@ class TimePlayer
 
     private void setButtonStatePause()
     {
-        record.setEnabled(true);
-        previousTimepoint.setEnabled(true);
-        playBackward.setEnabled(true);
-        pause.setEnabled(false);
-        playForward.setEnabled(true);
-        nextTimepoint.setEnabled(true);
+        Display.getDefault().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                record.setEnabled(true);
+                previousTimepoint.setEnabled(true);
+                playBackward.setEnabled(true);
+                pause.setEnabled(false);
+                playForward.setEnabled(true);
+                nextTimepoint.setEnabled(true);
+            }
+        });
     }
 
     private void setButtonStatePlaying()
     {
-        playBackward.setEnabled(false);
-        pause.setEnabled(true);
-        playForward.setEnabled(false);
+        Display.getDefault().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                playBackward.setEnabled(false);
+                pause.setEnabled(true);
+                playForward.setEnabled(false);
+            }
+        });
     }
 
     private void startPlayback()
     {
-        Display.getCurrent().timerExec(100, playbackTimer);
+        Display.getDefault().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                Display.getDefault().timerExec(100, playbackTimer);
+            }
+        });
     }
 
     private void notifySaveCurrentTimepoint()

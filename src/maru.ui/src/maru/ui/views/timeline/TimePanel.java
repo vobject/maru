@@ -131,7 +131,7 @@ class TimePanel
 
         void setText(final String string)
         {
-            Display.getCurrent().syncExec(new Runnable() {
+            Display.getDefault().syncExec(new Runnable() {
                 @Override
                 public void run() {
                     label.setText(string);

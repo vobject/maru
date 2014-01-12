@@ -148,7 +148,7 @@ public class Timeline extends ScenarioModelViewPart
     @Override
     public void scenarioRemoved(IScenarioProject project)
     {
-        if (project != getCurrentProject()) {
+        if (project != getCurrentScenarioProject()) {
             // we only care about changes to the current project.
             return;
         }

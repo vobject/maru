@@ -41,7 +41,7 @@ public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
         super(parent);
 
         // render with the operating systems default font at 12pt.
-        text = new TextRenderer(new java.awt.Font(Display.getCurrent().getSystemFont().getFontData()[0].getName(), java.awt.Font.PLAIN, 12), true, false);
+        text = new TextRenderer(new java.awt.Font(Display.getDefault().getSystemFont().getFontData()[0].getName(), java.awt.Font.PLAIN, 12), true, false);
         textureCache = new TextureCache(parent.getGlContext().getGL().getGL2());
 
         projectDrawJobs = new ArrayList<>();
@@ -108,21 +108,7 @@ public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
     @Override
     public void mouseEvent(int btn, int mask, int count, int x, int y)
     {
-//        if (btn == 1)
-//        {
-//            SpriteAnimationJob hook = new SpriteAnimationJob();
-//            hook.setDuration(500);
-//            hook.setPosition(x, y, 128, 128);
-//            hook.addFrame(MaruMapResources.ANIM_BLOOD_1);
-//            hook.addFrame(MaruMapResources.ANIM_BLOOD_2);
-//            hook.addFrame(MaruMapResources.ANIM_BLOOD_3);
-//            hook.addFrame(MaruMapResources.ANIM_BLOOD_4);
-//            hook.addFrame(MaruMapResources.ANIM_BLOOD_5);
-//            hook.addFrame(MaruMapResources.ANIM_BLOOD_6);
-//
-//            addProjectAnimationJob(hook);
-//            redraw();
-//        }
+
     }
 
     @Override
@@ -214,7 +200,7 @@ public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
 
         if (!postAnimationJobs.isEmpty())
         {
-            Display.getCurrent().timerExec(DEFAULT_ANIMATION_SPEED, new Runnable() {
+            Display.getDefault().timerExec(DEFAULT_ANIMATION_SPEED, new Runnable() {
                 @Override public void run()
                 {
                     redraw();

@@ -81,17 +81,27 @@ class TimeSettings
         // allow for notifications
         enabled = true;
 
-        speedMultiplicatorCombo.setEnabled(true);
-        stepSizeCombo.setEnabled(true);
-        realtimeButton.setEnabled(true);
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                speedMultiplicatorCombo.setEnabled(true);
+                stepSizeCombo.setEnabled(true);
+                realtimeButton.setEnabled(true);
+            }
+        });
     }
 
     public void disable()
     {
-        speedMultiplicatorCombo.setEnabled(false);
-        stepSizeCombo.setEnabled(false);
-        realtimeButton.setEnabled(false);
-        realtimeButton.setSelection(false);
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                speedMultiplicatorCombo.setEnabled(false);
+                stepSizeCombo.setEnabled(false);
+                realtimeButton.setEnabled(false);
+                realtimeButton.setSelection(false);
+            }
+        });
 
         // disable listener notifications
         enabled = false;
@@ -99,15 +109,20 @@ class TimeSettings
 
     public void disableForRealtime()
     {
-        speedMultiplicatorCombo.setEnabled(false);
-        stepSizeCombo.setEnabled(false);
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                speedMultiplicatorCombo.setEnabled(false);
+                stepSizeCombo.setEnabled(false);
+            }
+        });
     }
 
     public void changeStepSize(final double stepSize)
     {
         stepSizeCombo.removeSelectionListener(stepListener);
 
-        Display.getCurrent().syncExec(new Runnable() {
+        Display.getDefault().asyncExec(new Runnable() {
             @Override
             public void run() {
                 stepSizeCombo.setText(toStepSizeItem(stepSize));
@@ -121,7 +136,7 @@ class TimeSettings
     {
         speedMultiplicatorCombo.removeSelectionListener(speedListener);
 
-        Display.getCurrent().syncExec(new Runnable() {
+        Display.getDefault().asyncExec(new Runnable() {
             @Override
             public void run() {
                 speedMultiplicatorCombo.setText(toMultiplicatorItem(multiplicator));
