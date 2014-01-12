@@ -1,6 +1,5 @@
 package maru.map.views;
 
-import maru.centralbody.projection.ICoordinateProjector;
 import maru.ui.model.IUiProjectModelListener;
 import maru.ui.model.IUiProjectSelectionListener;
 import maru.ui.model.UiElement;
@@ -15,6 +14,7 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.part.ViewPart;
@@ -23,24 +23,16 @@ public abstract class AbstractMapView extends ViewPart
                                       implements IUiProjectModelListener,
                                                  IUiProjectSelectionListener
 {
-    public static final int DEFAULT_PROJECTOR_CACHE_SIZE = 1024 * 64;
-
+    // the map will be drawn into this composite. must not be null.
     private Composite mapContainer;
+
+    // the object that draws into the container. must not be null.
     private IMapDrawer mapDrawer;
-    private ICoordinateProjector mapProjector;
 
     @Override
     public void setFocus()
     {
         mapContainer.setFocus();
-    }
-
-    @Override
-    public void dispose()
-    {
-        if (mapDrawer != null) {
-            mapDrawer.dispose();
-        }
     }
 
     @Override
@@ -58,12 +50,19 @@ public abstract class AbstractMapView extends ViewPart
     @Override
     public void projectRemoved(UiProject project)
     {
+        if (project != UiModel.getDefault().getCurrentUiProject()) {
+            return;
+        }
 
+        // get rid of references to the project that will be deleted
+        mapDrawer.setSelectedElement(null);
+        redraw();
     }
 
     @Override
     public void activeProjectChanged(UiProject project, UiElement element)
     {
+        mapDrawer.setSelectedElement(null);
         mapDrawer.getParameters().setSettingsChanged(true);
         mapDrawer.getSettings().setSettingsChanged(true);
         redraw();
@@ -106,24 +105,14 @@ public abstract class AbstractMapView extends ViewPart
         this.mapDrawer = mapDrawer;
     }
 
-    public void initMapDrawer()
-    {
-        mapDrawer.setProjector(mapProjector);
-    }
-
-    public ICoordinateProjector getMapProjector()
-    {
-        return mapProjector;
-    }
-
-    public void setMapProjector(ICoordinateProjector mapProjector)
-    {
-        this.mapProjector = mapProjector;
-    }
-
     public void redraw()
     {
-        mapContainer.redraw();
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                mapContainer.redraw();
+            }
+        });
     }
 
     protected void addMapPaintListener()
@@ -135,6 +124,8 @@ public abstract class AbstractMapView extends ViewPart
                 UiProject currentProject = UiModel.getDefault().getCurrentUiProject();
                 if (currentProject != null) {
                     mapDrawer.draw(e.gc, currentProject);
+                } else {
+                    mapDrawer.draw(e.gc);
                 }
             }
         });

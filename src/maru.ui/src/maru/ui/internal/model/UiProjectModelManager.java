@@ -172,7 +172,7 @@ public class UiProjectModelManager extends ScenarioModelAdapter
     @Override
     public void scenarioRemoved(IScenarioProject project)
     {
-        // a project will be removed from the workspace.
+        // a project was removed from the workspace.
 
         // tell everyone that its UiProject wrapper is about to be removed
         notifyUiProjectRemoved(getProject(project));
@@ -180,7 +180,7 @@ public class UiProjectModelManager extends ScenarioModelAdapter
         // remove the project's corresponding UiProject wrapper
         uiModel.removeUiProject(project);
 
-        if (project == currentProject) {
+        if (project == currentProject.getUnderlyingElement()) {
             currentProject = null;
         }
     }
@@ -198,7 +198,7 @@ public class UiProjectModelManager extends ScenarioModelAdapter
         uiModel.removeUiElement(element);
         notifyUiProjectChanged(getProject(element));
 
-        if (element == currentElement) {
+        if (element == currentElement.getUnderlyingElement()) {
             currentElement = null;
         }
     }

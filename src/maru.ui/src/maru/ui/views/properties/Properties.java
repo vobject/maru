@@ -15,6 +15,7 @@ import maru.ui.views.ScenarioModelViewPart;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -72,12 +73,26 @@ public class Properties extends ScenarioModelViewPart
     }
 
     @Override
+    public void scenarioRemoved(IScenarioProject project)
+    {
+        UiProject currentProject = getCurrentProject();
+
+        if ((currentProject == null) ||
+            (currentProject.getUnderlyingElement() == project))
+        {
+            currentElement = null;
+            clearPropertiesTable();
+        }
+    }
+
+    @Override
     public void elementRemoved(IScenarioElement element)
     {
-        if (element == currentElement) {
-            currentElement = null;
-            propertiesTable.removeAll();
+        if (element != currentElement) {
+            return;
         }
+        currentElement = null;
+        clearPropertiesTable();
     }
 
     @Override
@@ -172,16 +187,32 @@ public class Properties extends ScenarioModelViewPart
             return;
         }
 
-        propertiesTable.setRedraw(false);
-        propertiesTable.removeAll();
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run()
+            {
+                propertiesTable.setRedraw(false);
+                propertiesTable.removeAll();
 
-        Map<String, String> propertyMap = currentElement.getPropertyMap();
-        for (Map.Entry<String, String> property : propertyMap.entrySet())
-        {
-            TableItem item = new TableItem(propertiesTable, SWT.NONE);
-            item.setText(0, property.getKey());
-            item.setText(1, property.getValue());
-        }
-        propertiesTable.setRedraw(true);
+                Map<String, String> propertyMap = currentElement.getPropertyMap();
+                for (Map.Entry<String, String> property : propertyMap.entrySet())
+                {
+                    TableItem item = new TableItem(propertiesTable, SWT.NONE);
+                    item.setText(0, property.getKey());
+                    item.setText(1, property.getValue());
+                }
+                propertiesTable.setRedraw(true);
+            }
+        });
+    }
+
+    private void clearPropertiesTable()
+    {
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                propertiesTable.removeAll();
+            }
+        });
     }
 }

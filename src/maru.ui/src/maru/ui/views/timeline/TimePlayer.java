@@ -324,7 +324,7 @@ class TimePlayer
 
     private void setButtonStatePause()
     {
-        Display.getDefault().asyncExec(new Runnable() {
+        Display.getDefault().syncExec(new Runnable() {
             @Override
             public void run() {
                 record.setEnabled(true);
@@ -339,7 +339,7 @@ class TimePlayer
 
     private void setButtonStatePlaying()
     {
-        Display.getDefault().asyncExec(new Runnable() {
+        Display.getDefault().syncExec(new Runnable() {
             @Override
             public void run() {
                 playBackward.setEnabled(false);
@@ -351,7 +351,7 @@ class TimePlayer
 
     private void startPlayback()
     {
-        Display.getDefault().asyncExec(new Runnable() {
+        Display.getDefault().syncExec(new Runnable() {
             @Override
             public void run() {
                 Display.getDefault().timerExec(100, playbackTimer);

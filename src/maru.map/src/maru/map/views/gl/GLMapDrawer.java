@@ -90,6 +90,8 @@ public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
     @Override
     public void dispose()
     {
+        MaruMapPlugin.getDefault().removeGLDrawJobRunner(this);
+
         for (GLProjectDrawJob job : projectDrawJobs) {
             job.dispose();
         }
@@ -100,15 +102,37 @@ public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
 
         projectDrawJobs.clear();
         postAnimationJobs.clear();
-
-        MaruMapPlugin.getDefault().removeGLDrawJobRunner(this);
         textureCache.dispose();
     }
 
     @Override
-    public void mouseEvent(int btn, int mask, int count, int x, int y)
+    protected void updateContext(Object context)
     {
+        GLContext glContext = (GLContext) context;
+        gl = glContext.getGL().getGL2();
 
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+        gl.glColor3f(1.0f, 1.0f, 1.0f);
+
+        for (GLProjectDrawJob job : projectDrawJobs) {
+            job.setMapAreaSettings(getParameters());
+            job.setMapDrawSettings(getSettings());
+            job.setGL(gl);
+            job.setTextRenderer(text);
+            job.setTextureCache(textureCache);
+            job.setProjector(getMapProjector());
+            job.setSelectedElement(getSelectedElement());
+        }
+
+        for (GLProjectAnimationJob job : postAnimationJobs) {
+            job.setMapAreaSettings(getParameters());
+            job.setMapDrawSettings(getSettings());
+            job.setGL(gl);
+            job.setTextRenderer(text);
+            job.setTextureCache(textureCache);
+            job.setProjector(getMapProjector());
+            job.setSelectedElement(getSelectedElement());
+        }
     }
 
     @Override
@@ -146,34 +170,6 @@ public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
     }
 
     @Override
-    protected void updateContext(Object context)
-    {
-        GLContext glContext = (GLContext) context;
-        gl = glContext.getGL().getGL2();
-
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-        gl.glColor3f(1.0f, 1.0f, 1.0f);
-
-        for (GLProjectDrawJob job : projectDrawJobs) {
-            job.setMapAreaSettings(getParameters());
-            job.setMapDrawSettings(getSettings());
-            job.setGL(gl);
-            job.setTextRenderer(text);
-            job.setTextureCache(textureCache);
-            job.setProjector(getProjector());
-            job.setSelectedElement(getSelectedElement());
-        }
-
-        for (GLProjectAnimationJob job : postAnimationJobs) {
-            job.setMapAreaSettings(getParameters());
-            job.setMapDrawSettings(getSettings());
-            job.setGL(gl);
-            job.setTextRenderer(text);
-            job.setTextureCache(textureCache);
-        }
-    }
-
-    @Override
     protected void doProjectDrawJobs(UiProject project)
     {
         for (GLProjectDrawJob job : projectDrawJobs) {
@@ -201,8 +197,7 @@ public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
         if (!postAnimationJobs.isEmpty())
         {
             Display.getDefault().timerExec(DEFAULT_ANIMATION_SPEED, new Runnable() {
-                @Override public void run()
-                {
+                @Override public void run() {
                     redraw();
                 }
             });

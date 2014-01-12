@@ -1,6 +1,5 @@
 package maru.map.views.swt;
 
-import maru.centralbody.projection.EquirectangularProjector;
 import maru.map.views.AbstractMapView;
 import maru.ui.MaruUIPlugin;
 
@@ -17,13 +16,9 @@ public class SWTMapView extends AbstractMapView
     {
         setContainer(new Canvas(parent, SWT.DOUBLE_BUFFERED));
         getContainer().setLayout(new FillLayout());
-        getContainer().setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
-
-        setMapProjector(new EquirectangularProjector());
-        getMapProjector().setCacheSize(DEFAULT_PROJECTOR_CACHE_SIZE);
+        getContainer().setBackground(Display.getDefault().getSystemColor(SWT.COLOR_BLACK));
 
         setMapDrawer(new SWTMapDrawer(this));
-        initMapDrawer();
 
         addMapPaintListener();
         addMapResizeListener();
@@ -38,6 +33,8 @@ public class SWTMapView extends AbstractMapView
     {
         MaruUIPlugin.getDefault().getUiModel().removeUiProjectSelectionListener(this);
         MaruUIPlugin.getDefault().getUiModel().removeUiProjectModelListener(this);
+
+        getMapDrawer().dispose();
 
         super.dispose();
     }

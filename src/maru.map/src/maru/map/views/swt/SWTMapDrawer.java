@@ -48,6 +48,30 @@ public class SWTMapDrawer extends AbstractMapDrawer
     }
 
     @Override
+    protected void updateContext(Object context)
+    {
+        gc = (GC) context;
+
+        mapDrawJob.setMapAreaSettings(getParameters());
+        mapDrawJob.setMapDrawSettings(getSettings());
+        mapDrawJob.setGC(gc);
+        mapDrawJob.setProjector(getMapProjector());
+        mapDrawJob.setSelectedElement(getSelectedElement());
+
+        daynightDrawJob.setMapAreaSettings(getParameters());
+        daynightDrawJob.setMapDrawSettings(getSettings());
+        daynightDrawJob.setGC(gc);
+        daynightDrawJob.setProjector(getMapProjector());
+        daynightDrawJob.setSelectedElement(getSelectedElement());
+
+        scenarioDrawJob.setMapAreaSettings(getParameters());
+        scenarioDrawJob.setMapDrawSettings(getSettings());
+        scenarioDrawJob.setGC(gc);
+        scenarioDrawJob.setProjector(getMapProjector());
+        scenarioDrawJob.setSelectedElement(getSelectedElement());
+    }
+
+    @Override
     protected void updateMapParameters(UiProject project)
     {
         updateBackground(project.getUnderlyingElement().getCentralBody());
@@ -85,30 +109,6 @@ public class SWTMapDrawer extends AbstractMapDrawer
         int mapImageWidth = mapImage.getBounds().width;
         int mapImageHeight = mapImage.getBounds().height;
         getParameters().setImageSize(mapImageWidth, mapImageHeight);
-    }
-
-    @Override
-    protected void updateContext(Object context)
-    {
-        gc = (GC) context;
-
-        mapDrawJob.setMapAreaSettings(getParameters());
-        mapDrawJob.setMapDrawSettings(getSettings());
-        mapDrawJob.setGC(gc);
-        mapDrawJob.setProjector(getProjector());
-        mapDrawJob.setSelectedElement(getSelectedElement());
-
-        daynightDrawJob.setMapAreaSettings(getParameters());
-        daynightDrawJob.setMapDrawSettings(getSettings());
-        daynightDrawJob.setGC(gc);
-        daynightDrawJob.setProjector(getProjector());
-        daynightDrawJob.setSelectedElement(getSelectedElement());
-
-        scenarioDrawJob.setMapAreaSettings(getParameters());
-        scenarioDrawJob.setMapDrawSettings(getSettings());
-        scenarioDrawJob.setGC(gc);
-        scenarioDrawJob.setProjector(getProjector());
-        scenarioDrawJob.setSelectedElement(getSelectedElement());
     }
 
     @Override

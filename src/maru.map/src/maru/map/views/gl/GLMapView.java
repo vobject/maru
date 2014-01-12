@@ -5,7 +5,6 @@ import javax.media.opengl.GLContext;
 import javax.media.opengl.GLDrawableFactory;
 import javax.media.opengl.GLProfile;
 
-import maru.centralbody.projection.EquirectangularProjector;
 import maru.map.views.AbstractMapView;
 import maru.ui.MaruUIPlugin;
 import maru.ui.model.UiModel;
@@ -43,11 +42,7 @@ public class GLMapView extends AbstractMapView
         getGlContext().makeCurrent();
         initGLContext();
 
-        setMapProjector(new EquirectangularProjector());
-        getMapProjector().setCacheSize(DEFAULT_PROJECTOR_CACHE_SIZE);
-
         setMapDrawer(new GLMapDrawer(this));
-        initMapDrawer();
 
         addMapPaintListener();
         addMapResizeListener();
@@ -63,10 +58,12 @@ public class GLMapView extends AbstractMapView
         MaruUIPlugin.getDefault().getUiModel().removeUiProjectSelectionListener(this);
         MaruUIPlugin.getDefault().getUiModel().removeUiProjectModelListener(this);
 
-        super.dispose();
+        getMapDrawer().dispose();
 
         glContext.release();
         glContext.destroy();
+
+        super.dispose();
     }
 
     @Override
@@ -108,8 +105,9 @@ public class GLMapView extends AbstractMapView
                 UiProject currentProject = UiModel.getDefault().getCurrentUiProject();
                 if (currentProject != null) {
                     getMapDrawer().draw(glContext, currentProject);
+                } else {
+                    getMapDrawer().draw(glContext);
                 }
-
                 getContainer().swapBuffers();
             }
         });
@@ -123,7 +121,6 @@ public class GLMapView extends AbstractMapView
             public void handleEvent(Event event)
             {
                 Rectangle rect = getContainer().getClientArea();
-
                 GLUtils.setupGL(glContext.getGL().getGL2(), rect.width, rect.height);
                 getMapDrawer().getParameters().setClientArea(rect.width, rect.height);
             }

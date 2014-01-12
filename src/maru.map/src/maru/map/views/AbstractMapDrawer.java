@@ -1,24 +1,32 @@
 package maru.map.views;
 
+import maru.centralbody.projection.EquirectangularProjector;
 import maru.centralbody.projection.ICoordinateProjector;
 import maru.ui.model.UiProject;
 import maru.ui.model.UiPropagatable;
 
 public abstract class AbstractMapDrawer implements IMapDrawer
 {
-    private final AbstractMapView parent;
+    public static final int DEFAULT_PROJECTOR_CACHE_SIZE = 1024 * 64;
 
-    private ICoordinateProjector projector;
-    private UiPropagatable selectedElement;
+    private final AbstractMapView parent;
 
     private MapViewParameters params;
     private MapViewSettings settings;
+
+    // projector that converts from scenario element frames to pixel positions
+    private ICoordinateProjector mapProjector;
+
+    // the element currently selected in the scenario explorer (or null)
+    private UiPropagatable selectedElement;
 
     public AbstractMapDrawer(AbstractMapView parent)
     {
         this.parent = parent;
         this.params = new MapViewParameters();
         this.settings = new MapViewSettings();
+        this.mapProjector = new EquirectangularProjector();
+        this.mapProjector.setCacheSize(DEFAULT_PROJECTOR_CACHE_SIZE);
     }
 
     public AbstractMapView getParent()
@@ -44,9 +52,9 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     }
 
     @Override
-    public void setParameters(MapViewParameters mapViewParameters)
+    public void setParameters(MapViewParameters parameters)
     {
-        this.params = mapViewParameters;
+        this.params = parameters;
     }
 
     @Override
@@ -56,21 +64,21 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     }
 
     @Override
-    public void setSettings(MapViewSettings mapViewSettings)
+    public void setSettings(MapViewSettings settings)
     {
-        this.settings = mapViewSettings;
+        this.settings = settings;
     }
 
     @Override
-    public ICoordinateProjector getProjector()
+    public ICoordinateProjector getMapProjector()
     {
-        return projector;
+        return mapProjector;
     }
 
     @Override
-    public void setProjector(ICoordinateProjector projector)
+    public void setMapProjector(ICoordinateProjector projector)
     {
-        this.projector = projector;
+        this.mapProjector = projector;
     }
 
     @Override
@@ -83,6 +91,12 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     public void setSelectedElement(UiPropagatable element)
     {
         this.selectedElement = element;
+    }
+
+    @Override
+    public void draw(Object context)
+    {
+        updateContext(context);
     }
 
     @Override

@@ -12,12 +12,13 @@ public interface IMapDrawer
     MapViewSettings getSettings();
     void setSettings(MapViewSettings mapDrawSettings);
 
-    ICoordinateProjector getProjector();
-    void setProjector(ICoordinateProjector projector);
+    ICoordinateProjector getMapProjector();
+    void setMapProjector(ICoordinateProjector projector);
 
     UiPropagatable getSelectedElement();
     void setSelectedElement(UiPropagatable element);
 
+    void draw(Object context);
     void draw(Object context, UiProject project);
     void dispose();
 

@@ -79,7 +79,7 @@ public class TimeSlider
 
     public void setFocus()
     {
-        Display.getDefault().asyncExec(new Runnable() {
+        Display.getDefault().syncExec(new Runnable() {
             @Override
             public void run() {
                 slider.setFocus();
@@ -94,7 +94,7 @@ public class TimeSlider
 
         final long periodSec = stopTime - startTime;
 
-        Display.getDefault().asyncExec(new Runnable() {
+        Display.getDefault().syncExec(new Runnable() {
             @Override
             public void run() {
                 slider.setMinimum(0);
@@ -193,7 +193,7 @@ public class TimeSlider
         final long advanceSec = currentTime - startTime;
 
         slider.removeListener(SWT.Selection, sliderListener);
-        Display.getDefault().asyncExec(new Runnable() {
+        Display.getDefault().syncExec(new Runnable() {
             @Override
             public void run() {
                 slider.setSelection((int) advanceSec);

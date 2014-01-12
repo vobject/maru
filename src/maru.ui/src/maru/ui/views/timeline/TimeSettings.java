@@ -122,7 +122,7 @@ class TimeSettings
     {
         stepSizeCombo.removeSelectionListener(stepListener);
 
-        Display.getDefault().asyncExec(new Runnable() {
+        Display.getDefault().syncExec(new Runnable() {
             @Override
             public void run() {
                 stepSizeCombo.setText(toStepSizeItem(stepSize));
@@ -136,7 +136,7 @@ class TimeSettings
     {
         speedMultiplicatorCombo.removeSelectionListener(speedListener);
 
-        Display.getDefault().asyncExec(new Runnable() {
+        Display.getDefault().syncExec(new Runnable() {
             @Override
             public void run() {
                 speedMultiplicatorCombo.setText(toMultiplicatorItem(multiplicator));
