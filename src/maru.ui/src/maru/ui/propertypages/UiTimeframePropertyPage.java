@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 import maru.core.model.CoreModel;
 import maru.core.model.IScenarioProject;
-import maru.core.utils.TimeUtil;
+import maru.core.utils.TimeUtils;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiModel;
 import maru.ui.model.UiProject;
@@ -66,7 +66,7 @@ public class UiTimeframePropertyPage extends UiElementPropertyPage
 
     public long getStart()
     {
-        Calendar calender = TimeUtil.getCalendar();
+        Calendar calender = TimeUtils.getCalendar();
         calender.set(Calendar.YEAR, calendarStart.getYear());
         calender.set(Calendar.MONTH, calendarStart.getMonth());
         calender.set(Calendar.DAY_OF_MONTH, calendarStart.getDay());
@@ -78,7 +78,7 @@ public class UiTimeframePropertyPage extends UiElementPropertyPage
 
     public long getStop()
     {
-        Calendar calender = TimeUtil.getCalendar();
+        Calendar calender = TimeUtils.getCalendar();
         calender.set(Calendar.YEAR, calendarStop.getYear());
         calender.set(Calendar.MONTH, calendarStop.getMonth());
         calender.set(Calendar.DAY_OF_MONTH, calendarStop.getDay());
@@ -168,7 +168,7 @@ public class UiTimeframePropertyPage extends UiElementPropertyPage
             return;
         }
 
-        Calendar startCalendar = TimeUtil.getCalendar(initialStart);
+        Calendar startCalendar = TimeUtils.getCalendar(initialStart);
         calendarStart.setDate(startCalendar.get(Calendar.YEAR),
                               startCalendar.get(Calendar.MONTH),
                               startCalendar.get(Calendar.DAY_OF_MONTH));
@@ -176,7 +176,7 @@ public class UiTimeframePropertyPage extends UiElementPropertyPage
                           startCalendar.get(Calendar.MINUTE),
                           startCalendar.get(Calendar.SECOND));
 
-        Calendar stopCalendar = TimeUtil.getCalendar(initialStop);
+        Calendar stopCalendar = TimeUtils.getCalendar(initialStop);
         calendarStop.setDate(stopCalendar.get(Calendar.YEAR),
                              stopCalendar.get(Calendar.MONTH),
                              stopCalendar.get(Calendar.DAY_OF_MONTH));

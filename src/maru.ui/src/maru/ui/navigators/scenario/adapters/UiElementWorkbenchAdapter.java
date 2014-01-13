@@ -1,6 +1,6 @@
 package maru.ui.navigators.scenario.adapters;
 
-import maru.core.utils.TimeUtil;
+import maru.core.utils.TimeUtils;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiTimepoint;
 
@@ -14,7 +14,7 @@ public class UiElementWorkbenchAdapter extends WorkbenchAdapter
     {
         if (object instanceof UiTimepoint) {
             UiTimepoint tp = (UiTimepoint) object;
-            return TimeUtil.asISO8601(tp.getTime());
+            return TimeUtils.asISO8601(tp.getTime());
         } else {
             return ((UiElement) object).getName();
         }

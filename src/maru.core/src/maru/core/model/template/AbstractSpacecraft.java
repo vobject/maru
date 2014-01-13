@@ -13,10 +13,11 @@ import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.core.model.ITimeProvider;
-import maru.core.utils.TimeUtil;
+import maru.core.utils.TimeUtils;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.orekit.frames.Frame;
+import org.orekit.time.AbsoluteDate;
 
 class NullPropagator implements IPropagator
 {
@@ -86,9 +87,9 @@ class NullCoordinate implements ICoordinate
     }
 
     @Override
-    public long getTime()
+    public AbsoluteDate getDate()
     {
-        return 0;
+        return null;
     }
 
     @Override
@@ -266,7 +267,7 @@ public abstract class AbstractSpacecraft extends VisibleElement implements ISpac
         props.put("Initial Vel X", Double.toString(initialCoordinate.getVelocity().getX()));
         props.put("Initial Vel Y", Double.toString(initialCoordinate.getVelocity().getY()));
         props.put("Initial Vel Z", Double.toString(initialCoordinate.getVelocity().getZ()));
-        props.put("Initial Time", TimeUtil.asISO8601(initialCoordinate.getTime()));
+        props.put("Initial Time", TimeUtils.asISO8601(initialCoordinate.getDate()));
         props.put("Initial Frame", initialCoordinate.getFrame().toString());
 
         props.put("Current Pos X", Double.toString(currentCoordinate.getPosition().getX()));
@@ -275,7 +276,7 @@ public abstract class AbstractSpacecraft extends VisibleElement implements ISpac
         props.put("Current Vel X", Double.toString(currentCoordinate.getVelocity().getX()));
         props.put("Current Vel Y", Double.toString(currentCoordinate.getVelocity().getY()));
         props.put("Current Vel Z", Double.toString(currentCoordinate.getVelocity().getZ()));
-        props.put("Current Time", TimeUtil.asISO8601(currentCoordinate.getTime()));
+        props.put("Current Time", TimeUtils.asISO8601(currentCoordinate.getDate()));
         props.put("Current Frame", currentCoordinate.getFrame().toString());
 
         return props;

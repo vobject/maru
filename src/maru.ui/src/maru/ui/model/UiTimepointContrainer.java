@@ -6,7 +6,7 @@ import java.util.List;
 
 import maru.core.model.IScenarioProject;
 import maru.core.model.ITimepoint;
-import maru.core.utils.TimeUtil;
+import maru.core.utils.TimeUtils;
 import maru.ui.model.UiTimepoint.UiTimepointType;
 
 public class UiTimepointContrainer extends UiElementContrainer
@@ -63,13 +63,13 @@ public class UiTimepointContrainer extends UiElementContrainer
 
     public ITimepoint getPreviousTimepoint(long time)
     {
-        ITimepoint timepoint = TimeUtil.fromSeconds(time);
+        ITimepoint timepoint = TimeUtils.fromSeconds(time);
         return getUnderlyingElement().getPreviousTimepoint(timepoint);
     }
 
     public ITimepoint getNextTimepoint(long time)
     {
-        ITimepoint timepoint = TimeUtil.fromSeconds(time);
+        ITimepoint timepoint = TimeUtils.fromSeconds(time);
         return getUnderlyingElement().getNextTimepoint(timepoint);
     }
 }

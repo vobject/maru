@@ -2,7 +2,7 @@ package maru.ui.wizards;
 
 import java.util.Calendar;
 
-import maru.core.utils.TimeUtil;
+import maru.core.utils.TimeUtils;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -79,7 +79,7 @@ public class TimeframeWizardPage extends WizardPage
 
     public long getBegin()
     {
-        Calendar calendar = TimeUtil.getCalendar();
+        Calendar calendar = TimeUtils.getCalendar();
         calendar.set(Calendar.YEAR, calendarBegin.getYear());
         calendar.set(Calendar.MONTH, calendarBegin.getMonth());
         calendar.set(Calendar.DAY_OF_MONTH, calendarBegin.getDay());
@@ -91,7 +91,7 @@ public class TimeframeWizardPage extends WizardPage
 
     public long getEnd()
     {
-        Calendar calendar = TimeUtil.getCalendar();
+        Calendar calendar = TimeUtils.getCalendar();
         calendar.set(Calendar.YEAR, calendarEnd.getYear());
         calendar.set(Calendar.MONTH, calendarEnd.getMonth());
         calendar.set(Calendar.DAY_OF_MONTH, calendarEnd.getDay());

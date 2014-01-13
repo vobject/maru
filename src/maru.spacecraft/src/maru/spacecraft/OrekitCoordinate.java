@@ -1,7 +1,6 @@
 package maru.spacecraft;
 
 import maru.core.model.ICoordinate;
-import maru.core.utils.OrekitUtils;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.orekit.frames.Frame;
@@ -13,9 +12,7 @@ public class OrekitCoordinate implements ICoordinate
     private static final long serialVersionUID = 1L;
 
     private final PVCoordinates pvCoordinates;
-    private final AbsoluteDate absoluteDate;
-
-    private final long time;
+    private final AbsoluteDate date;
     private final Frame frame;
 
     public OrekitCoordinate(PVCoordinates coordinates,
@@ -23,9 +20,7 @@ public class OrekitCoordinate implements ICoordinate
                             Frame frame)
     {
         this.pvCoordinates = coordinates;
-        this.absoluteDate = date;
-
-        this.time = OrekitUtils.toSeconds(absoluteDate);
+        this.date = date;
         this.frame = frame;
     }
 
@@ -42,24 +37,19 @@ public class OrekitCoordinate implements ICoordinate
     }
 
     @Override
-    public long getTime()
-    {
-        return time;
-    }
-
-    @Override
     public Frame getFrame()
     {
         return frame;
     }
 
+    @Override
+    public AbsoluteDate getDate()
+    {
+        return date;
+    }
+
     public PVCoordinates getPvCoordinates()
     {
         return pvCoordinates;
-    }
-
-    public AbsoluteDate getAbsoluteDate()
-    {
-        return absoluteDate;
     }
 }

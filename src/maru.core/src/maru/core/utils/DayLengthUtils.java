@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 import maru.core.units.DaylengthDefinition;
 
-public final class DayLengthUtil
+public final class DayLengthUtils
 {
     public static final long SECONDS_IN_A_DAY = 24 * 60 * 60;
     public static final long MINUTES_IN_A_DAY = 24 * 60;
@@ -18,7 +18,7 @@ public final class DayLengthUtil
      */
     public static double getDayOfYear(long time)
     {
-        Calendar calendar = TimeUtil.getCalendar(time);
+        Calendar calendar = TimeUtils.getCalendar(time);
 
         // get the day of the year from the calendar
         double dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);

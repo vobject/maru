@@ -3,7 +3,7 @@ package maru.report.views;
 import maru.core.model.ICoordinate;
 import maru.core.model.IPropagator;
 import maru.core.model.ISpacecraft;
-import maru.core.utils.TimeUtil;
+import maru.core.utils.TimeUtils;
 
 import org.eclipse.swt.widgets.Composite;
 
@@ -44,7 +44,7 @@ public class PropagationReportControl extends AbstractPropagationReportControl
 
         for (ICoordinate coordinate : propagator.getCoordinates(element, startTime, stopTime, stepSize))
         {
-            append(TimeUtil.asISO8601(coordinate.getTime()));
+            append(TimeUtils.asISO8601(coordinate.getDate()));
             append("\t");
 
             append(toKm(coordinate.getPosition().getX()));

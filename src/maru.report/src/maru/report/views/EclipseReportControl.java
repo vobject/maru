@@ -7,7 +7,7 @@ import java.util.List;
 import maru.core.model.ICoordinate;
 import maru.core.model.IPropagator;
 import maru.core.model.ISpacecraft;
-import maru.core.utils.TimeUtil;
+import maru.core.utils.TimeUtils;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -159,7 +159,7 @@ public class EclipseReportControl extends AbstractPropagationReportControl
             {
                 if (Double.isNaN(currentDuration))
                 {
-                    append(TimeUtil.asISO8601(coordinate.getTime()));
+                    append(TimeUtils.asISO8601(coordinate.getDate()));
                     append("\t");
                     currentDuration = 0.0;
                 }
@@ -169,7 +169,7 @@ public class EclipseReportControl extends AbstractPropagationReportControl
             {
                 if (!Double.isNaN(currentDuration))
                 {
-                    append(TimeUtil.asISO8601(coordinate.getTime()));
+                    append(TimeUtils.asISO8601(coordinate.getDate()));
                     append("\t");
                     appendln(toDuration(currentDuration));
 
@@ -193,7 +193,7 @@ public class EclipseReportControl extends AbstractPropagationReportControl
         if (!Double.isNaN(currentDuration))
         {
             // the current duration was not yet closed
-            append(TimeUtil.asISO8601(stopTime));
+            append(TimeUtils.asISO8601(stopTime));
             append("\t");
             appendln(toDuration(currentDuration));
             if (currentDuration < minDuration) {

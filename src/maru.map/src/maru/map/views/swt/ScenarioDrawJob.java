@@ -5,13 +5,13 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import maru.centralbody.projection.EquirectangularCoordinate;
-import maru.centralbody.projection.ICoordinateProjector;
 import maru.core.model.ICoordinate;
 import maru.core.model.IGroundstation;
 import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.core.model.IVisibleElement;
+import maru.core.utils.OrekitUtils;
 import maru.map.jobs.swt.SWTProjectDrawJob;
 import maru.map.views.GroundtrackBarrier;
 import maru.map.views.GroundtrackPoint;
@@ -68,11 +68,11 @@ public class ScenarioDrawJob extends SWTProjectDrawJob
 
             GroundtrackBarrier currentGtBarrier;
             if (!gtBarriers.containsKey(element)) {
-                currentGtBarrier = new GroundtrackBarrier(currentCoordinate.getTime(), drawing.getGroundtrackLength());
+                currentGtBarrier = new GroundtrackBarrier(currentCoordinate.getDate(), drawing.getGroundtrackLength());
                 gtBarriers.put(element, currentGtBarrier);
             } else {
                 currentGtBarrier = gtBarriers.get(element);
-                currentGtBarrier.update(currentCoordinate.getTime(), drawing.getGroundtrackLength());
+                currentGtBarrier.update(currentCoordinate.getDate(), drawing.getGroundtrackLength());
             }
 
             RGB defaultColor = element.getElementColor();
@@ -178,7 +178,6 @@ public class ScenarioDrawJob extends SWTProjectDrawJob
     {
         MapViewParameters area = getParameters();
         MapViewSettings drawing = getSettings();
-        ICoordinateProjector projector = getProjector();
 
         ArrayList<ArrayList<GroundtrackPoint>> elementLineStrips = new ArrayList<>();
 
@@ -186,13 +185,10 @@ public class ScenarioDrawJob extends SWTProjectDrawJob
         EquirectangularCoordinate lastMapPos = null;
         ArrayList<GroundtrackPoint> lineStrip = new ArrayList<>();
 
-        for (ICoordinate coordinate : propagator.getCoordinates(element, barrier.getStart(), barrier.getStop(), drawing.getGroundtrackStepSize()))
+        for (ICoordinate coordinate : propagator.getCoordinates(element, OrekitUtils.toSeconds(barrier.getStart()), OrekitUtils.toSeconds(barrier.getStop()), drawing.getGroundtrackStepSize()))
         {
-            EquirectangularCoordinate mapPos;
-            try {
-                mapPos = projector.project(coordinate);
-            } catch (OrekitException e) {
-                e.printStackTrace();
+            EquirectangularCoordinate mapPos = getMapPosition(coordinate);
+            if (mapPos == null) {
                 continue;
             }
 

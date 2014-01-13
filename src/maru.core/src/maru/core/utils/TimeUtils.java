@@ -9,7 +9,9 @@ import java.util.TimeZone;
 import maru.core.internal.model.Timepoint;
 import maru.core.model.ITimepoint;
 
-public final class TimeUtil
+import org.orekit.time.AbsoluteDate;
+
+public final class TimeUtils
 {
     public static final String ISO8601_PLACEHOLDER = "0000-00-00 00:00:00";
 
@@ -50,6 +52,11 @@ public final class TimeUtil
     public static String asISO8601(long time)
     {
         return asISO8601(new Date(time * 1000));
+    }
+
+    public static String asISO8601(AbsoluteDate date)
+    {
+        return asISO8601(OrekitUtils.toSeconds(date));
     }
 
     public static String asISO8601(Date time)

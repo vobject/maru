@@ -4,7 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import maru.core.utils.TimeUtil;
+import maru.core.utils.TimeUtils;
 
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -69,7 +69,7 @@ class TimePanel
             {
                 try
                 {
-                    TimeUtil.fromString(newText);
+                    TimeUtils.fromString(newText);
                     return null;
                 }
                 catch (ParseException e)
@@ -82,7 +82,7 @@ class TimePanel
         TimeLabel(Composite parent, int style, final TimeLabelType type)
         {
             this.label = new Label(parent, style);
-            label.setText(TimeUtil.ISO8601_PLACEHOLDER);
+            label.setText(TimeUtils.ISO8601_PLACEHOLDER);
 
             label.addMouseListener(new MouseListener() {
                 @Override
@@ -103,7 +103,7 @@ class TimePanel
 
                     try
                     {
-                        notifyTimeChanged(type, TimeUtil.fromString(dlg.getValue()).getTime());
+                        notifyTimeChanged(type, TimeUtils.fromString(dlg.getValue()).getTime());
                     }
                     catch (ParseException ex)
                     {
@@ -141,7 +141,7 @@ class TimePanel
 
         void reset()
         {
-            setText(TimeUtil.ISO8601_PLACEHOLDER);
+            setText(TimeUtils.ISO8601_PLACEHOLDER);
         }
     }
 
@@ -203,19 +203,19 @@ class TimePanel
 
     public void changeStartTimeLabel(long time)
     {
-        startLabel.setText(TimeUtil.asISO8601(time));
+        startLabel.setText(TimeUtils.asISO8601(time));
         startTime = time;
     }
 
     public void changeStopTimeLabel(long time)
     {
-        stopLabel.setText(TimeUtil.asISO8601(time));
+        stopLabel.setText(TimeUtils.asISO8601(time));
         stopTime = time;
     }
 
     public void changeCurrentTimeLabel(long time)
     {
-        currentLabel.setText(TimeUtil.asISO8601(time));
+        currentLabel.setText(TimeUtils.asISO8601(time));
         currentTime = time;
     }
 

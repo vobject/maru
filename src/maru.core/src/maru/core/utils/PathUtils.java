@@ -4,7 +4,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public final class PathUtil
+public final class PathUtils
 {
     public static URL getUrlFromPath(String path) throws MalformedURLException
     {

@@ -1,7 +1,7 @@
 package maru.map.views.swt;
 
 import maru.core.model.ICentralBody;
-import maru.core.utils.PathUtil;
+import maru.core.utils.PathUtils;
 import maru.map.MaruMapPlugin;
 import maru.map.views.AbstractMapDrawer;
 import maru.map.views.MapViewParameters;
@@ -100,7 +100,7 @@ public class SWTMapDrawer extends AbstractMapDrawer
         }
 
         String path = centralBody.getTexture().getPath();
-        if (PathUtil.isLocalPath(path)) {
+        if (PathUtils.isLocalPath(path)) {
             mapImage = new Image(null, path);
         } else {
             // load from plugin bundle

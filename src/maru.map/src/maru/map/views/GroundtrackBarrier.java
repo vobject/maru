@@ -1,43 +1,46 @@
 package maru.map.views;
 
+import org.orekit.time.AbsoluteDate;
+
 public class GroundtrackBarrier
 {
-    private long start;
-    private long stop;
+    private AbsoluteDate start;
+    private AbsoluteDate stop;
     private long gtLength;
 
-    public GroundtrackBarrier(long current, long groundtrackLength)
+    public GroundtrackBarrier(AbsoluteDate current, long groundtrackLength)
     {
-        this.start = current - (groundtrackLength / 2);
-        this.stop = current + (groundtrackLength / 2);
+        this.start = current.shiftedBy(-(groundtrackLength / 2));
+        this.stop = current.shiftedBy((groundtrackLength / 2));
     }
 
-    public long getStart()
+    public AbsoluteDate getStart()
     {
         return start;
     }
 
-    public void setStart(long start)
+    public void setStart(AbsoluteDate start)
     {
         this.start = start;
     }
 
-    public long getStop()
+    public AbsoluteDate getStop()
     {
         return stop;
     }
 
-    public void setStop(long stop)
+    public void setStop(AbsoluteDate stop)
     {
         this.stop = stop;
     }
 
-    public void update(long current, long groundtrackLength)
+    public void update(AbsoluteDate current, long groundtrackLength)
     {
-        if ((start > current) || (stop < current) || (gtLength != groundtrackLength))
+        //if ((start > current) || (stop < current) || (gtLength != groundtrackLength))
+        if ((start.compareTo(current) > 0) || (stop.compareTo(current) < 0) || (gtLength != groundtrackLength))
         {
-            start = current - (groundtrackLength / 2);
-            stop = current + (groundtrackLength / 2);
+            start = current.shiftedBy(-(groundtrackLength / 2));
+            stop = current.shiftedBy((groundtrackLength / 2));
             gtLength = groundtrackLength;
         }
     }

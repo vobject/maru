@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import maru.core.utils.PathUtil;
+import maru.core.utils.PathUtils;
 import maru.spacecraft.MaruSpacecraftPlugin;
 import maru.spacecraft.preferences.PreferenceConstants;
 import maru.spacecraft.preferences.TleSourceEditor;
@@ -50,7 +50,7 @@ public final class TleUtils
 
         try
         {
-            URL url = PathUtil.getUrlFromPath(source);
+            URL url = PathUtils.getUrlFromPath(source);
             InputStreamReader stream = new InputStreamReader(url.openStream());
             BufferedReader reader = new BufferedReader(stream);
 

@@ -1,7 +1,7 @@
 package maru.map.views.swt;
 
 import maru.core.units.DaylengthDefinition;
-import maru.core.utils.DayLengthUtil;
+import maru.core.utils.DayLengthUtils;
 import maru.map.jobs.swt.SWTProjectDrawJob;
 import maru.map.utils.MapUtils;
 import maru.map.views.DayLength;
@@ -38,14 +38,14 @@ public class DayNightDrawJob extends SWTProjectDrawJob
     {
         MapViewParameters area = getParameters();
 
-        long minutesOfDay = DayLengthUtil.getMinutesOfDay(time);
-        double pixelsPerMinute = (double) area.mapWidth / DayLengthUtil.MINUTES_IN_A_DAY;
+        long minutesOfDay = DayLengthUtils.getMinutesOfDay(time);
+        double pixelsPerMinute = (double) area.mapWidth / DayLengthUtils.MINUTES_IN_A_DAY;
 
         double posX;
-        if (minutesOfDay <= DayLengthUtil.MINUTES_IN_HALF_A_DAY) {
+        if (minutesOfDay <= DayLengthUtils.MINUTES_IN_HALF_A_DAY) {
             posX = (area.mapWidth / 2) + (pixelsPerMinute * minutesOfDay);
         } else {
-            posX = pixelsPerMinute * (minutesOfDay - DayLengthUtil.MINUTES_IN_HALF_A_DAY);
+            posX = pixelsPerMinute * (minutesOfDay - DayLengthUtils.MINUTES_IN_HALF_A_DAY);
         }
         return area.mapWidth - (int) Math.round(posX);
     }
@@ -54,13 +54,13 @@ public class DayNightDrawJob extends SWTProjectDrawJob
     {
         int dayTimesCount = verticalPixels / vertivalStepSize;
         DayLength[] dayTimes = new DayLength[dayTimesCount];
-        double dayOfYear = DayLengthUtil.getDayOfYear(time);
+        double dayOfYear = DayLengthUtils.getDayOfYear(time);
 
         for (int i = 0; i < dayTimesCount; i++)
         {
             int verticalPixel = i * vertivalStepSize;
             double latDeg = MapUtils.verticalPixelToLatitude(verticalPixel, verticalPixels);
-            double dayLen = DayLengthUtil.getLengthOfDay(dayOfYear, latDeg, definition);
+            double dayLen = DayLengthUtils.getLengthOfDay(dayOfYear, latDeg, definition);
             dayTimes[i] = new DayLength(verticalPixel, dayLen);
         }
 

@@ -11,7 +11,7 @@ import java.util.Locale;
 import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
-import maru.core.utils.TimeUtil;
+import maru.core.utils.TimeUtils;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiProject;
 import maru.ui.model.UiSpacecraft;
@@ -167,12 +167,12 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
         long stepSize = getSelectedStepSize();
 
         appendln(getReportName());
-        appendln("Date: " + TimeUtil.asISO8601(new Date()));
+        appendln("Date: " + TimeUtils.asISO8601(new Date()));
         appendln("Element: " + element.getElementName());
         appendln("Frame: " + element.getInitialCoordinate().getFrame().toString());
         appendln("Propagator: " + propagator.getName());
-        appendln("Propagation Start: " + TimeUtil.asISO8601(startTime));
-        appendln("Propagation Stop: " + TimeUtil.asISO8601(stopTime));
+        appendln("Propagation Start: " + TimeUtils.asISO8601(startTime));
+        appendln("Propagation Stop: " + TimeUtils.asISO8601(stopTime));
         appendln("Propagation Duration: " + duration + "sec");
         appendln("Step size: " + stepSize + "sec");
     }

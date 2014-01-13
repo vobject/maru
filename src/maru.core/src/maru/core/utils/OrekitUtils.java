@@ -3,8 +3,6 @@ package maru.core.utils;
 import java.util.Calendar;
 import java.util.Date;
 
-import maru.core.model.ITimepoint;
-
 import org.orekit.errors.OrekitException;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.TimeScale;
@@ -24,21 +22,11 @@ public final class OrekitUtils
         }
     }
 
-    public static AbsoluteDate toAbsoluteDate(ITimepoint timepoint)
-    {
-        return toAbsoluteDate(timepoint.getTime());
-    }
-
     public static AbsoluteDate toAbsoluteDate(long time)
     {
-        return toAbsoluteDate(new Date(time * 1000));
-    }
+        Calendar calendar = TimeUtils.getCalendar();
 
-    private static AbsoluteDate toAbsoluteDate(Date time)
-    {
-        Calendar calendar = TimeUtil.getCalendar();
-
-        calendar.setTime(time);
+        calendar.setTime(new Date(time * 1000));
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH) + 1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -46,18 +34,13 @@ public final class OrekitUtils
         int minutes = calendar.get(Calendar.MINUTE);
         int seconds = calendar.get(Calendar.SECOND);
         int milliseconds = calendar.get(Calendar.MILLISECOND);
-
         double secondsPresision = seconds + (milliseconds / 1000.0);
-        return new AbsoluteDate(year, month, day, hours, minutes, secondsPresision, utc);
-    }
 
-    public static ITimepoint toTimepoint(AbsoluteDate date)
-    {
-        return TimeUtil.fromSeconds(date.toDate(utc).getTime() / 1000);
+        return new AbsoluteDate(year, month, day, hours, minutes, secondsPresision, utc);
     }
 
     public static long toSeconds(AbsoluteDate date)
     {
-        return toTimepoint(date).getTime();
+        return date.toDate(utc).getTime() / 1000;
     }
 }

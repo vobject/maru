@@ -3,7 +3,7 @@ package maru.spacecraft.wizards;
 import java.text.ParseException;
 
 import maru.core.model.IScenarioProject;
-import maru.core.utils.TimeUtil;
+import maru.core.utils.TimeUtils;
 import maru.spacecraft.MaruSpacecraftResources;
 import maru.ui.wizards.ScenarioElementWizard;
 import maru.ui.wizards.ScenarioElementWizardNamingPage;
@@ -102,7 +102,7 @@ public class KeplerSatelliteWizardPage extends ScenarioElementWizardNamingPage
         new Label(container, SWT.NONE).setText("Date:");
         dateText = new Text(container, SWT.BORDER);
         if (getProject() != null) {
-            dateText.setText(TimeUtil.asISO8601(getProject().getStartTime()));
+            dateText.setText(TimeUtils.asISO8601(getProject().getStartTime()));
         }
         dateText.addKeyListener(inputValidation);
         dateText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -172,7 +172,7 @@ public class KeplerSatelliteWizardPage extends ScenarioElementWizardNamingPage
 
         try
         {
-            TimeUtil.fromString(dateText.getText());
+            TimeUtils.fromString(dateText.getText());
         }
         catch (ParseException e)
         {
@@ -223,7 +223,7 @@ public class KeplerSatelliteWizardPage extends ScenarioElementWizardNamingPage
     {
         try
         {
-            return TimeUtil.fromString(dateText.getText()).getTime();
+            return TimeUtils.fromString(dateText.getText()).getTime();
         }
         catch (ParseException e)
         {

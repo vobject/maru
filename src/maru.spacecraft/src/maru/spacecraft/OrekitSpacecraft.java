@@ -3,7 +3,6 @@ package maru.spacecraft;
 import maru.core.model.ICentralBody;
 import maru.core.model.ICoordinate;
 import maru.core.model.template.AbstractSpacecraft;
-import maru.core.utils.OrekitUtils;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.util.FastMath;
@@ -46,9 +45,9 @@ public abstract class OrekitSpacecraft extends AbstractSpacecraft
             CelestialBody sun = CelestialBodyFactory.getSun();
             ICentralBody earth = getCentralBody();
 
-            AbsoluteDate date = OrekitUtils.toAbsoluteDate(sat.getTime());
+            AbsoluteDate date = sat.getDate();
             Frame frame = sat.getFrame();
-            Vector3D position = earth.getPosition(sat.getFrame(), sat.getTime());
+            Vector3D position = earth.getPosition(sat.getFrame(), date);
 
             Vector3D pted = sun.getPVCoordinates(date, frame).getPosition();
             Vector3D ping = position;

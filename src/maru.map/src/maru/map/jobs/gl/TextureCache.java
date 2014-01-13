@@ -9,7 +9,7 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLException;
 
 import maru.IMaruResource;
-import maru.core.utils.PathUtil;
+import maru.core.utils.PathUtils;
 import maru.map.MaruMapResources;
 
 import com.jogamp.opengl.util.texture.Texture;
@@ -95,7 +95,7 @@ public class TextureCache
 
     private static Texture loadImage(String path) throws GLException, IOException
     {
-        URL url = PathUtil.getUrlFromPath(path);
-        return TextureIO.newTexture(url.openStream(), true, PathUtil.getSuffixFromPath(path));
+        URL url = PathUtils.getUrlFromPath(path);
+        return TextureIO.newTexture(url.openStream(), true, PathUtils.getSuffixFromPath(path));
     }
 }

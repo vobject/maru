@@ -14,6 +14,7 @@ import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.core.model.IVisibleElement;
+import maru.core.utils.OrekitUtils;
 import maru.map.jobs.gl.GLProjectDrawJob;
 import maru.map.views.GroundtrackBarrier;
 import maru.map.views.GroundtrackPoint;
@@ -68,11 +69,11 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
             GroundtrackBarrier currentGtBarrier;
             if (!gtBarriers.containsKey(element)) {
-                currentGtBarrier = new GroundtrackBarrier(currentCoordinate.getTime(), drawing.getGroundtrackLength());
+                currentGtBarrier = new GroundtrackBarrier(currentCoordinate.getDate(), drawing.getGroundtrackLength());
                 gtBarriers.put(element, currentGtBarrier);
             } else {
                 currentGtBarrier = gtBarriers.get(element);
-                currentGtBarrier.update(currentCoordinate.getTime(), drawing.getGroundtrackLength());
+                currentGtBarrier.update(currentCoordinate.getDate(), drawing.getGroundtrackLength());
             }
 
             RGB defaultColor = element.getElementColor();
@@ -174,7 +175,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         EquirectangularCoordinate lastMapPos = null;
         ArrayList<GroundtrackPoint> lineStrip = new ArrayList<>();
 
-        for (ICoordinate coordinate : propagator.getCoordinates(element, barrier.getStart(), barrier.getStop(), drawing.getGroundtrackStepSize()))
+        for (ICoordinate coordinate : propagator.getCoordinates(element, OrekitUtils.toSeconds(barrier.getStart()), OrekitUtils.toSeconds(barrier.getStop()), drawing.getGroundtrackStepSize()))
         {
             EquirectangularCoordinate mapPos = getMapPosition(coordinate);
             if (mapPos == null) {

@@ -3,7 +3,6 @@ package maru.centralbody;
 import maru.IMaruResource;
 import maru.core.model.ICoordinate;
 import maru.core.model.template.AbstractCentralBody;
-import maru.core.utils.OrekitUtils;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.orekit.bodies.CelestialBody;
@@ -26,7 +25,7 @@ public abstract class OrekitCentralBody extends AbstractCentralBody
         setTexture(mapImage);
 
         this.body = body;
-        setFrame(body.getInertiallyOrientedFrame());
+        setFrame(body.getBodyOrientedFrame());
 
         this.ellipsoid = new OneAxisEllipsoid(getEquatorialRadius(),
                                               getFlattening(),
@@ -34,16 +33,17 @@ public abstract class OrekitCentralBody extends AbstractCentralBody
     }
 
     @Override
-    public Vector3D getPosition(Frame frame, long time) throws OrekitException
+    public Vector3D getPosition(Frame frame, AbsoluteDate date) throws OrekitException
     {
-        AbsoluteDate orekitDate = OrekitUtils.toAbsoluteDate(time);
-        return body.getPVCoordinates(orekitDate, frame).getPosition();
+        return body.getPVCoordinates(date, frame).getPosition();
     }
 
     @Override
-    public GeodeticPoint toGeodeticPoint(Vector3D position, Frame frame, long time) throws OrekitException
+    public GeodeticPoint toGeodeticPoint(Vector3D position,
+                                         Frame frame,
+                                         AbsoluteDate date) throws OrekitException
     {
-        return ellipsoid.transform(position, frame, OrekitUtils.toAbsoluteDate(time));
+        return ellipsoid.transform(position, frame, date);
     }
 
     @Override
@@ -51,7 +51,7 @@ public abstract class OrekitCentralBody extends AbstractCentralBody
     {
         return ellipsoid.transform(coordinate.getPosition(),
                                    coordinate.getFrame(),
-                                   OrekitUtils.toAbsoluteDate(coordinate.getTime()));
+                                   coordinate.getDate());
     }
 
     @Override

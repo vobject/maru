@@ -2,7 +2,7 @@ package maru.spacecraft.propertypages;
 
 import maru.core.model.CoreModel;
 import maru.core.model.IScenarioElement;
-import maru.core.utils.TimeUtil;
+import maru.core.utils.TimeUtils;
 import maru.spacecraft.ckesatellite.InitialKeplerCoordinate;
 import maru.spacecraft.ckesatellite.KeplerSatellite;
 import maru.ui.propertypages.UiPropertyPage;
@@ -189,7 +189,7 @@ public class KeplerSatellitePropertyPage extends UiPropertyPage
         raan.setText(initialRaan);
         anomaly.setText(initialAnomaly);
         anomalyType.select(0); // select PositionAngle.MEAN
-        date.setText(TimeUtil.asISO8601(coordinate.getTime()));
+        date.setText(TimeUtils.asISO8601(coordinate.getDate()));
         frame.setText(coordinate.getFrame().toString());
         attractionCoefficient.setText(Double.toString(element.getCentralBody().getGM()));
     }

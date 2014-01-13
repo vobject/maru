@@ -4,7 +4,7 @@ import java.text.ParseException;
 
 import maru.core.model.CoreModel;
 import maru.core.model.ITimepoint;
-import maru.core.utils.TimeUtil;
+import maru.core.utils.TimeUtils;
 import maru.ui.model.UiTimepoint;
 
 import org.eclipse.swt.SWT;
@@ -31,7 +31,7 @@ public class UiTimepointPropertyPage extends UiPropertyPage
             String newText = ((Text) event.widget).getText();
 
             try {
-                newTime = TimeUtil.fromString(newText).getTime();
+                newTime = TimeUtils.fromString(newText).getTime();
                 setErrorMessage(null);
                 setValid(true);
             } catch (ParseException ex) {
@@ -113,6 +113,6 @@ public class UiTimepointPropertyPage extends UiPropertyPage
             return;
         }
 
-        time.setText(TimeUtil.asISO8601(initialTime));
+        time.setText(TimeUtils.asISO8601(initialTime));
     }
 }

@@ -131,7 +131,7 @@ public final class CreateScenarioHelper
         double anomaly = Math.toRadians(359.948);
         PositionAngle type = PositionAngle.MEAN;
         Frame frame = FramesFactory.getEME2000();
-        AbsoluteDate date = OrekitUtils.toAbsoluteDate(scenario.getStartTime());
+        AbsoluteDate date = OrekitUtils.toAbsoluteDate(scenario.getStartTime().getTime());
         double mu = scenario.getCentralBody().getGM();
 
         KeplerianOrbit initialOrbit = new KeplerianOrbit(a, e, i, pa, raan, anomaly, type, frame, date, mu);

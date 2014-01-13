@@ -5,7 +5,7 @@ import java.util.Map;
 import maru.core.model.IScenarioElement;
 import maru.core.model.ITimepoint;
 import maru.core.model.template.ScenarioElement;
-import maru.core.utils.TimeUtil;
+import maru.core.utils.TimeUtils;
 
 public class Timepoint extends ScenarioElement implements ITimepoint
 {
@@ -57,7 +57,7 @@ public class Timepoint extends ScenarioElement implements ITimepoint
     {
         Map<String, String> properties = super.getPropertyMap();
 
-        properties.put("Time", TimeUtil.asISO8601(getTime()));
+        properties.put("Time", TimeUtils.asISO8601(getTime()));
 
         return properties;
     }
