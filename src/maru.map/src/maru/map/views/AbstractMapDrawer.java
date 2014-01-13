@@ -3,7 +3,7 @@ package maru.map.views;
 import maru.centralbody.projection.EquirectangularProjector;
 import maru.centralbody.projection.ICoordinateProjector;
 import maru.ui.model.UiProject;
-import maru.ui.model.UiPropagatable;
+import maru.ui.model.UiVisible;
 
 public abstract class AbstractMapDrawer implements IMapDrawer
 {
@@ -18,7 +18,7 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     private ICoordinateProjector mapProjector;
 
     // the element currently selected in the scenario explorer (or null)
-    private UiPropagatable selectedElement;
+    private UiVisible selectedElement;
 
     public AbstractMapDrawer(AbstractMapView parent)
     {
@@ -82,13 +82,13 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     }
 
     @Override
-    public UiPropagatable getSelectedElement()
+    public UiVisible getSelectedElement()
     {
         return selectedElement;
     }
 
     @Override
-    public void setSelectedElement(UiPropagatable element)
+    public void setSelectedElement(UiVisible element)
     {
         this.selectedElement = element;
     }

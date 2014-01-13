@@ -8,15 +8,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import maru.core.model.IGroundstation;
-import maru.core.model.IPropagatable;
 import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.core.utils.TimeUtil;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiProject;
-import maru.ui.model.UiPropagatable;
+import maru.ui.model.UiSpacecraft;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -98,7 +96,7 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
     @Override
     public void createReport(Text output)
     {
-        IPropagatable element = getSelectedElement();
+        ISpacecraft element = getSelectedElement();
         if (element == null) {
             return;
         }
@@ -143,14 +141,14 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
         outputBuffer.append("\n");
     }
 
-    protected IPropagatable getSelectedElement()
+    protected ISpacecraft getSelectedElement()
     {
         String selectedName = reportElement.getText();
         if (selectedName.isEmpty()) {
             return null;
         }
         UiElement uiElement = getCurrentProject().getChild(selectedName);
-        UiPropagatable uiPropagatable = (UiPropagatable) uiElement;
+        UiSpacecraft uiPropagatable = (UiSpacecraft) uiElement;
         return uiPropagatable.getUnderlyingElement();
     }
 
@@ -161,7 +159,7 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
 
     protected void createDefaultReportHeader()
     {
-        IPropagatable element = getSelectedElement();
+        ISpacecraft element = getSelectedElement();
         IPropagator propagator = element.getPropagator();
         long startTime = getCurrentProject().getStartTime();
         long stopTime = getCurrentProject().getStopTime();
@@ -209,20 +207,13 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
         // do not use scenario.getPropagatables() because we want the spacecrafts
         // to appear in the list before the groundstations.
         Collection<ISpacecraft> spacecrafts = scenario.getSpacecrafts();
-        Collection<IGroundstation> groundstations = scenario.getGroundstations();
+        List<String> items = new ArrayList<>(spacecrafts.size());
 
-        int itemCount = spacecrafts.size() + groundstations.size();
-        List<String> items = new ArrayList<>(itemCount);
-
-        for (IPropagatable element : spacecrafts) {
+        for (ISpacecraft element : spacecrafts) {
             items.add(element.getElementName());
         }
 
-        for (IPropagatable element : groundstations) {
-            items.add(element.getElementName());
-        }
-
-        return items.toArray(new String[itemCount]);
+        return items.toArray(new String[0]);
     }
 
     protected abstract void createReportText();

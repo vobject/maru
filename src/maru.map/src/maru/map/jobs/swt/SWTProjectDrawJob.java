@@ -3,12 +3,12 @@ package maru.map.jobs.swt;
 import maru.centralbody.projection.ICoordinateProjector;
 import maru.map.jobs.IProjectDrawJob;
 import maru.ui.model.UiProject;
-import maru.ui.model.UiPropagatable;
+import maru.ui.model.UiVisible;
 
 public abstract class SWTProjectDrawJob extends SWTDrawJob implements IProjectDrawJob
 {
     private UiProject project;
-    private UiPropagatable selectedElement;
+    private UiVisible selectedElement;
     private ICoordinateProjector projector;
 
     @Override
@@ -23,12 +23,12 @@ public abstract class SWTProjectDrawJob extends SWTDrawJob implements IProjectDr
         this.project = project;
     }
 
-    public UiPropagatable getSelectedElement()
+    public UiVisible getSelectedElement()
     {
         return selectedElement;
     }
 
-    public void setSelectedElement(UiPropagatable selectedElement)
+    public void setSelectedElement(UiVisible selectedElement)
     {
         this.selectedElement = selectedElement;
     }

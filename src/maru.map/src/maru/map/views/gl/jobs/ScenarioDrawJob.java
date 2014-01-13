@@ -7,14 +7,13 @@ import java.util.WeakHashMap;
 import javax.media.opengl.GL2;
 
 import maru.IMaruResource;
-import maru.MaruException;
 import maru.centralbody.projection.EquirectangularCoordinate;
-import maru.centralbody.projection.ICoordinateProjector;
 import maru.core.model.ICoordinate;
-import maru.core.model.IPropagatable;
+import maru.core.model.IGroundstation;
 import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
+import maru.core.model.IVisibleElement;
 import maru.map.jobs.gl.GLProjectDrawJob;
 import maru.map.views.GroundtrackBarrier;
 import maru.map.views.GroundtrackPoint;
@@ -23,6 +22,8 @@ import maru.map.views.MapViewSettings;
 import maru.map.views.gl.GLUtils;
 
 import org.eclipse.swt.graphics.RGB;
+import org.orekit.bodies.GeodeticPoint;
+import org.orekit.errors.OrekitException;
 
 import com.jogamp.opengl.util.texture.Texture;
 
@@ -30,7 +31,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 {
     private class IconSize { int x; int y; };
 
-    private final Map<IPropagatable, GroundtrackBarrier> gtBarriers;
+    private final Map<ISpacecraft, GroundtrackBarrier> gtBarriers;
 
     public ScenarioDrawJob()
     {
@@ -48,9 +49,22 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         getProjector().setCentralBody(scenarioProject.getCentralBody());
         getProjector().setMapSize(area.mapWidth, area.mapHeight);
 
-        for (IPropagatable element : scenarioProject.getPropagatables())
+        for (IGroundstation element : scenarioProject.getGroundstations())
+        {
+            GeodeticPoint position = element.getGeodeticPosition();
+            EquirectangularCoordinate mapPos = getMapPosition(position);
+            RGB defaultColor = element.getElementColor();
+
+            drawElement(element, mapPos, defaultColor);
+        }
+
+        for (ISpacecraft element : scenarioProject.getSpacecrafts())
         {
             ICoordinate currentCoordinate = element.getCurrentCoordinate();
+            EquirectangularCoordinate mapPos = getMapPosition(currentCoordinate);
+            if (mapPos == null) {
+                return;
+            }
 
             GroundtrackBarrier currentGtBarrier;
             if (!gtBarriers.containsKey(element)) {
@@ -66,7 +80,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
             RGB currentColor = selectColor(element, currentCoordinate, defaultColor, nightColor);
 
             drawGroundtrack(element, currentGtBarrier, defaultColor, nightColor);
-            drawElement(element, currentCoordinate, currentColor);
+            drawElement(element, mapPos, currentColor);
         }
     }
 
@@ -76,7 +90,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         // this job does not own any resources
     }
 
-    private void drawGroundtrack(IPropagatable element, GroundtrackBarrier barrier, RGB day, RGB night)
+    private void drawGroundtrack(ISpacecraft element, GroundtrackBarrier barrier, RGB day, RGB night)
     {
         GL2 gl = getGL();
         MapViewParameters area = getParameters();
@@ -102,16 +116,8 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         }
     }
 
-    private void drawElement(IPropagatable element, ICoordinate coordinate, RGB color)
+    private void drawElement(IVisibleElement element, EquirectangularCoordinate mapPos, RGB color)
     {
-        EquirectangularCoordinate mapPos;
-        try {
-            mapPos = getProjector().project(coordinate);
-        } catch (MaruException e) {
-            e.printStackTrace();
-            return;
-        }
-
         GL2 gl = getGL();
         MapViewParameters area = getParameters();
 
@@ -142,11 +148,25 @@ public class ScenarioDrawJob extends GLProjectDrawJob
                          true);
     }
 
-    private ArrayList<ArrayList<GroundtrackPoint>> getGroundtrack(IPropagatable element, GroundtrackBarrier barrier)
+    private EquirectangularCoordinate getMapPosition(GeodeticPoint point)
+    {
+        return getProjector().project(point);
+    }
+
+    private EquirectangularCoordinate getMapPosition(ICoordinate coordinate)
+    {
+        try {
+            return getProjector().project(coordinate);
+        } catch (OrekitException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private ArrayList<ArrayList<GroundtrackPoint>> getGroundtrack(ISpacecraft element, GroundtrackBarrier barrier)
     {
         MapViewParameters area = getParameters();
         MapViewSettings drawing = getSettings();
-        ICoordinateProjector projector = getProjector();
 
         ArrayList<ArrayList<GroundtrackPoint>> elementLineStrips = new ArrayList<>();
 
@@ -156,11 +176,8 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
         for (ICoordinate coordinate : propagator.getCoordinates(element, barrier.getStart(), barrier.getStop(), drawing.getGroundtrackStepSize()))
         {
-            EquirectangularCoordinate mapPos;
-            try {
-                mapPos = projector.project(coordinate);
-            } catch (MaruException e) {
-                e.printStackTrace();
+            EquirectangularCoordinate mapPos = getMapPosition(coordinate);
+            if (mapPos == null) {
                 continue;
             }
 
@@ -191,7 +208,12 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         return elementLineStrips;
     }
 
-    private IconSize getElementIconSize(IPropagatable element)
+    private boolean inShadow(ISpacecraft element, ICoordinate coordinate)
+    {
+        return element.inUmbraOrPenumbra(coordinate);
+    }
+
+    private IconSize getElementIconSize(IVisibleElement element)
     {
         MapViewParameters area = getParameters();
         IconSize size = new IconSize();
@@ -207,17 +229,6 @@ public class ScenarioDrawJob extends GLProjectDrawJob
             size.x = area.iconSize;
             size.y = area.iconSize;
             return size;
-        }
-    }
-
-    private boolean inShadow(IPropagatable element, ICoordinate coordinate)
-    {
-        if (element instanceof ISpacecraft) {
-            return ((ISpacecraft) element).inUmbraOrPenumbra(coordinate);
-        } else {
-            // there is currently nothing in the groundstation interface that
-            // allows to ask if it is day or night.
-            return false;
         }
     }
 
@@ -244,7 +255,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         gl.glEnd();
     }
 
-    private RGB selectColor(IPropagatable element, ICoordinate coordinate, RGB day, RGB night)
+    private RGB selectColor(ISpacecraft element, ICoordinate coordinate, RGB day, RGB night)
     {
         return inShadow(element, coordinate) ? night : day;
     }

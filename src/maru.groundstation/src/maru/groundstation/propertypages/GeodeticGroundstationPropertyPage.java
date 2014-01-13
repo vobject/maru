@@ -2,29 +2,26 @@ package maru.groundstation.propertypages;
 
 import maru.IMaruResource;
 import maru.core.model.CoreModel;
-import maru.core.model.ICoordinate;
 import maru.groundstation.MaruGroundstationResources;
-import maru.groundstation.earth.GeodeticCoordinate;
-import maru.groundstation.earth.GeodeticGroundstation;
-import maru.ui.propertypages.UiPropagatablePropertyPage;
+import maru.groundstation.earth.Groundstation;
+import maru.ui.propertypages.UiVisiblePropertyPage;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.orekit.bodies.GeodeticPoint;
 
-public class GeodeticGroundstationPropertyPage extends UiPropagatablePropertyPage
+public class GeodeticGroundstationPropertyPage extends UiVisiblePropertyPage
 {
     private Text latitude;
     private Text longitude;
     private Text altitude;
-    private Text elevation;
 
     private String initialLatitude;
     private String initialLongitude;
     private String initialAltitude;
-    private String initialElevation;
 
     @Override
     protected String[] getImageNames()
@@ -47,9 +44,9 @@ public class GeodeticGroundstationPropertyPage extends UiPropagatablePropertyPag
     }
 
     @Override
-    public GeodeticGroundstation getScenarioElement()
+    public Groundstation getScenarioElement()
     {
-        return (GeodeticGroundstation) getUiElement().getUnderlyingElement();
+        return (Groundstation) getUiElement().getUnderlyingElement();
     }
 
     @Override
@@ -59,11 +56,12 @@ public class GeodeticGroundstationPropertyPage extends UiPropagatablePropertyPag
             return false;
         }
 
-        if (hasInitialCoordinateChanged())
+        if (hasPositionChanged())
         {
-            GeodeticGroundstation element = getScenarioElement();
-            GeodeticCoordinate newCoordinate = createNewCoordinate(element);
-            CoreModel.getDefault().changeInitialCoordinate(element, newCoordinate, true);
+            Groundstation element = getScenarioElement();
+            GeodeticPoint newPosition = createNewPosition(element);
+
+            CoreModel.getDefault().changeInitialCoordinate(element, newPosition, true);
         }
 
         initDefaults();
@@ -98,34 +96,29 @@ public class GeodeticGroundstationPropertyPage extends UiPropagatablePropertyPag
         altitude = new Text(container, SWT.BORDER | SWT.SINGLE);
         altitude.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-        new Label(container, SWT.NONE).setText("Elevation (deg):");
-        elevation = new Text(container, SWT.BORDER | SWT.SINGLE);
-        elevation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
         return container;
     }
 
     private void initDefaults()
     {
-        GeodeticGroundstation element = getScenarioElement();
+        Groundstation element = getScenarioElement();
         if (element == null) {
             return;
         }
 
-        GeodeticCoordinate coordinate = element.getInitialCoordinate();
+        GeodeticPoint position = element.getGeodeticPosition();
 
         // angles are processes in radiant internally
         // convert them to degrees for user interface interactions
 
-        initialLatitude = Double.toString(Math.toDegrees(coordinate.getLatitude()));
-        initialLongitude = Double.toString(Math.toDegrees(coordinate.getLongitude()));
-        initialAltitude = Double.toString(coordinate.getAltitude());
-        initialElevation = Double.toString(Math.toDegrees(coordinate.getElevation()));
+        initialLatitude = Double.toString(Math.toDegrees(position.getLatitude()));
+        initialLongitude = Double.toString(Math.toDegrees(position.getLongitude()));
+        initialAltitude = Double.toString(position.getAltitude());
     }
 
     private void initControls()
     {
-        GeodeticGroundstation element = getScenarioElement();
+        Groundstation element = getScenarioElement();
         if (element == null) {
             return;
         }
@@ -133,20 +126,17 @@ public class GeodeticGroundstationPropertyPage extends UiPropagatablePropertyPag
         latitude.setText(initialLatitude);
         longitude.setText(initialLongitude);
         altitude.setText(initialAltitude);
-        elevation.setText(initialElevation);
     }
 
-    private boolean hasInitialCoordinateChanged()
+    private boolean hasPositionChanged()
     {
         String newLatitude = latitude.getText();
         String newLongitude = longitude.getText();
         String newAltitude = altitude.getText();
-        String newElevation = elevation.getText();
 
         if (!newLatitude.equals(initialLatitude)   ||
             !newLongitude.equals(initialLongitude) ||
-            !newAltitude.equals(initialAltitude)   ||
-            !newElevation.equals(initialElevation))
+            !newAltitude.equals(initialAltitude))
         {
             return true;
         }
@@ -157,7 +147,7 @@ public class GeodeticGroundstationPropertyPage extends UiPropagatablePropertyPag
         }
     }
 
-    private GeodeticCoordinate createNewCoordinate(GeodeticGroundstation element)
+    private GeodeticPoint createNewPosition(Groundstation element)
     {
         // angles are displayed in degree in the user interface
         // convert them to radiant for internal use
@@ -165,11 +155,7 @@ public class GeodeticGroundstationPropertyPage extends UiPropagatablePropertyPag
         double lat = Math.toRadians(Double.parseDouble(latitude.getText()));
         double lon = Math.toRadians(Double.parseDouble(longitude.getText()));
         double alt = Double.parseDouble(altitude.getText());
-        double elev = Math.toRadians(Double.parseDouble(elevation.getText()));
-        ICoordinate initialCoordinate = element.getInitialCoordinate();
 
-        return new GeodeticCoordinate(element.getCentralBody(),
-                                      lat, lon, alt, elev,
-                                      initialCoordinate.getTime());
+        return new GeodeticPoint(lat, lon, alt);
     }
 }

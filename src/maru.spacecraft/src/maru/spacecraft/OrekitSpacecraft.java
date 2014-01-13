@@ -2,19 +2,18 @@ package maru.spacecraft;
 
 import maru.core.model.ICentralBody;
 import maru.core.model.ICoordinate;
-import maru.core.model.template.Spacecraft;
-import maru.core.units.Position;
+import maru.core.model.template.AbstractSpacecraft;
+import maru.core.utils.OrekitUtils;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.util.FastMath;
-import org.orekit.OrekitUtils;
 import org.orekit.bodies.CelestialBody;
 import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
 
-public abstract class OrekitSpacecraft extends Spacecraft
+public abstract class OrekitSpacecraft extends AbstractSpacecraft
 {
     private static final long serialVersionUID = 1L;
 
@@ -48,12 +47,12 @@ public abstract class OrekitSpacecraft extends Spacecraft
             ICentralBody earth = getCentralBody();
 
             AbsoluteDate date = OrekitUtils.toAbsoluteDate(sat.getTime());
-            Frame frame = OrekitUtils.toOrekitFrame(sat.getFrame());
-            Position position = earth.getPosition(sat.getTime(), sat.getFrame());
+            Frame frame = sat.getFrame();
+            Vector3D position = earth.getPosition(sat.getFrame(), sat.getTime());
 
             Vector3D pted = sun.getPVCoordinates(date, frame).getPosition();
-            Vector3D ping = OrekitUtils.toOrekitPosition(position);
-            Vector3D psat = OrekitUtils.toOrekitPosition(sat.getPosition());
+            Vector3D ping = position;
+            Vector3D psat = sat.getPosition();
 
             Vector3D ps = pted.subtract(psat);
             Vector3D po = ping.subtract(psat);

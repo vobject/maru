@@ -10,16 +10,15 @@ import maru.core.MaruCorePlugin;
 import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
 import maru.core.model.IScenarioProject;
+import maru.core.utils.OrekitUtils;
 import maru.groundstation.MaruGroundstationResources;
-import maru.groundstation.earth.GeodeticCoordinate;
-import maru.groundstation.earth.GeodeticGroundstation;
-import maru.groundstation.earth.GeodeticGroundstationPropagator;
+import maru.groundstation.earth.Groundstation;
 import maru.spacecraft.MaruSpacecraftResources;
 import maru.spacecraft.ckesatellite.InitialKeplerCoordinate;
 import maru.spacecraft.ckesatellite.KeplerPropagator;
 import maru.spacecraft.ckesatellite.KeplerSatellite;
 import maru.spacecraft.tlesatellite.InitialTleCoordinate;
-import maru.spacecraft.tlesatellite.Sgp4Propagator;
+import maru.spacecraft.tlesatellite.SGP4Propagator;
 import maru.spacecraft.tlesatellite.TleSatellite;
 import maru.spacecraft.utils.TleUtils;
 
@@ -27,7 +26,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.RGB;
-import org.orekit.OrekitUtils;
+import org.orekit.bodies.GeodeticPoint;
+import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
 import org.orekit.orbits.KeplerianOrbit;
@@ -51,7 +51,6 @@ public final class CreateScenarioHelper
     private static double DEFAULT_GROUNDSTATION_LATITUDE_DEG = 49.78186646; // degree
     private static double DEFAULT_GROUNDSTATION_LONGITUDE_DEG = 9.97290914; // degree
     private static double DEFAULT_GROUNDSTATION_ALTITUDE = 274.68; // meter
-    private static double DEFAULT_GROUNDSTATION_ELEVATION_DEG = 5.0; // degree
 
     private static String DEFAULT_KEPLER_SATELLITE_NAME = "DebugKeplerSatellite";
     private static String DEFAULT_KEPLER_SATELLITE_COMMENT = "DebugKeplerSatellite Comment";
@@ -67,16 +66,16 @@ public final class CreateScenarioHelper
         Random generator = new Random();
         int scenarioId = generator.nextInt(9999);
 
-        String scenarioName = DEFAULT_SCENARIO_NAME + "_" + scenarioId;
-        String scenarioComment = DEFAULT_SCENARIO_COMMENT;
-        Earth centralBody = new Earth(DEFAULT_SCENARIO_CENTRALBODY_GRAPHIC2D);
-        long startTime = (new Date()).getTime() / 1000;
-        long stopTime = ((new Date()).getTime() / 1000) + DEFAULT_SCENARIO_LENGTH;
-
-        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(scenarioName);
-
         try
         {
+            String scenarioName = DEFAULT_SCENARIO_NAME + "_" + scenarioId;
+            String scenarioComment = DEFAULT_SCENARIO_COMMENT;
+            Earth centralBody = new Earth(DEFAULT_SCENARIO_CENTRALBODY_GRAPHIC2D);
+            long startTime = (new Date()).getTime() / 1000;
+            long stopTime = ((new Date()).getTime() / 1000) + DEFAULT_SCENARIO_LENGTH;
+
+            IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(scenarioName);
+
             CoreModel coreModel = MaruCorePlugin.getDefault().getCoreModel();
 
             IScenarioProject scenarioProject = coreModel.createScenarioProject(
@@ -89,14 +88,14 @@ public final class CreateScenarioHelper
 
             return scenarioProject;
         }
-        catch (CoreException e)
+        catch (CoreException | OrekitException e)
         {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static void createGroundstation(IScenarioProject scenarioProject)
+    public static void createGroundstation(IScenarioProject scenario)
     {
         String name = DEFAULT_GROUNDSTATION_NAME;
         String comment = DEFAULT_GROUNDSTATION_COMMENT;
@@ -105,28 +104,20 @@ public final class CreateScenarioHelper
         double latitude = Math.toRadians(DEFAULT_GROUNDSTATION_LATITUDE_DEG);
         double longitude = Math.toRadians(DEFAULT_GROUNDSTATION_LONGITUDE_DEG);
         double altitude = DEFAULT_GROUNDSTATION_ALTITUDE;
-        double elevation = Math.toRadians(DEFAULT_GROUNDSTATION_ELEVATION_DEG);
+        GeodeticPoint position = new GeodeticPoint(latitude, longitude, altitude);
 
-        ICentralBody centralBody = scenarioProject.getCentralBody();
-        long time = scenarioProject.getCurrentTime().getTime();
+        ICentralBody centralBody = scenario.getCentralBody();
 
-        GeodeticGroundstationPropagator propagator = new GeodeticGroundstationPropagator();
-        GeodeticCoordinate initialCoordinate =
-            new GeodeticCoordinate(centralBody, latitude, longitude,
-                                                altitude, elevation, time);
-
-        GeodeticGroundstation groundstation = new GeodeticGroundstation(name);
+        Groundstation groundstation = new Groundstation(name, position, centralBody);
         groundstation.setElementComment(comment);
         groundstation.setElementColor(color);
         groundstation.setElementImage(DEFAULT_GROUNDSTATION_GRAPHIC2D);
-        groundstation.setInitialCoordinate(initialCoordinate);
-        groundstation.setPropagator(propagator);
 
         CoreModel coreModel = MaruCorePlugin.getDefault().getCoreModel();
-        coreModel.addGroundstation(scenarioProject, groundstation, true);
+        coreModel.addGroundstation(scenario, groundstation, true);
     }
 
-    public static void createKeplerSatellite(IScenarioProject scenarioProject)
+    public static void createKeplerSatellite(IScenarioProject scenario)
     {
         String name = DEFAULT_KEPLER_SATELLITE_NAME;
         String comment = DEFAULT_KEPLER_SATELLITE_COMMENT;
@@ -140,8 +131,8 @@ public final class CreateScenarioHelper
         double anomaly = Math.toRadians(359.948);
         PositionAngle type = PositionAngle.MEAN;
         Frame frame = FramesFactory.getEME2000();
-        AbsoluteDate date = OrekitUtils.toAbsoluteDate(scenarioProject.getStartTime());
-        double mu = scenarioProject.getCentralBody().getGM();
+        AbsoluteDate date = OrekitUtils.toAbsoluteDate(scenario.getStartTime());
+        double mu = scenario.getCentralBody().getGM();
 
         KeplerianOrbit initialOrbit = new KeplerianOrbit(a, e, i, pa, raan, anomaly, type, frame, date, mu);
         InitialKeplerCoordinate initialCoordinate = new InitialKeplerCoordinate(initialOrbit);
@@ -155,10 +146,10 @@ public final class CreateScenarioHelper
         satellite.setPropagator(propagator);
 
         CoreModel coreModel = MaruCorePlugin.getDefault().getCoreModel();
-        coreModel.addSpacecraft(scenarioProject, satellite, true);
+        coreModel.addSpacecraft(scenario, satellite, true);
     }
 
-    public static void createTleSatellite(IScenarioProject scenarioProject)
+    public static void createTleSatellite(IScenarioProject scenario)
     {
         String comment = DEFAULT_TLE_SATELLITE_COMMENT;
         RGB color = DEFAULT_TLE_SATELLITE_COLOR;
@@ -166,7 +157,7 @@ public final class CreateScenarioHelper
         // the fresh TLE data for the ISS
         String url = "http://www.celestrak.com/NORAD/elements/stations.txt";
         InitialTleCoordinate initialCoordinate = TleUtils.parseTleSource(url).get(0);
-        Sgp4Propagator propagator = new Sgp4Propagator();
+        SGP4Propagator propagator = new SGP4Propagator();
 
         TleSatellite satellite = new TleSatellite(initialCoordinate.getName());
         satellite.setElementComment(comment);
@@ -176,6 +167,6 @@ public final class CreateScenarioHelper
         satellite.setPropagator(propagator);
 
         CoreModel coreModel = MaruCorePlugin.getDefault().getCoreModel();
-        coreModel.addSpacecraft(scenarioProject, satellite, true);
+        coreModel.addSpacecraft(scenario, satellite, true);
     }
 }

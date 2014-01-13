@@ -9,7 +9,6 @@ import maru.IMaruResource;
 import maru.core.model.ICentralBody;
 import maru.core.model.ICoordinate;
 import maru.core.model.IGroundstation;
-import maru.core.model.IPropagatable;
 import maru.core.model.IPropagationListener;
 import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioModelListener;
@@ -17,10 +16,13 @@ import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.core.model.ITimeProvider;
 import maru.core.model.ITimepoint;
-import maru.core.model.template.CentralBody;
-import maru.core.model.template.Propagatable;
-import maru.core.model.template.Propagator;
+import maru.core.model.IVisibleElement;
+import maru.core.model.template.AbstractCentralBody;
+import maru.core.model.template.AbstractGroundstation;
+import maru.core.model.template.AbstractPropagator;
+import maru.core.model.template.AbstractSpacecraft;
 import maru.core.model.template.ScenarioElement;
+import maru.core.model.template.VisibleElement;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -29,6 +31,7 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.swt.graphics.RGB;
+import org.orekit.bodies.GeodeticPoint;
 
 final public class ScenarioModelManager implements IResourceChangeListener
 {
@@ -389,7 +392,11 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void changePropagatablesTime(final IScenarioProject scenario, long time, boolean update)
     {
-        for (IPropagatable element : scenario.getPropagatables()) {
+        for (ISpacecraft element : scenario.getSpacecrafts()) {
+            element.currentTimeChanged(time);
+        }
+
+        for (IGroundstation element : scenario.getGroundstations()) {
             element.currentTimeChanged(time);
         }
 
@@ -437,9 +444,9 @@ final public class ScenarioModelManager implements IResourceChangeListener
         }, spacecraft, true);
     }
 
-    public void changeElementColor(final IPropagatable element, RGB color, boolean update)
+    public void changeElementColor(final IVisibleElement element, RGB color, boolean update)
     {
-        ((Propagatable) element).setElementColor(color);
+        ((VisibleElement) element).setElementColor(color);
 
         if (!update) {
             return;
@@ -453,9 +460,9 @@ final public class ScenarioModelManager implements IResourceChangeListener
         }, element, true);
     }
 
-    public void changeElementImage(final IPropagatable element, IMaruResource image, boolean update)
+    public void changeElementImage(final IVisibleElement element, IMaruResource image, boolean update)
     {
-        ((Propagatable) element).setElementImage(image);
+        ((VisibleElement) element).setElementImage(image);
 
         if (!update) {
             return;
@@ -469,9 +476,25 @@ final public class ScenarioModelManager implements IResourceChangeListener
         }, element, true);
     }
 
-    public void changeInitialCoordinate(final IPropagatable element, ICoordinate coordinate, boolean update)
+    public void changeInitialCoordinate(final IGroundstation element, GeodeticPoint coordinate, boolean update)
     {
-        ((Propagatable) element).setInitialCoordinate(coordinate);
+        ((AbstractGroundstation) element).setGeodeticPosition(coordinate);
+
+        if (!update) {
+            return;
+        }
+
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementInitialCoordinateChanged(element);
+            }
+        }, element, true);
+    }
+
+    public void changeInitialCoordinate(final ISpacecraft element, ICoordinate coordinate, boolean update)
+    {
+        ((AbstractSpacecraft) element).setInitialCoordinate(coordinate);
 
         if (!update) {
             return;
@@ -487,7 +510,7 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void changeCentralBodyImage(final ICentralBody element, IMaruResource image, boolean update)
     {
-        ((CentralBody) element).setTexture(image);
+        ((AbstractCentralBody) element).setTexture(image);
 
         if (!update) {
             return;
@@ -503,12 +526,17 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void changeCentralBodyGM(final ICentralBody element, double gm, boolean update)
     {
-        ((CentralBody) element).setGM(gm);
+        ((AbstractCentralBody) element).setGM(gm);
 
         // make all propagatables adapt to the new central body
         IScenarioProject scenario = element.getScenarioProject();
-        for (IPropagatable propagatable : scenario.getPropagatables()) {
-            propagatable.centralbodyChanged();
+
+        for (IGroundstation gs : scenario.getGroundstations()) {
+            gs.centralbodyChanged();
+        }
+
+        for (ISpacecraft sat : scenario.getSpacecrafts()) {
+            sat.centralbodyChanged();
         }
 
         if (!update) {
@@ -525,12 +553,17 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void changeCentralBodyEquatorialRadius(final ICentralBody element, double radius, boolean update)
     {
-        ((CentralBody) element).setEquatorialRadius(radius);
+        ((AbstractCentralBody) element).setEquatorialRadius(radius);
 
         // make all propagatables adapt to the new central body
         IScenarioProject scenario = element.getScenarioProject();
-        for (IPropagatable propagatable : scenario.getPropagatables()) {
-            propagatable.centralbodyChanged();
+
+        for (IGroundstation gs : scenario.getGroundstations()) {
+            gs.centralbodyChanged();
+        }
+
+        for (ISpacecraft sat : scenario.getSpacecrafts()) {
+            sat.centralbodyChanged();
         }
 
         if (!update) {
@@ -547,12 +580,17 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void changeCentralBodyFlattening(final ICentralBody element, double flattening, boolean update)
     {
-        ((CentralBody) element).setFlattening(flattening);
+        ((AbstractCentralBody) element).setFlattening(flattening);
 
         // make all propagatables adapt to the new central body
         IScenarioProject scenario = element.getScenarioProject();
-        for (IPropagatable propagatable : scenario.getPropagatables()) {
-            propagatable.centralbodyChanged();
+
+        for (IGroundstation gs : scenario.getGroundstations()) {
+            gs.centralbodyChanged();
+        }
+
+        for (ISpacecraft sat : scenario.getSpacecrafts()) {
+            sat.centralbodyChanged();
         }
 
         if (!update) {
@@ -569,55 +607,73 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void addTimeProvider(IScenarioProject scenario, ITimeProvider provider)
     {
-        for (IPropagatable element : ((ScenarioProject) scenario).getPropagatables()) {
-            ((Propagatable) element).addTimeProvider(provider);
+        for (IGroundstation element : scenario.getGroundstations()) {
+            ((AbstractGroundstation) element).addTimeProvider(provider);
+        }
+
+        for (ISpacecraft element : scenario.getSpacecrafts()) {
+            ((AbstractSpacecraft) element).addTimeProvider(provider);
         }
     }
 
     public void removeTimeProvider(IScenarioProject scenario, ITimeProvider provider)
     {
-        for (IPropagatable element : ((ScenarioProject) scenario).getPropagatables()) {
-            ((Propagatable) element).removeTimeProvider(provider);
+        for (IGroundstation element : scenario.getGroundstations()) {
+            ((AbstractGroundstation) element).removeTimeProvider(provider);
+        }
+
+        for (ISpacecraft element : scenario.getSpacecrafts()) {
+            ((AbstractSpacecraft) element).removeTimeProvider(provider);
         }
     }
 
-    public void addTimeProvider(IPropagatable element, ITimeProvider provider)
+    public void addTimeProvider(IGroundstation element, ITimeProvider provider)
     {
-        ((Propagatable) element).addTimeProvider(provider);
+        ((AbstractGroundstation) element).addTimeProvider(provider);
     }
 
-    public void removeTimeProvider(IPropagatable element, ITimeProvider provider)
+    public void removeTimeProvider(IGroundstation element, ITimeProvider provider)
     {
-        ((Propagatable) element).removeTimeProvider(provider);
+        ((AbstractGroundstation) element).removeTimeProvider(provider);
+    }
+
+    public void addTimeProvider(ISpacecraft element, ITimeProvider provider)
+    {
+        ((AbstractSpacecraft) element).addTimeProvider(provider);
+    }
+
+    public void removeTimeProvider(ISpacecraft element, ITimeProvider provider)
+    {
+        ((AbstractSpacecraft) element).removeTimeProvider(provider);
     }
 
     public void addPropagationListener(IScenarioProject scenario, IPropagationListener listener)
     {
-        for (IPropagatable element : ((ScenarioProject) scenario).getPropagatables()) {
-            ((Propagatable) element).addPropagationListener(listener);
+        for (ISpacecraft element : scenario.getSpacecrafts()) {
+            ((AbstractSpacecraft) element).addPropagationListener(listener);
         }
     }
 
     public void removePropagationListener(IScenarioProject scenario, IPropagationListener listener)
     {
-        for (IPropagatable element : ((ScenarioProject) scenario).getPropagatables()) {
-            ((Propagatable) element).removePropagationListener(listener);
+        for (ISpacecraft element : scenario.getSpacecrafts()) {
+            ((AbstractSpacecraft) element).removePropagationListener(listener);
         }
     }
 
-    public void addPropagationListener(IPropagatable element, IPropagationListener listener)
+    public void addPropagationListener(ISpacecraft element, IPropagationListener listener)
     {
-        ((Propagatable) element).addPropagationListener(listener);
+        ((AbstractSpacecraft) element).addPropagationListener(listener);
     }
 
-    public void removePropagationListener(IPropagatable element, IPropagationListener listener)
+    public void removePropagationListener(ISpacecraft element, IPropagationListener listener)
     {
-        ((Propagatable) element).removePropagationListener(listener);
+        ((AbstractSpacecraft) element).removePropagationListener(listener);
     }
 
-    public void changePropagator(IPropagatable element, Propagator propagator)
+    public void changePropagator(ISpacecraft element, AbstractPropagator propagator)
     {
-        ((Propagatable) element).setPropagator(propagator);
+        ((AbstractSpacecraft) element).setPropagator(propagator);
     }
 
     @Override

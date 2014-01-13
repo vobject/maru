@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import maru.core.model.ICoordinate;
-import maru.core.model.IPropagatable;
 import maru.core.model.IPropagator;
 import maru.core.model.ISpacecraft;
 import maru.core.utils.TimeUtil;
@@ -115,26 +114,13 @@ public class EclipseReportControl extends AbstractPropagationReportControl
     }
 
     @Override
-    protected ISpacecraft getSelectedElement()
-    {
-        IPropagatable element = super.getSelectedElement();
-        if (!(element instanceof ISpacecraft)) {
-            // the eclipse report can currently only performed for spacecrafts
-            return null;
-        }
-        return (ISpacecraft) element;
-    }
-
-    @Override
     protected String[] getPropagatableItems()
     {
-        Collection<IPropagatable> elements = getCurrentProject().getUnderlyingElement().getPropagatables();
+        Collection<ISpacecraft> elements = getCurrentProject().getUnderlyingElement().getSpacecrafts();
         List<String> items = new ArrayList<>();
 
-        for (IPropagatable element : elements) {
-            if (element instanceof ISpacecraft) {
-                items.add(element.getElementName());
-            }
+        for (ISpacecraft element : elements) {
+            items.add(element.getElementName());
         }
 
         return items.toArray(new String[0]);

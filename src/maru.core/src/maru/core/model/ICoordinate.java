@@ -2,17 +2,16 @@ package maru.core.model;
 
 import java.io.Serializable;
 
-import maru.core.units.Frame;
-import maru.core.units.Position;
-import maru.core.units.Velocity;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.orekit.frames.Frame;
 
 public interface ICoordinate extends Serializable
 {
     /** Get the position vector of the coordinate. */
-    Position getPosition();
+    Vector3D getPosition();
 
     /** Get the velocity vector of the coordinate. */
-    Velocity getVelocity();
+    Vector3D getVelocity();
 
     /**
      * Get the number of seconds passed since the standard base time

@@ -14,7 +14,6 @@ public interface IScenarioProject extends IScenarioElement
     ICentralBody getCentralBody();
     Collection<IGroundstation> getGroundstations();
     Collection<ISpacecraft> getSpacecrafts();
-    Collection<IPropagatable> getPropagatables();
 
     ITimepoint getStartTime();
     ITimepoint getStopTime();

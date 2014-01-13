@@ -8,7 +8,6 @@ import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
 import maru.core.model.ICoordinate;
 import maru.core.model.IGroundstation;
-import maru.core.model.IPropagatable;
 import maru.core.model.IPropagationListener;
 import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioProject;
@@ -123,10 +122,6 @@ public class UiProject extends UiParent implements IPropagationListener,
             IGroundstation groundstation = (IGroundstation) element;
             uiGroundstationContainer.addUiElement(groundstation);
 
-            // the element is probably interested in the current time.
-            // and we are interested in the elements position.
-            CoreModel.getDefault().addPropagationListener(groundstation, this);
-
             groundstation.currentTimeChanged(getCurrentTime());
         }
         else if (element instanceof ISpacecraft)
@@ -191,9 +186,6 @@ public class UiProject extends UiParent implements IPropagationListener,
         {
             IGroundstation groundstation = (IGroundstation) element;
 
-            // remove all links from and to the element.
-            CoreModel.getDefault().removePropagationListener(groundstation, this);
-
             uiGroundstationContainer.removeUiElement(groundstation);
         }
         else if (element instanceof ISpacecraft)
@@ -226,7 +218,7 @@ public class UiProject extends UiParent implements IPropagationListener,
     }
 
     @Override
-    public void propagationChanged(IPropagatable element, ICoordinate position)
+    public void propagationChanged(ISpacecraft element, ICoordinate position)
     {
         for (IPropagationListener listener : propagationListeners) {
             listener.propagationChanged(element, position);

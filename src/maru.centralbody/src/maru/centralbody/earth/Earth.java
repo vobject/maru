@@ -1,61 +1,36 @@
 package maru.centralbody.earth;
 
 import maru.IMaruResource;
-import maru.core.model.template.CentralBody;
-import maru.core.units.Frame;
-import maru.core.units.Position;
+import maru.centralbody.OrekitCentralBody;
 
-import org.orekit.OrekitUtils;
-import org.orekit.bodies.CelestialBody;
 import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.errors.OrekitException;
-import org.orekit.time.AbsoluteDate;
-import org.orekit.utils.PVCoordinates;
+import org.orekit.utils.Constants;
 
-public class Earth extends CentralBody
+public class Earth extends OrekitCentralBody
 {
     private static final long serialVersionUID = 1L;
 
-    /** Standard gravitational parameter (m³/s²); JGM3 */
-    private static final double DEFAULT_EARTH_GM = 3.986004415e+14;
-
-    /** Earth equatorial radius (m); WGS84. */
-    private static final double DEFAULT_EARTH_EQUATORIAL_RADIUS = 6378137.0;
-
-    /** Earth flattening; WGS84 */
-    private static final double DEFAULT_EARTH_FLATTENING = (1.0 / 298.257223563);
-
-    public Earth(IMaruResource mapImage)
+    public Earth(IMaruResource mapImage) throws OrekitException
     {
-        super("Earth");
-        setTexture(mapImage);
-
-        setGM(DEFAULT_EARTH_GM);
-        setEquatorialRadius(DEFAULT_EARTH_EQUATORIAL_RADIUS);
-        setFlattening(DEFAULT_EARTH_FLATTENING);
+        super(CelestialBodyFactory.getEarth(), mapImage);
     }
 
     @Override
-    public Frame getFrame()
+    public double getGM()
     {
-        return Frame.ITRF2005;
+        return Constants.WGS84_EARTH_MU;
     }
 
     @Override
-    public Position getPosition(long time, Frame frame)
+    public double getEquatorialRadius()
     {
-        try
-        {
-            CelestialBody earthBody = CelestialBodyFactory.getEarth();
-            AbsoluteDate orekitDate = OrekitUtils.toAbsoluteDate(time);
-            org.orekit.frames.Frame orekitFrame = OrekitUtils.toOrekitFrame(frame);
-            PVCoordinates orekitCoordinates = earthBody.getPVCoordinates(orekitDate, orekitFrame);
-            return OrekitUtils.toPosition(orekitCoordinates.getPosition());
-        }
-        catch (OrekitException e)
-        {
-            e.printStackTrace();
-        }
-        return null;
+        return Constants.WGS84_EARTH_EQUATORIAL_RADIUS;
+    }
+
+    @Override
+    public double getFlattening()
+    {
+        return Constants.WGS84_EARTH_FLATTENING;
     }
 }

@@ -7,7 +7,6 @@ import java.util.List;
 
 import maru.core.model.ICentralBody;
 import maru.core.model.IGroundstation;
-import maru.core.model.IPropagatable;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.core.model.ITimepoint;
@@ -84,15 +83,6 @@ public class ScenarioProject extends ScenarioElement implements IScenarioProject
     public Collection<ISpacecraft> getSpacecrafts()
     {
         return spacecraftContainer.getSpacecrafts();
-    }
-
-    @Override
-    public Collection<IPropagatable> getPropagatables()
-    {
-        Collection<IPropagatable> propagatables = new ArrayList<>();
-        propagatables.addAll(groundstationContainer.getGroundstations());
-        propagatables.addAll(spacecraftContainer.getSpacecrafts());
-        return propagatables;
     }
 
     @Override

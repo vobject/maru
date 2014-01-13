@@ -5,7 +5,7 @@ import maru.ui.model.IUiProjectSelectionListener;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiModel;
 import maru.ui.model.UiProject;
-import maru.ui.model.UiPropagatable;
+import maru.ui.model.UiVisible;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -71,8 +71,8 @@ public abstract class AbstractMapView extends ViewPart
     @Override
     public void activeElementChanged(UiProject project, UiElement element)
     {
-        if (element instanceof UiPropagatable) {
-            mapDrawer.setSelectedElement((UiPropagatable) element);
+        if (element instanceof UiVisible) {
+            mapDrawer.setSelectedElement((UiVisible) element);
         } else {
             mapDrawer.setSelectedElement(null);
         }

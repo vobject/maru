@@ -8,6 +8,8 @@ import maru.centralbody.earth.Earth;
 import maru.centralbody.preferences.MapImagesEditor;
 import maru.core.model.ICentralBody;
 
+import org.orekit.errors.OrekitException;
+
 /**
  * The central bodies supported by the wizard page.
  */
@@ -34,7 +36,15 @@ public enum CentralBodyFactory
                     res = MaruCentralBodyResources.fromName(imageName);
                 }
 
-                return new Earth(res);
+                try
+                {
+                    return new Earth(res);
+                }
+                catch (OrekitException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         }
         return null;

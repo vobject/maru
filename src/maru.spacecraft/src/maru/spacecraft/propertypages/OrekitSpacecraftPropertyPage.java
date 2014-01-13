@@ -3,14 +3,14 @@ package maru.spacecraft.propertypages;
 import maru.IMaruResource;
 import maru.spacecraft.MaruSpacecraftResources;
 import maru.spacecraft.OrekitSpacecraft;
-import maru.ui.propertypages.UiPropagatablePropertyPage;
+import maru.ui.propertypages.UiVisiblePropertyPage;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-public class OrekitSpacecraftPropertyPage extends UiPropagatablePropertyPage
+public class OrekitSpacecraftPropertyPage extends UiVisiblePropertyPage
 {
     @Override
     protected String[] getImageNames()

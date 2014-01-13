@@ -5,11 +5,11 @@ import java.util.Collection;
 import java.util.Collections;
 
 import maru.core.model.ICoordinate;
-import maru.core.model.IPropagatable;
-import maru.core.model.template.Propagator;
+import maru.core.model.ISpacecraft;
+import maru.core.model.template.AbstractPropagator;
+import maru.core.utils.OrekitUtils;
 import maru.spacecraft.OrekitCoordinate;
 
-import org.orekit.OrekitUtils;
 import org.orekit.errors.OrekitException;
 import org.orekit.orbits.KeplerianOrbit;
 import org.orekit.propagation.SpacecraftState;
@@ -17,7 +17,7 @@ import org.orekit.propagation.analytical.KeplerianPropagator;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.TimeScalesFactory;
 
-public class KeplerPropagator extends Propagator
+public class KeplerPropagator extends AbstractPropagator
 {
     private static final long serialVersionUID = 1L;
 
@@ -34,7 +34,7 @@ public class KeplerPropagator extends Propagator
     private final Collection<ICoordinate> coordinates = new ArrayList<>();
 
     @Override
-    public OrekitCoordinate getCoordinate(IPropagatable element, long time)
+    public OrekitCoordinate getCoordinate(ISpacecraft element, long time)
     {
         KeplerSatellite satellite = (KeplerSatellite) element;
         InitialKeplerCoordinate initialCoordinate = satellite.getInitialCoordinate();
@@ -59,7 +59,7 @@ public class KeplerPropagator extends Propagator
     }
 
     @Override
-    public Collection<ICoordinate> getCoordinates(IPropagatable element,
+    public Collection<ICoordinate> getCoordinates(ISpacecraft element,
                                                   long start, long stop,
                                                   long stepSize)
     {

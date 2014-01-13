@@ -21,7 +21,6 @@ public class GroundstationWizardPage extends ScenarioElementWizardNamingPage
     private Text latitude;
     private Text longitude;
     private Text altitude;
-    private Text elevation;
 
     public GroundstationWizardPage(IScenarioProject project)
     {
@@ -59,12 +58,6 @@ public class GroundstationWizardPage extends ScenarioElementWizardNamingPage
         altitude.addKeyListener(inputValidation);
         altitude.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-        new Label(container, SWT.NONE).setText("Elevation (deg):");
-        elevation = new Text(container, SWT.BORDER | SWT.SINGLE);
-        elevation.setText("5.0");
-        elevation.addKeyListener(inputValidation);
-        elevation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
         setControl(container);
         setPageComplete(isInputValid());
     }
@@ -100,7 +93,6 @@ public class GroundstationWizardPage extends ScenarioElementWizardNamingPage
             Double.parseDouble(latitude.getText());
             Double.parseDouble(longitude.getText());
             Double.parseDouble(altitude.getText());
-            Double.parseDouble(elevation.getText());
         }
         catch (NumberFormatException e)
         {
@@ -125,10 +117,5 @@ public class GroundstationWizardPage extends ScenarioElementWizardNamingPage
     public double getAltitude()
     {
         return Double.parseDouble(altitude.getText());
-    }
-
-    public double getElevation()
-    {
-        return Math.toRadians(Double.parseDouble(elevation.getText()));
     }
 }

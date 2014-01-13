@@ -5,14 +5,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import maru.core.model.IGroundstation;
-import maru.core.model.IPropagatable;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.core.utils.TimeUtil;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiProject;
-import maru.ui.model.UiPropagatable;
+import maru.ui.model.UiSpacecraft;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -93,8 +91,8 @@ public class AccessReportControl extends ReportTypeControl
     @Override
     public void createReport(Text output)
     {
-        IPropagatable element1 = getSelectedElement1();
-        IPropagatable element2 = getSelectedElement2();
+        ISpacecraft element1 = getSelectedElement1();
+        ISpacecraft element2 = getSelectedElement2();
         if ((element1 == null) || (element2 == null)) {
             return;
         }
@@ -139,12 +137,12 @@ public class AccessReportControl extends ReportTypeControl
         outputBuffer.append("\r\n");
     }
 
-    protected IPropagatable getSelectedElement1()
+    protected ISpacecraft getSelectedElement1()
     {
         return getSelectedElement(reportElement1);
     }
 
-    protected IPropagatable getSelectedElement2()
+    protected ISpacecraft getSelectedElement2()
     {
         return getSelectedElement(reportElement2);
     }
@@ -156,8 +154,8 @@ public class AccessReportControl extends ReportTypeControl
 
     protected void createDefaultReportHeader()
     {
-        IPropagatable element1 = getSelectedElement1();
-        IPropagatable element2 = getSelectedElement2();
+        ISpacecraft element1 = getSelectedElement1();
+        ISpacecraft element2 = getSelectedElement2();
 
         long startTime = getCurrentProject().getStartTime();
         long stopTime = getCurrentProject().getStopTime();
@@ -216,37 +214,28 @@ public class AccessReportControl extends ReportTypeControl
         reportStepSize.setValues(STEP_DEFAULT, STEP_MIN, STEP_MAX, STEP_DIGITS, STEP_INC, STEP_INC_PG);
     }
 
-    private IPropagatable getSelectedElement(Combo combo)
+    private ISpacecraft getSelectedElement(Combo combo)
     {
         String selectedName = combo.getText();
         if (selectedName.isEmpty()) {
             return null;
         }
         UiElement uiElement = getCurrentProject().getChild(selectedName);
-        UiPropagatable uiPropagatable = (UiPropagatable) uiElement;
+        UiSpacecraft uiPropagatable = (UiSpacecraft) uiElement;
         return uiPropagatable.getUnderlyingElement();
     }
 
     protected String[] getPropagatableItems()
     {
         IScenarioProject scenario = getCurrentProject().getUnderlyingElement();
-
-        // do not use scenario.getPropagatables() because we want the spacecrafts
-        // to appear in the list before the groundstations.
         Collection<ISpacecraft> spacecrafts = scenario.getSpacecrafts();
-        Collection<IGroundstation> groundstations = scenario.getGroundstations();
 
-        int itemCount = spacecrafts.size() + groundstations.size();
+        int itemCount = spacecrafts.size();
         List<String> items = new ArrayList<>(itemCount);
 
-        for (IPropagatable element : spacecrafts) {
+        for (ISpacecraft element : spacecrafts) {
             items.add(element.getElementName());
         }
-
-        for (IPropagatable element : groundstations) {
-            items.add(element.getElementName());
-        }
-
         return items.toArray(new String[itemCount]);
     }
 

@@ -1,9 +1,13 @@
 package maru.core.model.template;
 
+import java.util.Map;
+
 import maru.IMaruResource;
 import maru.core.model.ICentralBody;
 
-public abstract class CentralBody extends ScenarioElement implements ICentralBody
+import org.orekit.frames.Frame;
+
+public abstract class AbstractCentralBody extends ScenarioElement implements ICentralBody
 {
     private static final long serialVersionUID = 1L;
 
@@ -13,7 +17,9 @@ public abstract class CentralBody extends ScenarioElement implements ICentralBod
     private double equatorialRadius;
     private double flattening;
 
-    public CentralBody(String name)
+    private Frame frame;
+
+    public AbstractCentralBody(String name)
     {
         super(name);
     }
@@ -47,6 +53,12 @@ public abstract class CentralBody extends ScenarioElement implements ICentralBod
         return flattening;
     }
 
+    @Override
+    public Frame getFrame()
+    {
+        return frame;
+    }
+
     public void setGM(double gm)
     {
         this.gm = gm;
@@ -60,5 +72,23 @@ public abstract class CentralBody extends ScenarioElement implements ICentralBod
     public void setFlattening(double flattening)
     {
         this.flattening = flattening;
+    }
+
+    public void setFrame(Frame frame)
+    {
+        this.frame = frame;
+    }
+
+    @Override
+    public Map<String, String> getPropertyMap()
+    {
+        Map<String, String> props = super.getPropertyMap();
+
+        props.put("GM (m\u00b3/s\u00b2)", Double.toString(getGM()));
+        props.put("Radius (m)", Double.toString(getEquatorialRadius()));
+        props.put("Flattening", Double.toString(getFlattening()));
+        props.put("Frame", getFrame().toString());
+
+        return props;
     }
 }

@@ -1,8 +1,8 @@
 package maru.report.views;
 
 import maru.core.model.ICoordinate;
-import maru.core.model.IPropagatable;
 import maru.core.model.IPropagator;
+import maru.core.model.ISpacecraft;
 import maru.core.utils.TimeUtil;
 
 import org.eclipse.swt.widgets.Composite;
@@ -35,7 +35,7 @@ public class PropagationReportControl extends AbstractPropagationReportControl
 
     private void createReportBody()
     {
-        IPropagatable element = getSelectedElement();
+        ISpacecraft element = getSelectedElement();
         IPropagator propagator = element.getPropagator();
 
         long startTime = getCurrentProject().getStartTime();

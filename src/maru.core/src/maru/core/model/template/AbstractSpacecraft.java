@@ -2,44 +2,114 @@ package maru.core.model.template;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
-import maru.IMaruResource;
 import maru.MaruRuntimeException;
-import maru.core.internal.model.NullCoordinate;
-import maru.core.internal.model.NullPropagator;
 import maru.core.model.ICentralBody;
 import maru.core.model.ICoordinate;
-import maru.core.model.IPropagatable;
 import maru.core.model.IPropagationListener;
 import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
+import maru.core.model.ISpacecraft;
 import maru.core.model.ITimeProvider;
 import maru.core.utils.TimeUtil;
 
-import org.eclipse.swt.graphics.RGB;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.orekit.frames.Frame;
 
-public abstract class Propagatable extends ScenarioElement implements IPropagatable
+class NullPropagator implements IPropagator
 {
     private static final long serialVersionUID = 1L;
 
-    private RGB elementColor;
-    private IMaruResource elementImage;
+    private static final ICoordinate COORDINATE = new NullCoordinate();
+
+    @Override
+    public String getName()
+    {
+        return "NullPropagator";
+    }
+
+    @Override
+    public ICoordinate getCoordinate(ISpacecraft element, long time)
+    {
+        return COORDINATE;
+    }
+
+    @Override
+    public Collection<ICoordinate> getCoordinates(ISpacecraft element,
+                                                  long start, long stop,
+                                                  long stepSize)
+    {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public void startTimeChanged(ISpacecraft element, long time)
+    {
+
+    }
+
+    @Override
+    public void stopTimeChanged(ISpacecraft element, long time)
+    {
+
+    }
+
+    @Override
+    public void currentTimeChanged(ISpacecraft element, long time)
+    {
+
+    }
+
+    @Override
+    public void clearCoordinateCache()
+    {
+
+    }
+}
+
+class NullCoordinate implements ICoordinate
+{
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public Vector3D getPosition()
+    {
+        return Vector3D.ZERO;
+    }
+
+    @Override
+    public Vector3D getVelocity()
+    {
+        return Vector3D.ZERO;
+    }
+
+    @Override
+    public long getTime()
+    {
+        return 0;
+    }
+
+    @Override
+    public Frame getFrame()
+    {
+        return null;
+    }
+}
+
+public abstract class AbstractSpacecraft extends VisibleElement implements ISpacecraft
+{
+    private static final long serialVersionUID = 1L;
 
     private IPropagator propagator;
     private ICoordinate initialCoordinate;
     private ICoordinate currentCoordinate;
     private transient Collection<IPropagationListener> propagationListeners;
 
-    public Propagatable(String name)
+    public AbstractSpacecraft(String name)
     {
         super(name);
-
-        // the default color is black
-        this.elementColor = new RGB(0, 0, 0);
-
-        // by default objects have no image
-        this.elementImage = null;
 
         // assign a dummy propagator value to reduce the amount of null-checks
         this.propagator = new NullPropagator();
@@ -52,28 +122,6 @@ public abstract class Propagatable extends ScenarioElement implements IPropagata
 
         // no one initially listens to propagation changes of this object
         this.propagationListeners = new ArrayList<>();
-    }
-
-    @Override
-    public RGB getElementColor()
-    {
-        return elementColor;
-    }
-
-    public void setElementColor(RGB color)
-    {
-        elementColor = color;
-    }
-
-    @Override
-    public IMaruResource getElementImage()
-    {
-        return elementImage;
-    }
-
-    public void setElementImage(IMaruResource elementImage)
-    {
-        this.elementImage = elementImage;
     }
 
     @Override
@@ -110,7 +158,7 @@ public abstract class Propagatable extends ScenarioElement implements IPropagata
         return propagator;
     }
 
-    public void setPropagator(Propagator propagator)
+    public void setPropagator(AbstractPropagator propagator)
     {
         if (propagator == null) {
             throw new MaruRuntimeException("The propagator may not be null.");
@@ -174,7 +222,7 @@ public abstract class Propagatable extends ScenarioElement implements IPropagata
     }
 
     @Override
-    public void propagationChanged(IPropagatable element, ICoordinate coordinate)
+    public void propagationChanged(ISpacecraft element, ICoordinate coordinate)
     {
         if (element != this) {
             return;
@@ -191,6 +239,18 @@ public abstract class Propagatable extends ScenarioElement implements IPropagata
                 listener.propagationChanged(this, coordinate);
             }
         }
+    }
+
+    @Override
+    public boolean inUmbra()
+    {
+        return inUmbra(getCurrentCoordinate());
+    }
+
+    @Override
+    public boolean inUmbraOrPenumbra()
+    {
+        return inUmbraOrPenumbra(getCurrentCoordinate());
     }
 
     @Override

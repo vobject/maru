@@ -5,7 +5,7 @@ import maru.core.model.CoreModel;
 import maru.core.model.IScenarioProject;
 import maru.spacecraft.MaruSpacecraftResources;
 import maru.spacecraft.tlesatellite.InitialTleCoordinate;
-import maru.spacecraft.tlesatellite.Sgp4Propagator;
+import maru.spacecraft.tlesatellite.SGP4Propagator;
 import maru.spacecraft.tlesatellite.TleSatellite;
 import maru.ui.wizards.ScenarioElementWizard;
 
@@ -54,7 +54,7 @@ public class TleSatelliteWizard extends ScenarioElementWizard
         if ((imageName != null) && !imageName.isEmpty()) {
             image = MaruSpacecraftResources.fromName(imageName);
         }
-        Sgp4Propagator propagator = new Sgp4Propagator();
+        SGP4Propagator propagator = new SGP4Propagator();
 
         TleSatellite satellite = new TleSatellite(initialCoordinate.getName());
         satellite.setElementComment(comment);

@@ -6,12 +6,11 @@ import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
 import maru.core.model.IScenarioProject;
 import maru.groundstation.MaruGroundstationResources;
-import maru.groundstation.earth.GeodeticCoordinate;
-import maru.groundstation.earth.GeodeticGroundstation;
-import maru.groundstation.earth.GeodeticGroundstationPropagator;
+import maru.groundstation.earth.Groundstation;
 import maru.ui.wizards.ScenarioElementWizard;
 
 import org.eclipse.swt.graphics.RGB;
+import org.orekit.bodies.GeodeticPoint;
 
 public class GroundstationWizard extends ScenarioElementWizard
 {
@@ -37,15 +36,13 @@ public class GroundstationWizard extends ScenarioElementWizard
     public boolean performFinish()
     {
         IScenarioProject scenario = getScenarioProjectFromSelection();
-
         ICentralBody centralBody = scenario.getCentralBody();
-        long time = scenario.getCurrentTime().getTime();
 
         double latitude = mainPage.getLatitude();
         double longitude = mainPage.getLongitude();
         double altitude = mainPage.getAltitude();
-        double elevation = mainPage.getElevation();
 
+        GeodeticPoint position = new GeodeticPoint(latitude, longitude, altitude);
         String name = mainPage.getElementName();
         String comment = mainPage.getElementComment();
         RGB color = mainPage.getElementColor();
@@ -54,17 +51,11 @@ public class GroundstationWizard extends ScenarioElementWizard
         if ((imageName != null) && !imageName.isEmpty()) {
             image = MaruGroundstationResources.fromName(imageName);
         }
-        GeodeticCoordinate initialCoordinate =
-            new GeodeticCoordinate(centralBody, latitude, longitude,
-                                   altitude, elevation, time);
-        GeodeticGroundstationPropagator propagator = new GeodeticGroundstationPropagator();
 
-        GeodeticGroundstation groundstation = new GeodeticGroundstation(name);
+        Groundstation groundstation = new Groundstation(name, position, centralBody);
         groundstation.setElementComment(comment);
         groundstation.setElementColor(color);
         groundstation.setElementImage(image);
-        groundstation.setInitialCoordinate(initialCoordinate);
-        groundstation.setPropagator(propagator);
 
         CoreModel coreModel = MaruCorePlugin.getDefault().getCoreModel();
         coreModel.addGroundstation(scenario, groundstation, true);

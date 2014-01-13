@@ -5,11 +5,11 @@ import java.util.Collection;
 import java.util.Collections;
 
 import maru.core.model.ICoordinate;
-import maru.core.model.IPropagatable;
-import maru.core.model.template.Propagator;
+import maru.core.model.ISpacecraft;
+import maru.core.model.template.AbstractPropagator;
+import maru.core.utils.OrekitUtils;
 import maru.spacecraft.OrekitCoordinate;
 
-import org.orekit.OrekitUtils;
 import org.orekit.errors.OrekitException;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.analytical.tle.TLE;
@@ -17,7 +17,7 @@ import org.orekit.propagation.analytical.tle.TLEPropagator;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.TimeScalesFactory;
 
-public class Sgp4Propagator extends Propagator
+public class SGP4Propagator extends AbstractPropagator
 {
     private static final long serialVersionUID = 1L;
 
@@ -36,7 +36,7 @@ public class Sgp4Propagator extends Propagator
     private final Collection<ICoordinate> coordinates = new ArrayList<>();
 
     @Override
-    public OrekitCoordinate getCoordinate(IPropagatable element, long time)
+    public OrekitCoordinate getCoordinate(ISpacecraft element, long time)
     {
         TleSatellite satellite = (TleSatellite) element;
         InitialTleCoordinate initialPosition = satellite.getInitialCoordinate();
@@ -62,7 +62,7 @@ public class Sgp4Propagator extends Propagator
     }
 
     @Override
-    public Collection<ICoordinate> getCoordinates(IPropagatable element,
+    public Collection<ICoordinate> getCoordinates(ISpacecraft element,
                                                   long start, long stop,
                                                   long stepSize)
     {

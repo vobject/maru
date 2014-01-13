@@ -6,7 +6,7 @@ Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: maru.ui.debug.MaruDebugPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.core.resources;bundle-version="3.7.101",
+ org.eclipse.core.resources,
  maru,
  maru.core,
  maru.centralbody,
@@ -14,8 +14,8 @@ Require-Bundle: org.eclipse.ui,
  maru.spacecraft,
  maru.map,
  maru.ui,
- org.orekit,
  org.apache.commons.math3;bundle-version="3.2.0",
+ org.orekit,
  org.jogamp.jogl
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy

@@ -3,7 +3,6 @@ package maru.spacecraft.wizards;
 import java.text.ParseException;
 
 import maru.core.model.IScenarioProject;
-import maru.core.units.Frame;
 import maru.core.utils.TimeUtil;
 import maru.spacecraft.MaruSpacecraftResources;
 import maru.ui.wizards.ScenarioElementWizard;
@@ -16,6 +15,8 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.orekit.frames.Frame;
+import org.orekit.frames.FramesFactory;
 import org.orekit.orbits.PositionAngle;
 
 public class KeplerSatelliteWizardPage extends ScenarioElementWizardNamingPage
@@ -233,7 +234,7 @@ public class KeplerSatelliteWizardPage extends ScenarioElementWizardNamingPage
 
     public Frame getFrame()
     {
-        return Frame.EME2000;
+        return FramesFactory.getEME2000();
     }
 
     public double getCentralAttractionCoefficient()

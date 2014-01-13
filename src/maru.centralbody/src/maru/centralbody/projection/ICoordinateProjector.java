@@ -1,8 +1,10 @@
 package maru.centralbody.projection;
 
-import maru.MaruException;
 import maru.core.model.ICentralBody;
 import maru.core.model.ICoordinate;
+
+import org.orekit.bodies.GeodeticPoint;
+import org.orekit.errors.OrekitException;
 
 public interface ICoordinateProjector
 {
@@ -10,5 +12,6 @@ public interface ICoordinateProjector
     void setMapSize(int mapWidth, int mapHeight);
     void setCacheSize(int size);
 
-    EquirectangularCoordinate project(ICoordinate coordinate) throws MaruException;
+    EquirectangularCoordinate project(ICoordinate coordinate) throws OrekitException;
+    EquirectangularCoordinate project(GeodeticPoint point);
 }

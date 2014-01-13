@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import maru.core.model.ICoordinate;
-import maru.core.model.IPropagatable;
 import maru.core.model.IPropagationListener;
 import maru.core.model.IPropagator;
+import maru.core.model.ISpacecraft;
 
-public abstract class Propagator implements IPropagator
+public abstract class AbstractPropagator implements IPropagator
 {
     private static final long serialVersionUID = 1L;
 
@@ -19,7 +19,7 @@ public abstract class Propagator implements IPropagator
      */
     private final Collection<IPropagationListener> propagationListeners;
 
-    public Propagator()
+    public AbstractPropagator()
     {
         propagationListeners = new ArrayList<>();
     }
@@ -39,19 +39,19 @@ public abstract class Propagator implements IPropagator
     }
 
     @Override
-    public void startTimeChanged(IPropagatable element, long time)
+    public void startTimeChanged(ISpacecraft element, long time)
     {
 
     }
 
     @Override
-    public void stopTimeChanged(IPropagatable element, long time)
+    public void stopTimeChanged(ISpacecraft element, long time)
     {
 
     }
 
     @Override
-    public void currentTimeChanged(IPropagatable element, long currentTime)
+    public void currentTimeChanged(ISpacecraft element, long currentTime)
     {
         ICoordinate position = getCoordinate(element, currentTime);
         notifyPropagationListeners(element, position);
@@ -63,7 +63,7 @@ public abstract class Propagator implements IPropagator
 
     }
 
-    protected void notifyPropagationListeners(IPropagatable element, ICoordinate position)
+    protected void notifyPropagationListeners(ISpacecraft element, ICoordinate position)
     {
         for (IPropagationListener listener : propagationListeners) {
             listener.propagationChanged(element, position);

@@ -4,7 +4,7 @@ import maru.IMaruResource;
 import maru.core.internal.model.ScenarioModelManager;
 import maru.core.internal.model.ScenarioNature;
 import maru.core.internal.model.Timepoint;
-import maru.core.model.template.Propagator;
+import maru.core.model.template.AbstractPropagator;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -15,6 +15,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.RGB;
+import org.orekit.bodies.GeodeticPoint;
 
 /**
  * Core model class.
@@ -168,17 +169,22 @@ public class CoreModel
         modelManager.addSpacecraft(project, spacecraft, update);
     }
 
-    public void changeColor(IPropagatable element, RGB color, boolean update)
+    public void changeColor(IVisibleElement element, RGB color, boolean update)
     {
         modelManager.changeElementColor(element, color, update);
     }
 
-    public void changeImage(IPropagatable element, IMaruResource image, boolean update)
+    public void changeImage(IVisibleElement element, IMaruResource image, boolean update)
     {
         modelManager.changeElementImage(element, image, update);
     }
 
-    public void changeInitialCoordinate(IPropagatable element, ICoordinate coordinate, boolean update)
+    public void changeInitialCoordinate(IGroundstation element, GeodeticPoint coordinate, boolean update)
+    {
+        modelManager.changeInitialCoordinate(element, coordinate, update);
+    }
+
+    public void changeInitialCoordinate(ISpacecraft element, ICoordinate coordinate, boolean update)
     {
         modelManager.changeInitialCoordinate(element, coordinate, update);
     }
@@ -213,12 +219,22 @@ public class CoreModel
         modelManager.removeTimeProvider(project, provider);
     }
 
-    public void addTimeProvider(IPropagatable element, ITimeProvider provider)
+    public void addTimeProvider(IGroundstation element, ITimeProvider provider)
     {
         modelManager.addTimeProvider(element, provider);
     }
 
-    public void removeTimeProvider(IPropagatable element, ITimeProvider provider)
+    public void removeTimeProvider(IGroundstation element, ITimeProvider provider)
+    {
+        modelManager.removeTimeProvider(element, provider);
+    }
+
+    public void addTimeProvider(ISpacecraft element, ITimeProvider provider)
+    {
+        modelManager.addTimeProvider(element, provider);
+    }
+
+    public void removeTimeProvider(ISpacecraft element, ITimeProvider provider)
     {
         modelManager.removeTimeProvider(element, provider);
     }
@@ -233,17 +249,17 @@ public class CoreModel
         modelManager.removePropagationListener(project, listener);
     }
 
-    public void addPropagationListener(IPropagatable element, IPropagationListener listener)
+    public void addPropagationListener(ISpacecraft element, IPropagationListener listener)
     {
         modelManager.addPropagationListener(element, listener);
     }
 
-    public void removePropagationListener(IPropagatable element, IPropagationListener listener)
+    public void removePropagationListener(ISpacecraft element, IPropagationListener listener)
     {
         modelManager.removePropagationListener(element, listener);
     }
 
-    public void changePropagator(IPropagatable element, Propagator propagator)
+    public void changePropagator(ISpacecraft element, AbstractPropagator propagator)
     {
         modelManager.changePropagator(element, propagator);
     }

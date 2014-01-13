@@ -45,19 +45,13 @@ public abstract class ScenarioModelAdapter implements IScenarioModelListener
     }
 
     @Override
-    public void elementColorChanged(IPropagatable element)
+    public void elementColorChanged(IVisibleElement element)
     {
 
     }
 
     @Override
-    public void elementImageChanged(IPropagatable element)
-    {
-
-    }
-
-    @Override
-    public void elementInitialCoordinateChanged(IPropagatable element)
+    public void elementImageChanged(IVisibleElement element)
     {
 
     }
@@ -82,6 +76,18 @@ public abstract class ScenarioModelAdapter implements IScenarioModelListener
 
     @Override
     public void centralbodyFlatteningChanged(ICentralBody element)
+    {
+
+    }
+
+    @Override
+    public void elementInitialCoordinateChanged(IGroundstation element)
+    {
+
+    }
+
+    @Override
+    public void elementInitialCoordinateChanged(ISpacecraft element)
     {
 
     }

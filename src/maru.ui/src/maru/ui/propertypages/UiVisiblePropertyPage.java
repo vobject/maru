@@ -2,8 +2,7 @@ package maru.ui.propertypages;
 
 import maru.IMaruResource;
 import maru.core.model.CoreModel;
-import maru.core.model.IPropagatable;
-import maru.ui.model.UiPropagatable;
+import maru.core.model.IVisibleElement;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -19,7 +18,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-public abstract class UiPropagatablePropertyPage extends UiPropertyPage
+public abstract class UiVisiblePropertyPage extends UiPropertyPage
 {
     private Label color;
     private Combo images;
@@ -43,21 +42,15 @@ public abstract class UiPropagatablePropertyPage extends UiPropertyPage
     protected abstract IMaruResource getImageFromName(String name);
 
     @Override
-    public UiPropagatable getUiElement()
+    public IVisibleElement getScenarioElement()
     {
-        return (UiPropagatable) getElement().getAdapter(UiPropagatable.class);
-    }
-
-    @Override
-    public IPropagatable getScenarioElement()
-    {
-        return getUiElement().getUnderlyingElement();
+        return (IVisibleElement) getUiElement().getUnderlyingElement();
     }
 
     @Override
     public boolean performOk()
     {
-        IPropagatable element = getScenarioElement();
+        IVisibleElement element = getScenarioElement();
 
         if (newColorSelected()) {
             CoreModel.getDefault().changeColor(element, newColor, true);
@@ -150,7 +143,7 @@ public abstract class UiPropagatablePropertyPage extends UiPropertyPage
 
     private void initDefaults()
     {
-        IPropagatable element = getScenarioElement();
+        IVisibleElement element = getScenarioElement();
         if (element == null) {
             return;
         }
@@ -168,7 +161,7 @@ public abstract class UiPropagatablePropertyPage extends UiPropertyPage
 
     private void initControls()
     {
-        IPropagatable element = getScenarioElement();
+        IVisibleElement element = getScenarioElement();
         if (element == null) {
             return;
         }
