@@ -27,7 +27,7 @@ public interface ICentralBody extends IScenarioElement
     /** get the position of the central body in a given frame */
     Vector3D getPosition(Frame frame, AbsoluteDate date) throws OrekitException;
 
-    GeodeticPoint toGeodeticPoint(ICoordinate coordinate) throws OrekitException;
-    GeodeticPoint toGeodeticPoint(Vector3D position, Frame frame, AbsoluteDate date) throws OrekitException;
-    Vector3D toCartesianPoint(GeodeticPoint point);
+    GeodeticPoint getIntersectionPoint(ICoordinate coordinate) throws OrekitException;
+    GeodeticPoint getIntersectionPoint(Vector3D position, Frame frame, AbsoluteDate date) throws OrekitException;
+    Vector3D getCartesianPoint(GeodeticPoint point);
 }

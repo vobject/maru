@@ -5,7 +5,7 @@ import java.util.Random;
 
 import maru.IMaruPluginResource;
 import maru.centralbody.MaruCentralBodyResources;
-import maru.centralbody.earth.Earth;
+import maru.centralbody.bodies.Earth;
 import maru.core.MaruCorePlugin;
 import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;

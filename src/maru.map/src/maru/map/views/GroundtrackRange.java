@@ -2,13 +2,13 @@ package maru.map.views;
 
 import org.orekit.time.AbsoluteDate;
 
-public class GroundtrackBarrier
+public class GroundtrackRange
 {
     private AbsoluteDate start;
     private AbsoluteDate stop;
     private long gtLength;
 
-    public GroundtrackBarrier(AbsoluteDate current, long groundtrackLength)
+    public GroundtrackRange(AbsoluteDate current, long groundtrackLength)
     {
         this.start = current.shiftedBy(-(groundtrackLength / 2));
         this.stop = current.shiftedBy((groundtrackLength / 2));
@@ -36,7 +36,6 @@ public class GroundtrackBarrier
 
     public void update(AbsoluteDate current, long groundtrackLength)
     {
-        //if ((start > current) || (stop < current) || (gtLength != groundtrackLength))
         if ((start.compareTo(current) > 0) || (stop.compareTo(current) < 0) || (gtLength != groundtrackLength))
         {
             start = current.shiftedBy(-(groundtrackLength / 2));

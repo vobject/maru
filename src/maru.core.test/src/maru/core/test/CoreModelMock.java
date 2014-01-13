@@ -57,19 +57,19 @@ public class CoreModelMock
             return null;
         }
         @Override
-        public GeodeticPoint toGeodeticPoint(ICoordinate coordinate) throws OrekitException
+        public GeodeticPoint getIntersectionPoint(ICoordinate coordinate) throws OrekitException
         {
             return null;
         }
 
         @Override
-        public GeodeticPoint toGeodeticPoint(Vector3D position, Frame frame, AbsoluteDate date) throws OrekitException
+        public GeodeticPoint getIntersectionPoint(Vector3D position, Frame frame, AbsoluteDate date) throws OrekitException
         {
             return null;
         }
 
         @Override
-        public Vector3D toCartesianPoint(GeodeticPoint point)
+        public Vector3D getCartesianPoint(GeodeticPoint point)
         {
             return null;
         }

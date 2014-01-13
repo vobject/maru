@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import maru.IMaruResource;
 import maru.centralbody.MaruCentralBodyResources;
-import maru.centralbody.earth.Earth;
+import maru.centralbody.bodies.Earth;
 import maru.centralbody.preferences.MapImagesEditor;
 import maru.core.model.ICentralBody;
 

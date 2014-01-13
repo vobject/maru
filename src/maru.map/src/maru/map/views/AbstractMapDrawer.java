@@ -7,7 +7,7 @@ import maru.ui.model.UiVisible;
 
 public abstract class AbstractMapDrawer implements IMapDrawer
 {
-    public static final int DEFAULT_PROJECTOR_CACHE_SIZE = 1024 * 64;
+    public static final int DEFAULT_PROJECTOR_CACHE_SIZE = 1024 * 32;
 
     private final AbstractMapView parent;
 

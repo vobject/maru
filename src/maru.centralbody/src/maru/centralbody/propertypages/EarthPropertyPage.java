@@ -2,7 +2,7 @@ package maru.centralbody.propertypages;
 
 import maru.IMaruResource;
 import maru.centralbody.MaruCentralBodyResources;
-import maru.centralbody.OrekitCentralBody;
+import maru.centralbody.bodies.OrekitCentralBody;
 import maru.centralbody.preferences.MapImagesEditor;
 import maru.centralbody.wizards.CentralBodyFactory;
 import maru.core.model.CoreModel;

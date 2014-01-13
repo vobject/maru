@@ -14,12 +14,12 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Wizard page selecting, reviewing, and creating a central body for a
- * scenario. It supports only {@link maru.centralbody.OrekitCentralBody}.
+ * scenario. It supports only {@link maru.centralbody.bodies.OrekitCentralBody}.
  * <p>
  * This wizard page serves no actual purpose at the moment. It is there to
  * present the configuration of the central body that will be created, but the
  * properties cannot be changed. This would have to change as soon as new
- * central bodies can be selected in addition to {@link maru.centralbody.OrekitCentralBody}.
+ * central bodies can be selected in addition to {@link maru.centralbody.bodies.OrekitCentralBody}.
  */
 public class NewCentralBodyWizardPage extends WizardPage implements ICentralBodyWizardPage
 {

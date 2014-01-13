@@ -54,7 +54,7 @@ public class EquirectangularProjector implements ICoordinateProjector
             return cachedProjection;
         }
 
-        GeodeticPoint point = centralBody.toGeodeticPoint(coordinate);
+        GeodeticPoint point = centralBody.getIntersectionPoint(coordinate);
         EquirectangularCoordinate projected = project(point);
 
         cache.put(coordinate, projected);

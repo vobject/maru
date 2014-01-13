@@ -1,9 +1,10 @@
-package maru.centralbody;
+package maru.centralbody.bodies;
 
 import maru.IMaruResource;
 import maru.core.model.ICoordinate;
 import maru.core.model.template.AbstractCentralBody;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Line;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.orekit.bodies.CelestialBody;
 import org.orekit.bodies.GeodeticPoint;
@@ -39,23 +40,29 @@ public abstract class OrekitCentralBody extends AbstractCentralBody
     }
 
     @Override
-    public GeodeticPoint toGeodeticPoint(Vector3D position,
-                                         Frame frame,
-                                         AbsoluteDate date) throws OrekitException
+    public GeodeticPoint getIntersectionPoint(Vector3D position, Frame frame, AbsoluteDate date) throws OrekitException
     {
-        return ellipsoid.transform(position, frame, date);
+        return ellipsoid.getIntersectionPoint(
+            new Line(position, Vector3D.ZERO),
+            position,
+            frame,
+            date
+        );
     }
 
     @Override
-    public GeodeticPoint toGeodeticPoint(ICoordinate coordinate) throws OrekitException
+    public GeodeticPoint getIntersectionPoint(ICoordinate coordinate) throws OrekitException
     {
-        return ellipsoid.transform(coordinate.getPosition(),
-                                   coordinate.getFrame(),
-                                   coordinate.getDate());
+        return ellipsoid.getIntersectionPoint(
+            new Line(coordinate.getPosition(), Vector3D.ZERO),
+            coordinate.getPosition(),
+            coordinate.getFrame(),
+            coordinate.getDate()
+        );
     }
 
     @Override
-    public Vector3D toCartesianPoint(GeodeticPoint point)
+    public Vector3D getCartesianPoint(GeodeticPoint point)
     {
         return ellipsoid.transform(point);
     }

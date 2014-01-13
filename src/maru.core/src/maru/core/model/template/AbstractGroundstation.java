@@ -29,7 +29,7 @@ public abstract class AbstractGroundstation extends VisibleElement implements IG
         this.geodeticPoint = new GeodeticPoint(position.getLatitude(),
                                                position.getLongitude(),
                                                position.getAltitude());
-        this.cartesianPoint = centralBody.toCartesianPoint(geodeticPoint);
+        this.cartesianPoint = centralBody.getCartesianPoint(geodeticPoint);
     }
 
     @Override
@@ -64,7 +64,7 @@ public abstract class AbstractGroundstation extends VisibleElement implements IG
     @Override
     public void centralbodyChanged()
     {
-        this.cartesianPoint = getCentralBody().toCartesianPoint(geodeticPoint);
+        this.cartesianPoint = getCentralBody().getCartesianPoint(geodeticPoint);
     }
 
     @Override
@@ -84,7 +84,7 @@ public abstract class AbstractGroundstation extends VisibleElement implements IG
         this.geodeticPoint = new GeodeticPoint(position.getLatitude(),
                                                position.getLongitude(),
                                                position.getAltitude());
-        this.cartesianPoint = getCentralBody().toCartesianPoint(geodeticPoint);
+        this.cartesianPoint = getCentralBody().getCartesianPoint(geodeticPoint);
     }
 
     public void addTimeProvider(ITimeProvider provider)

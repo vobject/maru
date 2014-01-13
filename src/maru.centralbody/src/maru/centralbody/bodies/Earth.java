@@ -1,7 +1,6 @@
-package maru.centralbody.earth;
+package maru.centralbody.bodies;
 
 import maru.IMaruResource;
-import maru.centralbody.OrekitCentralBody;
 
 import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.errors.OrekitException;

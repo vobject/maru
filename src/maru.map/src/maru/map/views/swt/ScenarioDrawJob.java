@@ -13,7 +13,7 @@ import maru.core.model.ISpacecraft;
 import maru.core.model.IVisibleElement;
 import maru.core.utils.OrekitUtils;
 import maru.map.jobs.swt.SWTProjectDrawJob;
-import maru.map.views.GroundtrackBarrier;
+import maru.map.views.GroundtrackRange;
 import maru.map.views.GroundtrackPoint;
 import maru.map.views.MapViewParameters;
 import maru.map.views.MapViewSettings;
@@ -27,7 +27,7 @@ import org.orekit.errors.OrekitException;
 
 public class ScenarioDrawJob extends SWTProjectDrawJob
 {
-    private final Map<ISpacecraft, GroundtrackBarrier> gtBarriers;
+    private final Map<ISpacecraft, GroundtrackRange> gtBarriers;
 
     public ScenarioDrawJob()
     {
@@ -66,9 +66,9 @@ public class ScenarioDrawJob extends SWTProjectDrawJob
                 return;
             }
 
-            GroundtrackBarrier currentGtBarrier;
+            GroundtrackRange currentGtBarrier;
             if (!gtBarriers.containsKey(element)) {
-                currentGtBarrier = new GroundtrackBarrier(currentCoordinate.getDate(), drawing.getGroundtrackLength());
+                currentGtBarrier = new GroundtrackRange(currentCoordinate.getDate(), drawing.getGroundtrackLength());
                 gtBarriers.put(element, currentGtBarrier);
             } else {
                 currentGtBarrier = gtBarriers.get(element);
@@ -90,7 +90,7 @@ public class ScenarioDrawJob extends SWTProjectDrawJob
         // this job does not own any resources
     }
 
-    private void drawGroundtrack(ISpacecraft element, GroundtrackBarrier barrier, RGB day, RGB night)
+    private void drawGroundtrack(ISpacecraft element, GroundtrackRange barrier, RGB day, RGB night)
     {
         GC gc = getGC();
 
@@ -174,7 +174,7 @@ public class ScenarioDrawJob extends SWTProjectDrawJob
         }
     }
 
-    private ArrayList<ArrayList<GroundtrackPoint>> getGroundtrack(ISpacecraft element, GroundtrackBarrier barrier)
+    private ArrayList<ArrayList<GroundtrackPoint>> getGroundtrack(ISpacecraft element, GroundtrackRange barrier)
     {
         MapViewParameters area = getParameters();
         MapViewSettings drawing = getSettings();

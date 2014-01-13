@@ -13,9 +13,13 @@ Require-Bundle: org.eclipse.ui,
  org.orekit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
-Export-Package: maru.centralbody;uses:="org.eclipse.ui.plugin,org.osgi.framework",
- maru.centralbody.earth;uses:="maru.core.model.generic,maru.core.model",
- maru.centralbody.projection,
- maru.centralbody.wizards
+Export-Package: maru.centralbody;uses:="maru,org.eclipse.ui.plugin,org.osgi.framework",
+ maru.centralbody.bodies,
+ maru.centralbody.projection;uses:="maru.core.model,org.orekit.bodies",
+ maru.centralbody.wizards;
+  uses:="org.eclipse.jface.wizard,
+   maru.core.model,
+   maru.ui.wizards,
+   org.eclipse.swt.widgets"
 Eclipse-RegisterBuddy: maru.core,
  maru.ui

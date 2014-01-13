@@ -16,7 +16,7 @@ import maru.core.model.ISpacecraft;
 import maru.core.model.IVisibleElement;
 import maru.core.utils.OrekitUtils;
 import maru.map.jobs.gl.GLProjectDrawJob;
-import maru.map.views.GroundtrackBarrier;
+import maru.map.views.GroundtrackRange;
 import maru.map.views.GroundtrackPoint;
 import maru.map.views.MapViewParameters;
 import maru.map.views.MapViewSettings;
@@ -32,7 +32,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 {
     private class IconSize { int x; int y; };
 
-    private final Map<ISpacecraft, GroundtrackBarrier> gtBarriers;
+    private final Map<ISpacecraft, GroundtrackRange> gtBarriers;
 
     public ScenarioDrawJob()
     {
@@ -67,9 +67,9 @@ public class ScenarioDrawJob extends GLProjectDrawJob
                 return;
             }
 
-            GroundtrackBarrier currentGtBarrier;
+            GroundtrackRange currentGtBarrier;
             if (!gtBarriers.containsKey(element)) {
-                currentGtBarrier = new GroundtrackBarrier(currentCoordinate.getDate(), drawing.getGroundtrackLength());
+                currentGtBarrier = new GroundtrackRange(currentCoordinate.getDate(), drawing.getGroundtrackLength());
                 gtBarriers.put(element, currentGtBarrier);
             } else {
                 currentGtBarrier = gtBarriers.get(element);
@@ -91,7 +91,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         // this job does not own any resources
     }
 
-    private void drawGroundtrack(ISpacecraft element, GroundtrackBarrier barrier, RGB day, RGB night)
+    private void drawGroundtrack(ISpacecraft element, GroundtrackRange barrier, RGB day, RGB night)
     {
         GL2 gl = getGL();
         MapViewParameters area = getParameters();
@@ -164,7 +164,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         }
     }
 
-    private ArrayList<ArrayList<GroundtrackPoint>> getGroundtrack(ISpacecraft element, GroundtrackBarrier barrier)
+    private ArrayList<ArrayList<GroundtrackPoint>> getGroundtrack(ISpacecraft element, GroundtrackRange barrier)
     {
         MapViewParameters area = getParameters();
         MapViewSettings drawing = getSettings();
