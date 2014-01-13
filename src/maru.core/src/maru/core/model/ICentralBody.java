@@ -30,4 +30,6 @@ public interface ICentralBody extends IScenarioElement
     GeodeticPoint getIntersectionPoint(ICoordinate coordinate) throws OrekitException;
     GeodeticPoint getIntersectionPoint(Vector3D position, Frame frame, AbsoluteDate date) throws OrekitException;
     Vector3D getCartesianPoint(GeodeticPoint point);
+
+    double getDistanceToHorizon(ICoordinate coordinate);
 }

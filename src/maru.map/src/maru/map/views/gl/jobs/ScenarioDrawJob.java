@@ -8,6 +8,7 @@ import javax.media.opengl.GL2;
 
 import maru.IMaruResource;
 import maru.centralbody.projection.EquirectangularCoordinate;
+import maru.core.model.ICentralBody;
 import maru.core.model.ICoordinate;
 import maru.core.model.IGroundstation;
 import maru.core.model.IPropagator;
@@ -16,15 +17,18 @@ import maru.core.model.ISpacecraft;
 import maru.core.model.IVisibleElement;
 import maru.core.utils.OrekitUtils;
 import maru.map.jobs.gl.GLProjectDrawJob;
-import maru.map.views.GroundtrackRange;
 import maru.map.views.GroundtrackPoint;
+import maru.map.views.GroundtrackRange;
 import maru.map.views.MapViewParameters;
 import maru.map.views.MapViewSettings;
 import maru.map.views.gl.GLUtils;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.eclipse.swt.graphics.RGB;
 import org.orekit.bodies.GeodeticPoint;
 import org.orekit.errors.OrekitException;
+import org.orekit.frames.Frame;
+import org.orekit.time.AbsoluteDate;
 
 import com.jogamp.opengl.util.texture.Texture;
 
@@ -82,6 +86,58 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
             drawGroundtrack(element, currentGtBarrier, defaultColor, nightColor);
             drawElement(element, mapPos, currentColor);
+
+            // centralbody & currentCoordinate ---> distanceToHorizon
+            // groundstation & centralbody & satellite ---> distanceToGroundstation
+            // distanceToHorizon & distanceToGroundstation ---> visible
+            // centralbody & currentCoordinate & groundstation ---> mapPositions
+
+            try
+            {
+                ICentralBody centralBody = element.getCentralBody();
+                Frame centralBodyFrame = centralBody.getFrame();
+
+                Frame elementFrame = currentCoordinate.getFrame();
+                AbsoluteDate elementDate = currentCoordinate.getDate();
+                Vector3D elementVec = currentCoordinate.getPosition();
+
+                double distanceToHorizon = centralBody.getDistanceToHorizon(currentCoordinate);
+
+                for (IGroundstation gs : scenarioProject.getGroundstations())
+                {
+                    Vector3D groundstationVec = gs.getCartesianPosition();
+
+                    Vector3D groundstationVecInSatFrame = centralBodyFrame.getTransformTo(elementFrame, elementDate).transformPosition(groundstationVec);
+
+                    double distanceToGroundstation = elementVec.distance(groundstationVecInSatFrame);
+
+                    if (distanceToGroundstation < distanceToHorizon)
+                    {
+//                        System.out.println("VISIBLE: " + element.getElementName() + "<->" + gs.getElementName() + "; distanceToHorizon=" + distanceToHorizon + " distanceToGroundstation=" + distanceToGroundstation);
+
+                        EquirectangularCoordinate mp1 = getMapPosition(centralBody.getIntersectionPoint(currentCoordinate));
+                        EquirectangularCoordinate mp2 = getMapPosition(gs.getGeodeticPosition());
+
+                        GL2 gl = getGL();
+                        gl.glBegin(GL2.GL_LINE_STRIP);
+                        gl.glVertex2d(area.mapX + mp1.X, area.mapHeight - (mp1.Y - area.mapY));
+                        gl.glVertex2d(area.mapX + mp2.X, area.mapHeight - (mp2.Y - area.mapY));
+                        gl.glEnd();
+                    }
+                }
+
+//                GeodeticPoint p = element.getCentralBody().getIntersectionPoint(new Vector3D(currentCoordinate.getPosition().getX() + x, currentCoordinate.getPosition().getY() + x, currentCoordinate.getPosition().getZ() + x), currentCoordinate.getFrame(), currentCoordinate.getDate());
+//                EquirectangularCoordinate mp2 = getMapPosition(p);
+//                IconSize i = new IconSize();
+//                i.x = 8;
+//                i.y = 8;
+//                drawElementFallback(mp2, i);
+            }
+            catch (OrekitException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 

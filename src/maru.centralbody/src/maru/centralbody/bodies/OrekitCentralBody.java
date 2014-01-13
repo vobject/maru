@@ -66,4 +66,19 @@ public abstract class OrekitCentralBody extends AbstractCentralBody
     {
         return ellipsoid.transform(point);
     }
+
+    @Override
+    public double getDistanceToHorizon(ICoordinate coordinate)
+    {
+        double radius = getEquatorialRadius();
+        double radius2 = radius * 2;
+
+        // calculate the distance from the coordinate to the zero vector.
+        // it is the altitude from the earths center.
+        // this depends on the coordinate being earth centered.
+        double coodinateAltitude = coordinate.getPosition().distance(Vector3D.ZERO);
+        double coodinateAltitudeAboveGround = coodinateAltitude - radius;
+
+        return Math.sqrt(coodinateAltitudeAboveGround * (radius2 + coodinateAltitudeAboveGround));
+    }
 }
