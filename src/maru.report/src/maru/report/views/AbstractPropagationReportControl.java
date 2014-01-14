@@ -1,16 +1,14 @@
 package maru.report.views;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
+import maru.core.utils.NumberUtils;
 import maru.core.utils.TimeUtils;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiProject;
@@ -38,9 +36,6 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
     private Combo reportElement;
     private Spinner reportStepSize;
 
-    private static final String DEFAULT_DOUBLE_FORMAT = "###0.000000";
-    private final DecimalFormat doubleFormat;
-
     private final StringBuffer outputBuffer = new StringBuffer();
 
     public AbstractPropagationReportControl(Composite parentControl)
@@ -51,10 +46,6 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
     public AbstractPropagationReportControl(String name, Composite parentControl)
     {
         super(name, parentControl);
-
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.US);
-        otherSymbols.setDecimalSeparator('.');
-        doubleFormat = new DecimalFormat(DEFAULT_DOUBLE_FORMAT, otherSymbols);
     }
 
     @Override
@@ -220,6 +211,6 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
 
     protected String doubleToString(double d)
     {
-        return doubleFormat.format(d);
+        return NumberUtils.format(d);
     }
 }

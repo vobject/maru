@@ -24,12 +24,16 @@ public interface ICentralBody extends IScenarioElement
     /** return the body oriented, body centered frame. */
     Frame getFrame();
 
+    Vector3D getCartesianPoint(GeodeticPoint point);
+
     /** get the position of the central body in a given frame */
     Vector3D getPosition(Frame frame, AbsoluteDate date) throws OrekitException;
 
-    GeodeticPoint getIntersectionPoint(ICoordinate coordinate) throws OrekitException;
-    GeodeticPoint getIntersectionPoint(Vector3D position, Frame frame, AbsoluteDate date) throws OrekitException;
-    Vector3D getCartesianPoint(GeodeticPoint point);
+    GeodeticPoint getIntersection(ICoordinate from) throws OrekitException;
+    GeodeticPoint getIntersection(ICoordinate from, ICoordinate to) throws OrekitException;
+    GeodeticPoint getIntersection(ICoordinate from, Vector3D to) throws OrekitException;
 
-    double getDistanceToHorizon(ICoordinate coordinate);
+    double getDistanceToHorizon(ICoordinate coordinate) throws OrekitException;
+//    double getDistanceToIntersection(ICoordinate coordinate, ICoordinate to);
+//    double getDistanceToIntersection(ICoordinate coordinate, Vector3D to);
 }

@@ -73,6 +73,12 @@ public class CoreModelMock
         {
             return null;
         }
+
+        @Override
+        public double getDistanceToHorizon(ICoordinate coordinate)
+        {
+            return 0;
+        }
     }
 
     public static class DummyGroundstation extends AbstractGroundstation
@@ -95,15 +101,9 @@ public class CoreModelMock
         }
 
         @Override
-        public boolean inUmbra(ICoordinate coordinate)
+        public EclipseState getEclipseState(ICoordinate coordinate)
         {
-            return false;
-        }
-
-        @Override
-        public boolean inUmbraOrPenumbra(ICoordinate coordinate)
-        {
-            return false;
+            return null;
         }
 
         @Override

@@ -14,7 +14,9 @@ import maru.core.model.IGroundstation;
 import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
+import maru.core.model.ISpacecraft.EclipseState;
 import maru.core.model.IVisibleElement;
+import maru.core.utils.NumberUtils;
 import maru.core.utils.OrekitUtils;
 import maru.map.jobs.gl.GLProjectDrawJob;
 import maru.map.views.GroundtrackPoint;
@@ -23,12 +25,9 @@ import maru.map.views.MapViewParameters;
 import maru.map.views.MapViewSettings;
 import maru.map.views.gl.GLUtils;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.eclipse.swt.graphics.RGB;
 import org.orekit.bodies.GeodeticPoint;
 import org.orekit.errors.OrekitException;
-import org.orekit.frames.Frame;
-import org.orekit.time.AbsoluteDate;
 
 import com.jogamp.opengl.util.texture.Texture;
 
@@ -49,12 +48,12 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         MapViewParameters area = getParameters();
         MapViewSettings drawing = getSettings();
 
-        IScenarioProject scenarioProject = getProject().getUnderlyingElement();
+        IScenarioProject scenario = getProject().getUnderlyingElement();
 
-        getProjector().setCentralBody(scenarioProject.getCentralBody());
+        getProjector().setCentralBody(scenario.getCentralBody());
         getProjector().setMapSize(area.mapWidth, area.mapHeight);
 
-        for (IGroundstation element : scenarioProject.getGroundstations())
+        for (IGroundstation element : scenario.getGroundstations())
         {
             GeodeticPoint position = element.getGeodeticPosition();
             EquirectangularCoordinate mapPos = getMapPosition(position);
@@ -63,7 +62,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
             drawElement(element, mapPos, defaultColor);
         }
 
-        for (ISpacecraft element : scenarioProject.getSpacecrafts())
+        for (ISpacecraft element : scenario.getSpacecrafts())
         {
             ICoordinate currentCoordinate = element.getCurrentCoordinate();
             EquirectangularCoordinate mapPos = getMapPosition(currentCoordinate);
@@ -86,58 +85,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
             drawGroundtrack(element, currentGtBarrier, defaultColor, nightColor);
             drawElement(element, mapPos, currentColor);
-
-            // centralbody & currentCoordinate ---> distanceToHorizon
-            // groundstation & centralbody & satellite ---> distanceToGroundstation
-            // distanceToHorizon & distanceToGroundstation ---> visible
-            // centralbody & currentCoordinate & groundstation ---> mapPositions
-
-            try
-            {
-                ICentralBody centralBody = element.getCentralBody();
-                Frame centralBodyFrame = centralBody.getFrame();
-
-                Frame elementFrame = currentCoordinate.getFrame();
-                AbsoluteDate elementDate = currentCoordinate.getDate();
-                Vector3D elementVec = currentCoordinate.getPosition();
-
-                double distanceToHorizon = centralBody.getDistanceToHorizon(currentCoordinate);
-
-                for (IGroundstation gs : scenarioProject.getGroundstations())
-                {
-                    Vector3D groundstationVec = gs.getCartesianPosition();
-
-                    Vector3D groundstationVecInSatFrame = centralBodyFrame.getTransformTo(elementFrame, elementDate).transformPosition(groundstationVec);
-
-                    double distanceToGroundstation = elementVec.distance(groundstationVecInSatFrame);
-
-                    if (distanceToGroundstation < distanceToHorizon)
-                    {
-//                        System.out.println("VISIBLE: " + element.getElementName() + "<->" + gs.getElementName() + "; distanceToHorizon=" + distanceToHorizon + " distanceToGroundstation=" + distanceToGroundstation);
-
-                        EquirectangularCoordinate mp1 = getMapPosition(centralBody.getIntersectionPoint(currentCoordinate));
-                        EquirectangularCoordinate mp2 = getMapPosition(gs.getGeodeticPosition());
-
-                        GL2 gl = getGL();
-                        gl.glBegin(GL2.GL_LINE_STRIP);
-                        gl.glVertex2d(area.mapX + mp1.X, area.mapHeight - (mp1.Y - area.mapY));
-                        gl.glVertex2d(area.mapX + mp2.X, area.mapHeight - (mp2.Y - area.mapY));
-                        gl.glEnd();
-                    }
-                }
-
-//                GeodeticPoint p = element.getCentralBody().getIntersectionPoint(new Vector3D(currentCoordinate.getPosition().getX() + x, currentCoordinate.getPosition().getY() + x, currentCoordinate.getPosition().getZ() + x), currentCoordinate.getFrame(), currentCoordinate.getDate());
-//                EquirectangularCoordinate mp2 = getMapPosition(p);
-//                IconSize i = new IconSize();
-//                i.x = 8;
-//                i.y = 8;
-//                drawElementFallback(mp2, i);
-            }
-            catch (OrekitException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            drawAccessIndicators(scenario, element);
         }
     }
 
@@ -205,6 +153,79 @@ public class ScenarioDrawJob extends GLProjectDrawJob
                          true);
     }
 
+    private void drawAccessIndicators(IScenarioProject scenario, ISpacecraft element)
+    {
+        ICentralBody centralBody = element.getCentralBody();
+        ICoordinate coordinate = element.getCurrentCoordinate();
+
+        try
+        {
+            for (IGroundstation gs : scenario.getGroundstations())
+            {
+                double distToGs = element.getDistanceTo(gs);
+                if (distToGs > 0)
+                {
+                    EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
+                    EquirectangularCoordinate gsPos = getMapPosition(gs.getGeodeticPosition());
+
+                    drawAccessLine(satPos, gsPos, distToGs, true);
+                }
+            }
+
+            for (ISpacecraft sc : scenario.getSpacecrafts())
+            {
+                if (sc == element) {
+                    continue;
+                }
+
+                double distToSc = element.getDistanceTo(sc);
+                if (distToSc > 0)
+                {
+                    EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
+                    EquirectangularCoordinate sat2Pos = getMapPosition(centralBody.getIntersection(sc.getCurrentCoordinate()));
+
+                    drawAccessLine(satPos, sat2Pos, distToSc, true);
+                }
+            }
+        }
+        catch (OrekitException e)
+        {
+            e.printStackTrace();
+        }
+
+//            GeodeticPoint p = element.getCentralBody().getIntersectionPoint(new Vector3D(currentCoordinate.getPosition().getX() + x, currentCoordinate.getPosition().getY() + x, currentCoordinate.getPosition().getZ() + x), currentCoordinate.getFrame(), currentCoordinate.getDate());
+//            EquirectangularCoordinate mp2 = getMapPosition(p);
+//            IconSize i = new IconSize();
+//            i.x = 8;
+//            i.y = 8;
+//            drawElementFallback(mp2, i);
+    }
+
+    private void drawAccessLine(EquirectangularCoordinate pos1,
+                                EquirectangularCoordinate pos2,
+                                double dist, boolean showDist)
+    {
+        GL2 gl = getGL();
+        MapViewParameters area = getParameters();
+
+        gl.glBegin(GL2.GL_LINES);
+        gl.glVertex2d(area.mapX + pos1.X, area.mapHeight - (pos1.Y - area.mapY));
+        gl.glVertex2d(area.mapX + pos2.X, area.mapHeight - (pos2.Y - area.mapY));
+        gl.glEnd();
+
+        if (!showDist) {
+            return;
+        }
+
+        GLUtils.drawText(getTextRenderer(),
+                area.clientAreaWidth,
+                area.clientAreaHeight,
+                area.mapX + ((Math.max(pos1.X, pos2.X) + Math.min(pos1.X, pos2.X)) / 2),
+                area.mapHeight - (((Math.max(pos1.Y, pos2.Y) + Math.min(pos1.Y, pos2.Y)) / 2) - area.mapY),
+                NumberUtils.formatNoDecimalPoint(dist / 1000.0) + " km",
+                true);
+    }
+
     private EquirectangularCoordinate getMapPosition(GeodeticPoint point)
     {
         return getProjector().project(point);
@@ -267,7 +288,12 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
     private boolean inShadow(ISpacecraft element, ICoordinate coordinate)
     {
-        return element.inUmbraOrPenumbra(coordinate);
+        try {
+            return element.getEclipseState(coordinate) != EclipseState.None;
+        } catch (OrekitException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private IconSize getElementIconSize(IVisibleElement element)

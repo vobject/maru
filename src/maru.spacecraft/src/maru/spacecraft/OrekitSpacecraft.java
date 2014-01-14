@@ -11,13 +11,11 @@ import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.utils.Constants;
 
 public abstract class OrekitSpacecraft extends AbstractSpacecraft
 {
     private static final long serialVersionUID = 1L;
-
-    /** Sun radius in meters. From org.orekit.utils.Constants. */
-    private static final double SUN_RADIUS_METERS = 695500000.0;
 
     public OrekitSpacecraft(String name)
     {
@@ -25,18 +23,7 @@ public abstract class OrekitSpacecraft extends AbstractSpacecraft
     }
 
     @Override
-    public boolean inUmbra(ICoordinate coordinate)
-    {
-        return (inEclipse(coordinate, true)) < 0;
-    }
-
-    @Override
-    public boolean inUmbraOrPenumbra(ICoordinate coordinate)
-    {
-        return (inEclipse(coordinate, false)) < 0;
-    }
-
-    private double inEclipse(ICoordinate sat, boolean total)
+    public EclipseState getEclipseState(ICoordinate coordinate)
     {
         // based on orekit EclipseDetector class
 
@@ -45,27 +32,33 @@ public abstract class OrekitSpacecraft extends AbstractSpacecraft
             CelestialBody sun = CelestialBodyFactory.getSun();
             ICentralBody earth = getCentralBody();
 
-            AbsoluteDate date = sat.getDate();
-            Frame frame = sat.getFrame();
-            Vector3D position = earth.getPosition(sat.getFrame(), date);
+            AbsoluteDate date = coordinate.getDate();
+            Frame frame = coordinate.getFrame();
+            Vector3D position = earth.getPosition(coordinate.getFrame(), date);
 
             Vector3D pted = sun.getPVCoordinates(date, frame).getPosition();
             Vector3D ping = position;
-            Vector3D psat = sat.getPosition();
+            Vector3D psat = coordinate.getPosition();
 
             Vector3D ps = pted.subtract(psat);
             Vector3D po = ping.subtract(psat);
 
             double angle = Vector3D.angle(ps, po);
-            double rs = FastMath.asin(SUN_RADIUS_METERS / ps.getNorm());
+            double rs = FastMath.asin(Constants.SUN_RADIUS / ps.getNorm());
             double ro = FastMath.asin(earth.getEquatorialRadius() / po.getNorm());
 
-            return total ? (angle - ro + rs) : (angle - ro - rs);
+            if ((angle - ro + rs) < 0) {
+                return EclipseState.Umbra;
+            } else if ((angle - ro - rs) < 0) {
+                return EclipseState.UmbraOrPenumbra;
+            } else {
+                return EclipseState.None;
+            }
         }
         catch (OrekitException e)
         {
             e.printStackTrace();
-            return 0;
+            return EclipseState.None;
         }
     }
 }

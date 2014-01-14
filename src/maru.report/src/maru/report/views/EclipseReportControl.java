@@ -7,6 +7,7 @@ import java.util.List;
 import maru.core.model.ICoordinate;
 import maru.core.model.IPropagator;
 import maru.core.model.ISpacecraft;
+import maru.core.model.ISpacecraft.EclipseState;
 import maru.core.utils.TimeUtils;
 
 import org.eclipse.swt.SWT;
@@ -14,6 +15,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.orekit.errors.OrekitException;
 
 enum EclipseType
 {
@@ -110,7 +112,11 @@ public class EclipseReportControl extends AbstractPropagationReportControl
         appendln("");
         appendln("");
 
-        createReportBody();
+        try {
+            createReportBody();
+        } catch (OrekitException e) {
+            appendln("ERROR: " + e.getMessage());
+        }
     }
 
     @Override
@@ -126,7 +132,7 @@ public class EclipseReportControl extends AbstractPropagationReportControl
         return items.toArray(new String[0]);
     }
 
-    private void createReportBody()
+    private void createReportBody() throws OrekitException
     {
         ISpacecraft element = getSelectedElement();
         IPropagator propagator = element.getPropagator();
@@ -148,9 +154,9 @@ public class EclipseReportControl extends AbstractPropagationReportControl
             boolean inEclipse = false;
 
             if (type == EclipseType.Umbra) {
-                inEclipse = element.inUmbra(coordinate);
+                inEclipse = element.getEclipseState(coordinate) == EclipseState.Umbra;
             } else if (type == EclipseType.UmbraAndPenumbra) {
-                inEclipse = element.inUmbraOrPenumbra(coordinate);
+                inEclipse = element.getEclipseState(coordinate) == EclipseState.UmbraOrPenumbra;
             } else {
                 throw new IllegalStateException();
             }

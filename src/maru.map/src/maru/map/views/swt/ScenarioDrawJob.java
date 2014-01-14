@@ -10,11 +10,12 @@ import maru.core.model.IGroundstation;
 import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
+import maru.core.model.ISpacecraft.EclipseState;
 import maru.core.model.IVisibleElement;
 import maru.core.utils.OrekitUtils;
 import maru.map.jobs.swt.SWTProjectDrawJob;
-import maru.map.views.GroundtrackRange;
 import maru.map.views.GroundtrackPoint;
+import maru.map.views.GroundtrackRange;
 import maru.map.views.MapViewParameters;
 import maru.map.views.MapViewSettings;
 
@@ -232,11 +233,10 @@ public class ScenarioDrawJob extends SWTProjectDrawJob
 
     private boolean inShadow(ISpacecraft element, ICoordinate coordinate)
     {
-        if (element instanceof ISpacecraft) {
-            return element.inUmbraOrPenumbra(coordinate);
-        } else {
-            // there is currently nothing in the groundstation interface that
-            // allows to ask if it is day or night.
+        try {
+            return element.getEclipseState(coordinate) != EclipseState.None;
+        } catch (OrekitException e) {
+            e.printStackTrace();
             return false;
         }
     }

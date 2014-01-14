@@ -11,6 +11,7 @@ import org.orekit.bodies.GeodeticPoint;
 import org.orekit.bodies.OneAxisEllipsoid;
 import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
+import org.orekit.frames.Transform;
 import org.orekit.time.AbsoluteDate;
 
 public abstract class OrekitCentralBody extends AbstractCentralBody
@@ -40,24 +41,31 @@ public abstract class OrekitCentralBody extends AbstractCentralBody
     }
 
     @Override
-    public GeodeticPoint getIntersectionPoint(Vector3D position, Frame frame, AbsoluteDate date) throws OrekitException
+    public GeodeticPoint getIntersection(ICoordinate from) throws OrekitException
     {
-        return ellipsoid.getIntersectionPoint(
-            new Line(position, Vector3D.ZERO),
-            position,
-            frame,
-            date
-        );
+        Transform transform = getFrame().getTransformTo(from.getFrame(), from.getDate());
+        Vector3D zeroVecInFromFrame = transform.transformPosition(Vector3D.ZERO);
+
+        return getIntersection(from, zeroVecInFromFrame);
     }
 
     @Override
-    public GeodeticPoint getIntersectionPoint(ICoordinate coordinate) throws OrekitException
+    public GeodeticPoint getIntersection(ICoordinate from, ICoordinate to) throws OrekitException
+    {
+        Transform transform = to.getFrame().getTransformTo(from.getFrame(), from.getDate());
+        Vector3D toVecInFromFrame = transform.transformPosition(to.getPosition());
+
+        return getIntersection(from, toVecInFromFrame);
+    }
+
+    @Override
+    public GeodeticPoint getIntersection(ICoordinate from, Vector3D to) throws OrekitException
     {
         return ellipsoid.getIntersectionPoint(
-            new Line(coordinate.getPosition(), Vector3D.ZERO),
-            coordinate.getPosition(),
-            coordinate.getFrame(),
-            coordinate.getDate()
+            new Line(from.getPosition(), to),
+            from.getPosition(),
+            from.getFrame(),
+            from.getDate()
         );
     }
 
@@ -68,15 +76,18 @@ public abstract class OrekitCentralBody extends AbstractCentralBody
     }
 
     @Override
-    public double getDistanceToHorizon(ICoordinate coordinate)
+    public double getDistanceToHorizon(ICoordinate coordinate) throws OrekitException
     {
         double radius = getEquatorialRadius();
         double radius2 = radius * 2;
 
+        Transform transform = getFrame().getTransformTo(coordinate.getFrame(), coordinate.getDate());
+        Vector3D zeroVecInCoordinateFrame = transform.transformPosition(Vector3D.ZERO);
+
         // calculate the distance from the coordinate to the zero vector.
-        // it is the altitude from the earths center.
-        // this depends on the coordinate being earth centered.
-        double coodinateAltitude = coordinate.getPosition().distance(Vector3D.ZERO);
+        // it is the altitude from the central bodies center.
+
+        double coodinateAltitude = coordinate.getPosition().distance(zeroVecInCoordinateFrame);
         double coodinateAltitudeAboveGround = coodinateAltitude - radius;
 
         return Math.sqrt(coodinateAltitudeAboveGround * (radius2 + coodinateAltitudeAboveGround));
