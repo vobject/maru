@@ -18,6 +18,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
         store.setDefault(PreferenceConstants.P_MAP_GROUNDTRACK_STEP_SIZE, 120L);
         store.setDefault(PreferenceConstants.P_MAP_GROUNDTRACK_LENGTH, 2L);
 
+        store.setDefault(PreferenceConstants.P_MAP_SHOW_ACCESS_SC_TO_SC, true);
+        store.setDefault(PreferenceConstants.P_MAP_SHOW_ACCESS_SC_TO_GS, true);
+
         store.setDefault(PreferenceConstants.P_MAP_NIGHT, true);
         store.setDefault(PreferenceConstants.P_MAP_NIGHT_STEPSIZE, 4);
 

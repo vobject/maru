@@ -37,6 +37,12 @@ public class MapViewSettings
     /** The length of the ground track in seconds. */
     private long groundtrackLength;
 
+    /** Whether or not to show visibility lines between spacecrafts. */
+    private boolean enableAccessScToSc;
+
+    /** Whether or not to show visibility lines between spacecrafts and ground stations. */
+    private boolean enableAccessScToGs;
+
     /** Whether or not to show the sun terminator. */
     private boolean enableNight;
 
@@ -109,6 +115,18 @@ public class MapViewSettings
         return groundtrackLength;
     }
 
+    /** {@link #enableAccessScToSc} */
+    public boolean getShowAccessSpacecraftToSpacecraft()
+    {
+        return enableAccessScToSc;
+    }
+
+    /** {@link #enableAccessScToGs} */
+    public boolean getShowAccessSpacecraftToGroundstation()
+    {
+        return enableAccessScToGs;
+    }
+
     /** {@link #enableNight} */
     public boolean getShowNight()
     {
@@ -135,6 +153,8 @@ public class MapViewSettings
         umbraOrPenumbra = preferenceStore.getBoolean(PreferenceConstants.P_MAP_SHOW_UMBRA);
         groundtrackStepSize = preferenceStore.getLong(PreferenceConstants.P_MAP_GROUNDTRACK_STEP_SIZE);
         groundtrackLength = preferenceStore.getLong(PreferenceConstants.P_MAP_GROUNDTRACK_LENGTH) * 60 * 60;
+        enableAccessScToSc = preferenceStore.getBoolean(PreferenceConstants.P_MAP_SHOW_ACCESS_SC_TO_SC);
+        enableAccessScToGs = preferenceStore.getBoolean(PreferenceConstants.P_MAP_SHOW_ACCESS_SC_TO_GS);
         enableNight = preferenceStore.getBoolean(PreferenceConstants.P_MAP_NIGHT);
         nightStepSize = preferenceStore.getInt(PreferenceConstants.P_MAP_NIGHT_STEPSIZE);
         latlonStepSize = preferenceStore.getDouble(PreferenceConstants.P_MAP_LAT_LON_LINE_STEPSIZE);
@@ -164,6 +184,10 @@ public class MapViewSettings
                 } else if (changedProperty.equals(PreferenceConstants.P_MAP_GROUNDTRACK_LENGTH)) {
                     // preferences are saved in hours, but we are working with seconds
                     groundtrackLength = (int) event.getNewValue() * 60 * 60;
+                } else if (changedProperty.equals(PreferenceConstants.P_MAP_SHOW_ACCESS_SC_TO_SC)) {
+                    enableAccessScToSc = (boolean) event.getNewValue();
+                } else if (changedProperty.equals(PreferenceConstants.P_MAP_SHOW_ACCESS_SC_TO_GS)) {
+                    enableAccessScToGs = (boolean) event.getNewValue();
                 } else if (changedProperty.equals(PreferenceConstants.P_MAP_NIGHT)) {
                     enableNight = (boolean) event.getNewValue();
                 } else if (changedProperty.equals(PreferenceConstants.P_MAP_NIGHT_STEPSIZE)) {

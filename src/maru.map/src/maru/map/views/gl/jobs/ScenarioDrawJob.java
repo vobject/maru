@@ -155,36 +155,43 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
     private void drawAccessIndicators(IScenarioProject scenario, ISpacecraft element)
     {
+        MapViewSettings settings = getSettings();
         ICentralBody centralBody = element.getCentralBody();
         ICoordinate coordinate = element.getCurrentCoordinate();
 
         try
         {
-            for (IGroundstation gs : scenario.getGroundstations())
+            if (settings.getShowAccessSpacecraftToSpacecraft())
             {
-                double distToGs = element.getDistanceTo(gs);
-                if (distToGs > 0)
+                for (ISpacecraft sc : scenario.getSpacecrafts())
                 {
-                    EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
-                    EquirectangularCoordinate gsPos = getMapPosition(gs.getGeodeticPosition());
+                    if (sc == element) {
+                        continue;
+                    }
 
-                    drawAccessLine(satPos, gsPos, distToGs, true);
+                    double distToSc = element.getDistanceTo(sc);
+                    if (distToSc > 0)
+                    {
+                        EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
+                        EquirectangularCoordinate sat2Pos = getMapPosition(centralBody.getIntersection(sc.getCurrentCoordinate()));
+
+                        drawAccessLine(satPos, sat2Pos, distToSc, true);
+                    }
                 }
             }
 
-            for (ISpacecraft sc : scenario.getSpacecrafts())
+            if (settings.getShowAccessSpacecraftToGroundstation())
             {
-                if (sc == element) {
-                    continue;
-                }
-
-                double distToSc = element.getDistanceTo(sc);
-                if (distToSc > 0)
+                for (IGroundstation gs : scenario.getGroundstations())
                 {
-                    EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
-                    EquirectangularCoordinate sat2Pos = getMapPosition(centralBody.getIntersection(sc.getCurrentCoordinate()));
+                    double distToGs = element.getDistanceTo(gs);
+                    if (distToGs > 0)
+                    {
+                        EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
+                        EquirectangularCoordinate gsPos = getMapPosition(gs.getGeodeticPosition());
 
-                    drawAccessLine(satPos, sat2Pos, distToSc, true);
+                        drawAccessLine(satPos, gsPos, distToGs, true);
+                    }
                 }
             }
         }
@@ -208,6 +215,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         GL2 gl = getGL();
         MapViewParameters area = getParameters();
 
+        gl.glLineWidth(1.0f);
         gl.glBegin(GL2.GL_LINES);
         gl.glVertex2d(area.mapX + pos1.X, area.mapHeight - (pos1.Y - area.mapY));
         gl.glVertex2d(area.mapX + pos2.X, area.mapHeight - (pos2.Y - area.mapY));

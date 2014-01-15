@@ -56,7 +56,7 @@ public class MapViewParameters
 
         this.mapWidth = (int) (mapImageWidth * mapScale);
         this.mapHeight = (int) (mapImageHeight * mapScale);
-        this.iconSize = mapWidth / 50;
+        this.iconSize = mapWidth / 48;
 
         this.mapX = (clientAreaWidth - mapWidth) / 2;
         this.mapY = (clientAreaHeight - mapHeight) / 2;

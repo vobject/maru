@@ -37,15 +37,22 @@ public class MapPreferencePage extends FieldEditorPreferencePage implements IWor
             new IntegerFieldEditor(PreferenceConstants.P_MAP_GROUNDTRACK_STEP_SIZE,
                                    "Ground track step size in seconds",
                                    getFieldEditorParent());
-        groundtrackStepSize.setValidRange(10, 600);
+        groundtrackStepSize.setValidRange(10, 1200);
         addField(groundtrackStepSize);
 
         IntegerFieldEditor groundtrackMaxLength =
             new IntegerFieldEditor(PreferenceConstants.P_MAP_GROUNDTRACK_LENGTH,
                                    "Ground track length in hours",
                                    getFieldEditorParent());
-        groundtrackMaxLength.setValidRange(1, 48);
+        groundtrackMaxLength.setValidRange(1, 96);
         addField(groundtrackMaxLength);
+
+        addField(new BooleanFieldEditor(PreferenceConstants.P_MAP_SHOW_ACCESS_SC_TO_SC,
+                                        "Show access between spacecrafts",
+                                        getFieldEditorParent()));
+        addField(new BooleanFieldEditor(PreferenceConstants.P_MAP_SHOW_ACCESS_SC_TO_GS,
+                                        "Show access between spacecrafts and ground stations",
+                                        getFieldEditorParent()));
 
         addField(new BooleanFieldEditor(PreferenceConstants.P_MAP_NIGHT,
                                         "Show night times on map",
