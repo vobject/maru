@@ -5,12 +5,18 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import maru.core.model.ICoordinate;
+import maru.core.model.IGroundstation;
+import maru.core.model.IPropagator;
+import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
+import maru.core.utils.AccessUtils;
+import maru.core.utils.NumberUtils;
+import maru.core.utils.OrekitUtils;
 import maru.core.utils.TimeUtils;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiProject;
-import maru.ui.model.UiSpacecraft;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -20,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
+import org.orekit.errors.OrekitException;
 
 public class AccessReportControl extends ReportTypeControl
 {
@@ -91,9 +98,21 @@ public class AccessReportControl extends ReportTypeControl
     @Override
     public void createReport(Text output)
     {
-        ISpacecraft element1 = getSelectedElement1();
-        ISpacecraft element2 = getSelectedElement2();
+        IScenarioElement element1 = getSelectedElement1();
+        IScenarioElement element2 = getSelectedElement2();
+
         if ((element1 == null) || (element2 == null)) {
+            // both elements must have been selected
+            return;
+        }
+
+        if (element1 == element2) {
+            // both selections must not be the same element
+            return;
+        }
+
+        if ((element1 instanceof IGroundstation) && (element2 instanceof IGroundstation)) {
+            // there must be at least one spacecraft selected
             return;
         }
 
@@ -137,12 +156,12 @@ public class AccessReportControl extends ReportTypeControl
         outputBuffer.append("\r\n");
     }
 
-    protected ISpacecraft getSelectedElement1()
+    protected IScenarioElement getSelectedElement1()
     {
         return getSelectedElement(reportElement1);
     }
 
-    protected ISpacecraft getSelectedElement2()
+    protected IScenarioElement getSelectedElement2()
     {
         return getSelectedElement(reportElement2);
     }
@@ -154,8 +173,8 @@ public class AccessReportControl extends ReportTypeControl
 
     protected void createDefaultReportHeader()
     {
-        ISpacecraft element1 = getSelectedElement1();
-        ISpacecraft element2 = getSelectedElement2();
+        IScenarioElement element1 = getSelectedElement1();
+        IScenarioElement element2 = getSelectedElement2();
 
         long startTime = getCurrentProject().getStartTime();
         long stopTime = getCurrentProject().getStopTime();
@@ -164,8 +183,7 @@ public class AccessReportControl extends ReportTypeControl
 
         appendln(getReportName());
         appendln("Date: " + TimeUtils.asISO8601(new Date()));
-        appendln(element1.getElementName() + "(" + element1.getPropagator().getName() + ") to " +
-                 element2.getElementName() + "(" + element2.getPropagator().getName() + ")");
+        appendln(element1.getElementName() + " <---> " + element2.getElementName());
         appendln("Propagation Start: " + TimeUtils.asISO8601(startTime));
         appendln("Propagation Stop: " + TimeUtils.asISO8601(stopTime));
         appendln("Propagation Duration: " + duration + "sec");
@@ -184,7 +202,11 @@ public class AccessReportControl extends ReportTypeControl
         appendln("");
         appendln("");
 
-        createReportBody();
+        try {
+            createReportBody();
+        } catch (OrekitException e) {
+            appendln("ERROR: " + e.getMessage());
+        }
     }
 
     private void createElementControl(Composite parent)
@@ -214,53 +236,139 @@ public class AccessReportControl extends ReportTypeControl
         reportStepSize.setValues(STEP_DEFAULT, STEP_MIN, STEP_MAX, STEP_DIGITS, STEP_INC, STEP_INC_PG);
     }
 
-    private ISpacecraft getSelectedElement(Combo combo)
+    private IScenarioElement getSelectedElement(Combo combo)
     {
         String selectedName = combo.getText();
         if (selectedName.isEmpty()) {
             return null;
         }
         UiElement uiElement = getCurrentProject().getChild(selectedName);
-        UiSpacecraft uiPropagatable = (UiSpacecraft) uiElement;
-        return uiPropagatable.getUnderlyingElement();
+        return uiElement.getUnderlyingElement();
     }
 
     protected String[] getPropagatableItems()
     {
         IScenarioProject scenario = getCurrentProject().getUnderlyingElement();
         Collection<ISpacecraft> spacecrafts = scenario.getSpacecrafts();
+        Collection<IGroundstation> groundstations = scenario.getGroundstations();
 
-        int itemCount = spacecrafts.size();
+        int itemCount = spacecrafts.size() + groundstations.size();
         List<String> items = new ArrayList<>(itemCount);
 
         for (ISpacecraft element : spacecrafts) {
             items.add(element.getElementName());
         }
+        for (IGroundstation element : groundstations) {
+            items.add(element.getElementName());
+        }
         return items.toArray(new String[itemCount]);
     }
 
-    private void createReportBody()
+    private void createReportBody() throws OrekitException
     {
-//        IPropagatable element1 = getSelectedElement1();
-//        IPropagator propagator1 = element1.getPropagator();
-//
-//        long startTime = getCurrentProject().getStartTime();
-//        long stopTime = getCurrentProject().getStopTime();
-//        long stepSize = getSelectedStepSize();
-//        int accessNr = 1;
+        ISpacecraft alpha;
+        IScenarioElement beta;
 
-        // TODO: Implement Me!
-        appendln("TODO: Implement Me!");
+        if (getSelectedElement1() instanceof ISpacecraft) {
+            alpha = (ISpacecraft) getSelectedElement1();
+            beta = getSelectedElement2();
+        } else {
+            alpha = (ISpacecraft) getSelectedElement2();
+            beta = getSelectedElement1();
+        }
+        IPropagator propagator = alpha.getPropagator();
 
-//        for (ICoordinate coordinate : propagator1.getCoordinates(element1, startTime, stopTime, stepSize))
-//        {
-//            append(Integer.toString(++accessNr));
-//            append("\t");
-//
-//            append(TimeUtil.asISO8601(coordinate.getTime()));
-//            append("\t");
-//
-//            appendln("");
-//        }
+        long startTime = getCurrentProject().getStartTime();
+        long stopTime = getCurrentProject().getStopTime();
+        long stepSize = getSelectedStepSize();
+
+        double minDuration = Double.MAX_VALUE;
+        double maxDuration = 0.0;
+        double totalDuration = 0.0;
+        double currentDuration = Double.NaN;
+        double separationDuration = 0.0;
+        int count = 0;
+
+        for (ICoordinate coordinate : propagator.getCoordinates(alpha, startTime, stopTime, stepSize))
+        {
+            double distance;
+            if (beta instanceof ISpacecraft) {
+                ISpacecraft betaSc = (ISpacecraft) beta;
+                IPropagator betaProp = betaSc.getPropagator();
+                ICoordinate betaCoord = betaProp.getCoordinate(betaSc, OrekitUtils.toSeconds(coordinate.getDate()));
+                distance = AccessUtils.getDistanceTo(alpha.getCentralBody(), coordinate, betaCoord);
+            } else if (beta instanceof IGroundstation) {
+                distance = AccessUtils.getDistanceTo(alpha.getCentralBody(), coordinate, (IGroundstation) beta);
+            } else {
+                throw new IllegalStateException();
+            }
+
+            if (distance > 0.0)
+            {
+                if (Double.isNaN(currentDuration))
+                {
+                    append(Integer.toString(count + 1));
+                    append("\t");
+
+                    append(TimeUtils.asISO8601(coordinate.getDate()));
+                    append("\t");
+
+                    currentDuration = 0.0;
+                }
+                currentDuration += stepSize;
+            }
+            else
+            {
+                if (!Double.isNaN(currentDuration))
+                {
+                    append(TimeUtils.asISO8601(coordinate.getDate()));
+                    append("\t");
+                    appendln(toDuration(currentDuration));
+
+                    if (currentDuration < minDuration) {
+                        minDuration = currentDuration;
+                    }
+                    if (currentDuration > maxDuration) {
+                        maxDuration = currentDuration;
+                    }
+                    totalDuration += currentDuration;
+                    count++;
+                    currentDuration = Double.NaN;
+                }
+                else
+                {
+                    separationDuration += stepSize;
+                }
+            }
+        }
+
+        if (!Double.isNaN(currentDuration))
+        {
+            // the current duration was not yet closed
+            append(TimeUtils.asISO8601(stopTime));
+            append("\t");
+            appendln(toDuration(currentDuration));
+            if (currentDuration < minDuration) {
+                minDuration = currentDuration;
+            }
+            if (currentDuration > maxDuration) {
+                maxDuration = currentDuration;
+            }
+            totalDuration += currentDuration;
+            count++;
+        }
+        double meanDuration = totalDuration / count;
+
+        appendln("");
+        appendln("Min duration: " + toDuration((minDuration != Double.MAX_VALUE) ? minDuration : 0.0));
+        appendln("Max duration: " + toDuration(maxDuration));
+        appendln("Mean duration: " + toDuration((Double.isNaN(meanDuration) ? 0.0 : meanDuration)));
+        appendln("Total duration: " + toDuration(totalDuration));
+        appendln("Separation duration: " + toDuration(separationDuration));
+    }
+
+    private String toDuration(double sec)
+    {
+        return NumberUtils.formatNoDecimalPoint(sec);
     }
 }

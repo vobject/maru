@@ -14,13 +14,14 @@ import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.core.model.ITimeProvider;
+import maru.core.utils.AccessUtils;
+import maru.core.utils.EclipseState;
+import maru.core.utils.EclipseUtils;
 import maru.core.utils.TimeUtils;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.orekit.bodies.GeodeticPoint;
 import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
-import org.orekit.frames.Transform;
 import org.orekit.time.AbsoluteDate;
 
 class NullPropagator implements IPropagator
@@ -158,81 +159,31 @@ public abstract class AbstractSpacecraft extends VisibleElement implements ISpac
     }
 
     @Override
+    public boolean hasAccessTo(ICoordinate coordinate) throws OrekitException
+    {
+        return getDistanceTo(coordinate) > 0;
+    }
+
+    @Override
     public boolean hasAccessTo(IGroundstation groundstation) throws OrekitException
     {
         return getDistanceTo(groundstation) > 0;
     }
 
     @Override
-    public boolean hasAccessTo(ISpacecraft spacecraft) throws OrekitException
+    public double getDistanceTo(ICoordinate coordinate) throws OrekitException
     {
-        return getDistanceTo(spacecraft) > 0;
+        return AccessUtils.getDistanceTo(getCentralBody(),
+                                         getCurrentCoordinate(),
+                                         coordinate);
     }
 
     @Override
     public double getDistanceTo(IGroundstation groundstation) throws OrekitException
     {
-        // TODO: consider the ground station's altitude
-        // TODO: consider the ground station's elevation angle
-
-        ICentralBody centralBody = getCentralBody();
-        Frame centralBodyFrame = centralBody.getFrame();
-
-        ICoordinate myCoordinate = getCurrentCoordinate();
-        Frame myFrame = myCoordinate.getFrame();
-        AbsoluteDate myDate = myCoordinate.getDate();
-        Vector3D myVec = myCoordinate.getPosition();
-
-        Transform toMyFrame = centralBodyFrame.getTransformTo(myFrame, myDate);
-        Vector3D gsVec = groundstation.getCartesianPosition();
-        Vector3D gsVecInMyFrame = toMyFrame.transformPosition(gsVec);
-
-        double distanceToHorizon = centralBody.getDistanceToHorizon(myCoordinate);
-        double distanceToGs = myVec.distance(gsVecInMyFrame);
-
-        return (distanceToGs < distanceToHorizon) ? distanceToGs : -1.0;
-    }
-
-    @Override
-    public double getDistanceTo(ISpacecraft other) throws OrekitException
-    {
-        ICentralBody centralBody = getCentralBody();
-        Frame centralBodyFrame = centralBody.getFrame();
-
-        ICoordinate myCoordinate = getCurrentCoordinate();
-        Frame myFrame = myCoordinate.getFrame();
-        AbsoluteDate myDate = myCoordinate.getDate();
-        Vector3D myVec = myCoordinate.getPosition();
-
-        ICoordinate otherCoordinate = other.getCurrentCoordinate();
-        Frame otherFrame = otherCoordinate.getFrame();
-        Vector3D otherVec = otherCoordinate.getPosition();
-
-        Transform toMyFrame = otherFrame.getTransformTo(myFrame, myDate);
-        Vector3D otherVecInMyFrame = toMyFrame.transformPosition(otherVec);
-        double distanceToOther = myVec.distance(otherVecInMyFrame);
-
-        GeodeticPoint myIntersect = centralBody.getIntersection(myCoordinate, otherVecInMyFrame);
-        if (myIntersect == null)
-        {
-            // there is no intersection with the central body in
-            // the direction of the other spacecraft.
-            return distanceToOther;
-        }
-        else
-        {
-            // we have an intersection with the central body in the
-            // direction of the other spacecraft. check if the distance
-            // to the intersection is smaller than the distance to the
-            // other spacecraft.
-            Vector3D cbIntersectVec = centralBody.getCartesianPoint(myIntersect);
-
-            Transform cbToMyFrame = centralBodyFrame.getTransformTo(myFrame, myDate);
-            Vector3D cbIntersectVecInMyFrame = cbToMyFrame.transformPosition(cbIntersectVec);
-
-            double distanceToIntersect = myVec.distance(cbIntersectVecInMyFrame);
-            return (distanceToOther < distanceToIntersect) ? distanceToOther : -1.0;
-        }
+        return AccessUtils.getDistanceTo(getCentralBody(),
+                                         getCurrentCoordinate(),
+                                         groundstation);
     }
 
     @Override
@@ -327,7 +278,7 @@ public abstract class AbstractSpacecraft extends VisibleElement implements ISpac
     @Override
     public EclipseState getEclipseState() throws OrekitException
     {
-        return getEclipseState(getCurrentCoordinate());
+        return EclipseUtils.getEclipseState(getCentralBody(), getCurrentCoordinate());
     }
 
     @Override

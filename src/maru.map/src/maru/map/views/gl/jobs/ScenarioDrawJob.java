@@ -14,8 +14,9 @@ import maru.core.model.IGroundstation;
 import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
-import maru.core.model.ISpacecraft.EclipseState;
 import maru.core.model.IVisibleElement;
+import maru.core.utils.EclipseState;
+import maru.core.utils.EclipseUtils;
 import maru.core.utils.NumberUtils;
 import maru.core.utils.OrekitUtils;
 import maru.map.jobs.gl.GLProjectDrawJob;
@@ -169,7 +170,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
                         continue;
                     }
 
-                    double distToSc = element.getDistanceTo(sc);
+                    double distToSc = element.getDistanceTo(sc.getCurrentCoordinate());
                     if (distToSc > 0)
                     {
                         EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
@@ -297,7 +298,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
     private boolean inShadow(ISpacecraft element, ICoordinate coordinate)
     {
         try {
-            return element.getEclipseState(coordinate) != EclipseState.None;
+            return EclipseUtils.getEclipseState(element.getCentralBody(), coordinate) != EclipseState.None;
         } catch (OrekitException e) {
             e.printStackTrace();
             return false;

@@ -7,7 +7,9 @@ import java.util.List;
 import maru.core.model.ICoordinate;
 import maru.core.model.IPropagator;
 import maru.core.model.ISpacecraft;
-import maru.core.model.ISpacecraft.EclipseState;
+import maru.core.utils.EclipseState;
+import maru.core.utils.EclipseUtils;
+import maru.core.utils.NumberUtils;
 import maru.core.utils.TimeUtils;
 
 import org.eclipse.swt.SWT;
@@ -154,9 +156,9 @@ public class EclipseReportControl extends AbstractPropagationReportControl
             boolean inEclipse = false;
 
             if (type == EclipseType.Umbra) {
-                inEclipse = element.getEclipseState(coordinate) == EclipseState.Umbra;
+                inEclipse = EclipseUtils.getEclipseState(element.getCentralBody(), coordinate) == EclipseState.Umbra;
             } else if (type == EclipseType.UmbraAndPenumbra) {
-                inEclipse = element.getEclipseState(coordinate) == EclipseState.UmbraOrPenumbra;
+                inEclipse = EclipseUtils.getEclipseState(element.getCentralBody(), coordinate) == EclipseState.UmbraOrPenumbra;
             } else {
                 throw new IllegalStateException();
             }
@@ -211,7 +213,6 @@ public class EclipseReportControl extends AbstractPropagationReportControl
             totalDuration += currentDuration;
             count++;
         }
-
         double meanDuration = totalDuration / count;
 
         appendln("");
@@ -237,6 +238,6 @@ public class EclipseReportControl extends AbstractPropagationReportControl
 
     private String toDuration(double sec)
     {
-        return Double.toString(sec);
+        return NumberUtils.formatNoDecimalPoint(sec);
     }
 }
