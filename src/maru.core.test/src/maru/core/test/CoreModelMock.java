@@ -56,20 +56,27 @@ public class CoreModelMock
         {
             return null;
         }
-        @Override
-        public GeodeticPoint getIntersectionPoint(ICoordinate coordinate) throws OrekitException
-        {
-            return null;
-        }
-
-        @Override
-        public GeodeticPoint getIntersectionPoint(Vector3D position, Frame frame, AbsoluteDate date) throws OrekitException
-        {
-            return null;
-        }
 
         @Override
         public Vector3D getCartesianPoint(GeodeticPoint point)
+        {
+            return null;
+        }
+
+        @Override
+        public GeodeticPoint getIntersection(ICoordinate from) throws OrekitException
+        {
+            return null;
+        }
+
+        @Override
+        public GeodeticPoint getIntersection(ICoordinate from, ICoordinate to) throws OrekitException
+        {
+            return null;
+        }
+
+        @Override
+        public GeodeticPoint getIntersection(ICoordinate from, Vector3D to) throws OrekitException
         {
             return null;
         }
@@ -98,12 +105,6 @@ public class CoreModelMock
         public DummySatellite()
         {
             super("DummySatellite");
-        }
-
-        @Override
-        public EclipseState getEclipseState(ICoordinate coordinate)
-        {
-            return null;
         }
 
         @Override

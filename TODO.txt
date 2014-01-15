@@ -1,0 +1,6 @@
+Low-level coding notes:
+
+- Orekit propagator objects are always recreated
+- Replace long (unix timestamp) with Orekit's AbsoluteDate everywhere
+- Write conversion utils for SWT <-> AbsoluteDate
+
