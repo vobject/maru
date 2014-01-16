@@ -1,7 +1,5 @@
 package maru.spacecraft.wizards;
 
-import java.text.ParseException;
-
 import maru.core.model.IScenarioProject;
 import maru.core.utils.TimeUtils;
 import maru.spacecraft.MaruSpacecraftResources;
@@ -18,6 +16,7 @@ import org.eclipse.swt.widgets.Text;
 import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
 import org.orekit.orbits.PositionAngle;
+import org.orekit.time.AbsoluteDate;
 
 public class KeplerSatelliteWizardPage extends ScenarioElementWizardNamingPage
 {
@@ -156,26 +155,20 @@ public class KeplerSatelliteWizardPage extends ScenarioElementWizardNamingPage
             return false;
         }
 
-        try
-        {
+        try {
             Double.parseDouble(semimajorAxisText.getText());
             Double.parseDouble(eccentricityText.getText());
             Double.parseDouble(inclinationText.getText());
             Double.parseDouble(argumentOfPerigeeText.getText());
             Double.parseDouble(raanText.getText());
             Double.parseDouble(anomalyText.getText());
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             return false;
         }
 
-        try
-        {
+        try {
             TimeUtils.fromString(dateText.getText());
-        }
-        catch (ParseException e)
-        {
+        } catch (IllegalArgumentException e) {
             return false;
         }
 
@@ -219,17 +212,10 @@ public class KeplerSatelliteWizardPage extends ScenarioElementWizardNamingPage
         return PositionAngle.valueOf(anomalyTypeCombo.getText());
     }
 
-    public long getTime()
+    public AbsoluteDate getDate()
     {
-        try
-        {
-            return TimeUtils.fromString(dateText.getText()).getTime();
-        }
-        catch (ParseException e)
-        {
-            // should never happen because isInputValid() checks for exception.
-            return -1;
-        }
+        // isInputValid() ensures that the date string is ok
+        return TimeUtils.fromString(dateText.getText()).getTime();
     }
 
     public Frame getFrame()

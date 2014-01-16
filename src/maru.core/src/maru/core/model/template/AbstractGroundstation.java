@@ -10,6 +10,7 @@ import maru.core.model.ITimeProvider;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.orekit.bodies.GeodeticPoint;
+import org.orekit.time.AbsoluteDate;
 
 public abstract class AbstractGroundstation extends VisibleElement implements IGroundstation
 {
@@ -44,19 +45,19 @@ public abstract class AbstractGroundstation extends VisibleElement implements IG
     }
 
     @Override
-    public void startTimeChanged(long time)
+    public void startTimeChanged(AbsoluteDate date)
     {
 
     }
 
     @Override
-    public void stopTimeChanged(long time)
+    public void stopTimeChanged(AbsoluteDate date)
     {
 
     }
 
     @Override
-    public void currentTimeChanged(long time)
+    public void currentTimeChanged(AbsoluteDate date)
     {
 
     }

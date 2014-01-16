@@ -1,17 +1,17 @@
 package maru.core.test;
 
-import java.util.Date;
-
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import maru.core.MaruCorePlugin;
 import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
 import maru.core.model.IScenarioProject;
+import maru.core.utils.TimeUtils;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.orekit.time.AbsoluteDate;
 
 public class ScenarioProjectTests extends TestCase
 {
@@ -51,8 +51,8 @@ public class ScenarioProjectTests extends TestCase
         IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
         ICentralBody centralBody = new CoreModelMock.DummyCentralBody();
         String comment = "TestScenarioProject Comment";
-        long startTime = new Date().getTime() / 1000;
-        long stopTime = startTime + 60;
+        AbsoluteDate startTime = TimeUtils.now();
+        AbsoluteDate stopTime = TimeUtils.create(startTime, 60);
 
         IScenarioProject scenarioProject =
                 coreModel.createScenarioProject(project,

@@ -125,13 +125,13 @@ public class CoreModelMock
         }
 
         @Override
-        public ICoordinate getCoordinate(ISpacecraft element, long time)
+        public ICoordinate getCoordinate(ISpacecraft element, AbsoluteDate date)
         {
             return null;
         }
 
         @Override
-        public Collection<ICoordinate> getCoordinates(ISpacecraft element, long start, long stop, long stepSize)
+        public Collection<ICoordinate> getCoordinates(ISpacecraft element, AbsoluteDate start, AbsoluteDate stop, long stepSize)
         {
             return null;
         }

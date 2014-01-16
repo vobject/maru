@@ -7,22 +7,24 @@ import maru.core.model.ITimepoint;
 import maru.core.model.template.ScenarioElement;
 import maru.core.utils.TimeUtils;
 
+import org.orekit.time.AbsoluteDate;
+
 public class Timepoint extends ScenarioElement implements ITimepoint
 {
     private static final long serialVersionUID = 1L;
 
-    /** Timestamp in seconds. */
-    private long time;
+    /** Timestamp date. */
+    private AbsoluteDate date;
 
-    public Timepoint(String name, long time)
+    public Timepoint(String name, AbsoluteDate date)
     {
         super(name);
-        this.time = time;
+        this.date = TimeUtils.copy(date);
     }
 
-    public Timepoint(long time)
+    public Timepoint(AbsoluteDate date)
     {
-        this("Timepoint", time);
+        this("Timepoint", date);
     }
 
     public Timepoint(ITimepoint timepoint)
@@ -36,20 +38,20 @@ public class Timepoint extends ScenarioElement implements ITimepoint
     {
         if (other instanceof ITimepoint) {
             ITimepoint otherTimepoint = (ITimepoint) other;
-            return Long.compare(getTime(), otherTimepoint.getTime());
+            return getTime().compareTo(otherTimepoint.getTime());
         }
         return super.compareTo(other);
     }
 
     @Override
-    public long getTime()
+    public AbsoluteDate getTime()
     {
-        return time;
+        return date;
     }
 
-    public void setTime(long time)
+    public void setTime(AbsoluteDate date)
     {
-        this.time = time;
+        this.date = TimeUtils.copy(date);
     }
 
     @Override
@@ -57,7 +59,7 @@ public class Timepoint extends ScenarioElement implements ITimepoint
     {
         Map<String, String> properties = super.getPropertyMap();
 
-        properties.put("Time", TimeUtils.asISO8601(getTime()));
+        properties.put("Time", getTime().toString());
 
         return properties;
     }

@@ -6,6 +6,7 @@ import maru.core.model.ISpacecraft;
 import maru.core.utils.TimeUtils;
 
 import org.eclipse.swt.widgets.Composite;
+import org.orekit.time.AbsoluteDate;
 
 public class PropagationReportControl extends AbstractPropagationReportControl
 {
@@ -38,11 +39,11 @@ public class PropagationReportControl extends AbstractPropagationReportControl
         ISpacecraft element = getSelectedElement();
         IPropagator propagator = element.getPropagator();
 
-        long startTime = getCurrentProject().getStartTime();
-        long stopTime = getCurrentProject().getStopTime();
+        AbsoluteDate start = getCurrentProject().getStartTime();
+        AbsoluteDate stop = getCurrentProject().getStopTime();
         long stepSize = getSelectedStepSize();
 
-        for (ICoordinate coordinate : propagator.getCoordinates(element, startTime, stopTime, stepSize))
+        for (ICoordinate coordinate : propagator.getCoordinates(element, start, stop, stepSize))
         {
             append(TimeUtils.asISO8601(coordinate.getDate()));
             append("\t");

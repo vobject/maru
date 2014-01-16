@@ -1,8 +1,10 @@
 package maru.core.model;
 
+import org.orekit.time.AbsoluteDate;
+
 public interface ITimeListener extends IScenarioElement
 {
-    void startTimeChanged(long time);
-    void stopTimeChanged(long time);
-    void currentTimeChanged(long time);
+    void startTimeChanged(AbsoluteDate time);
+    void stopTimeChanged(AbsoluteDate time);
+    void currentTimeChanged(AbsoluteDate time);
 }

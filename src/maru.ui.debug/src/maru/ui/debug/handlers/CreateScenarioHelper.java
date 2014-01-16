@@ -1,6 +1,5 @@
 package maru.ui.debug.handlers;
 
-import java.util.Date;
 import java.util.Random;
 
 import maru.IMaruPluginResource;
@@ -10,7 +9,7 @@ import maru.core.MaruCorePlugin;
 import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
 import maru.core.model.IScenarioProject;
-import maru.core.utils.OrekitUtils;
+import maru.core.utils.TimeUtils;
 import maru.groundstation.MaruGroundstationResources;
 import maru.groundstation.earth.Groundstation;
 import maru.spacecraft.MaruSpacecraftResources;
@@ -71,8 +70,8 @@ public final class CreateScenarioHelper
             String scenarioName = DEFAULT_SCENARIO_NAME + "_" + scenarioId;
             String scenarioComment = DEFAULT_SCENARIO_COMMENT;
             Earth centralBody = new Earth(DEFAULT_SCENARIO_CENTRALBODY_GRAPHIC2D);
-            long startTime = (new Date()).getTime() / 1000;
-            long stopTime = ((new Date()).getTime() / 1000) + DEFAULT_SCENARIO_LENGTH;
+            AbsoluteDate startTime = TimeUtils.now();
+            AbsoluteDate stopTime = TimeUtils.create(startTime, DEFAULT_SCENARIO_LENGTH);
 
             IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(scenarioName);
 
@@ -82,9 +81,9 @@ public final class CreateScenarioHelper
                 project, scenarioComment, centralBody, startTime, stopTime
             );
 
-            coreModel.addTimepoint(scenarioProject, startTime + DEFAULT_SCENARIO_TIMEPOINT_1, true);
-            coreModel.addTimepoint(scenarioProject, startTime + DEFAULT_SCENARIO_TIMEPOINT_2, true);
-            coreModel.addTimepoint(scenarioProject, startTime + DEFAULT_SCENARIO_TIMEPOINT_3, true);
+            coreModel.addTimepoint(scenarioProject, TimeUtils.create(startTime, DEFAULT_SCENARIO_TIMEPOINT_1), true);
+            coreModel.addTimepoint(scenarioProject, TimeUtils.create(startTime, DEFAULT_SCENARIO_TIMEPOINT_2), true);
+            coreModel.addTimepoint(scenarioProject, TimeUtils.create(startTime, DEFAULT_SCENARIO_TIMEPOINT_3), true);
 
             return scenarioProject;
         }
@@ -131,7 +130,7 @@ public final class CreateScenarioHelper
         double anomaly = Math.toRadians(359.948);
         PositionAngle type = PositionAngle.MEAN;
         Frame frame = FramesFactory.getEME2000();
-        AbsoluteDate date = OrekitUtils.toAbsoluteDate(scenario.getStartTime().getTime());
+        AbsoluteDate date = scenario.getStartTime().getTime();
         double mu = scenario.getCentralBody().getGM();
 
         KeplerianOrbit initialOrbit = new KeplerianOrbit(a, e, i, pa, raan, anomaly, type, frame, date, mu);

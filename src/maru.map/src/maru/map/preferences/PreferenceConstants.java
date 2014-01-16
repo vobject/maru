@@ -1,6 +1,6 @@
 package maru.map.preferences;
 
-import maru.core.units.DaylengthDefinition;
+import maru.core.utils.DaylengthDefinition;
 
 class DaylightDefinitionChoices
 {

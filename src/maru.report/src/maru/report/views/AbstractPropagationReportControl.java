@@ -2,7 +2,6 @@ package maru.report.views;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import maru.core.model.IPropagator;
@@ -22,6 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
+import org.orekit.time.AbsoluteDate;
 
 public abstract class AbstractPropagationReportControl extends ReportTypeControl
 {
@@ -152,18 +152,18 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
     {
         ISpacecraft element = getSelectedElement();
         IPropagator propagator = element.getPropagator();
-        long startTime = getCurrentProject().getStartTime();
-        long stopTime = getCurrentProject().getStopTime();
-        long duration = stopTime - startTime;
+        AbsoluteDate start = getCurrentProject().getStartTime();
+        AbsoluteDate stop = getCurrentProject().getStopTime();
+        long duration = (long) stop.durationFrom(start);
         long stepSize = getSelectedStepSize();
 
         appendln(getReportName());
-        appendln("Date: " + TimeUtils.asISO8601(new Date()));
+        appendln("Date: " + TimeUtils.asISO8601(TimeUtils.now()));
         appendln("Element: " + element.getElementName());
         appendln("Frame: " + element.getInitialCoordinate().getFrame().toString());
         appendln("Propagator: " + propagator.getName());
-        appendln("Propagation Start: " + TimeUtils.asISO8601(startTime));
-        appendln("Propagation Stop: " + TimeUtils.asISO8601(stopTime));
+        appendln("Propagation Start: " + TimeUtils.asISO8601(start));
+        appendln("Propagation Stop: " + TimeUtils.asISO8601(stop));
         appendln("Propagation Duration: " + duration + "sec");
         appendln("Step size: " + stepSize + "sec");
     }

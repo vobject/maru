@@ -7,7 +7,7 @@ import java.util.Collections;
 import maru.core.model.ICoordinate;
 import maru.core.model.ISpacecraft;
 import maru.core.model.template.AbstractPropagator;
-import maru.core.utils.OrekitUtils;
+import maru.core.utils.TimeUtils;
 import maru.spacecraft.OrekitCoordinate;
 
 import org.orekit.errors.OrekitException;
@@ -15,7 +15,6 @@ import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.analytical.tle.TLE;
 import org.orekit.propagation.analytical.tle.TLEPropagator;
 import org.orekit.time.AbsoluteDate;
-import org.orekit.time.TimeScalesFactory;
 
 public class SGP4Propagator extends AbstractPropagator
 {
@@ -25,8 +24,8 @@ public class SGP4Propagator extends AbstractPropagator
 
     // return the cached position only when these variables did not change
     private InitialTleCoordinate lastInitialCoordinate;
-    private long lastStartTime;
-    private long lastStopTime;
+    private AbsoluteDate lastStart = new AbsoluteDate();
+    private AbsoluteDate lastStop = new AbsoluteDate();
     private long lastStepSize;
 
     // TODO: buffer positions of a few (2-3) different step sizes because
@@ -36,7 +35,7 @@ public class SGP4Propagator extends AbstractPropagator
     private final Collection<ICoordinate> coordinates = new ArrayList<>();
 
     @Override
-    public OrekitCoordinate getCoordinate(ISpacecraft element, long time)
+    public OrekitCoordinate getCoordinate(ISpacecraft element, AbsoluteDate date)
     {
         TleSatellite satellite = (TleSatellite) element;
         InitialTleCoordinate initialPosition = satellite.getInitialCoordinate();
@@ -47,8 +46,7 @@ public class SGP4Propagator extends AbstractPropagator
             TLEPropagator tlePropagator = TLEPropagator.selectExtrapolator(tle);
             propagatorName = tlePropagator.getClass().getSimpleName();
 
-            AbsoluteDate currentDate = OrekitUtils.toAbsoluteDate(time);
-            SpacecraftState currentState = tlePropagator.propagate(currentDate);
+            SpacecraftState currentState = tlePropagator.propagate(date);
 
             return new OrekitCoordinate(currentState.getPVCoordinates(),
                                         currentState.getDate(),
@@ -63,17 +61,18 @@ public class SGP4Propagator extends AbstractPropagator
 
     @Override
     public Collection<ICoordinate> getCoordinates(ISpacecraft element,
-                                                  long start, long stop,
+                                                  AbsoluteDate start,
+                                                  AbsoluteDate stop,
                                                   long stepSize)
     {
         TleSatellite satellite = (TleSatellite) element;
         InitialTleCoordinate initialCoordinate = satellite.getInitialCoordinate();
 
-        if ((lastInitialCoordinate != null)
-             && (initialCoordinate.equals(lastInitialCoordinate))
-             && (start == lastStartTime)
-             && (stop == lastStopTime)
-             && (stepSize == lastStepSize))
+        if ((lastInitialCoordinate != null) &&
+            (initialCoordinate.equals(lastInitialCoordinate)) &&
+            ((start == lastStart) || (start.compareTo(lastStart) == 0)) &&
+            ((stop == lastStop) || (stop.compareTo(lastStop) == 0)) &&
+            (stepSize == lastStepSize))
         {
             // do not bother to recalculate all positions
             return coordinates;
@@ -88,23 +87,21 @@ public class SGP4Propagator extends AbstractPropagator
             TLEPropagator tlePropagator = TLEPropagator.selectExtrapolator(tle);
             propagatorName = tlePropagator.getClass().getSimpleName();
 
-            AbsoluteDate endDate = OrekitUtils.toAbsoluteDate(stop);
-            AbsoluteDate extrapDate = OrekitUtils.toAbsoluteDate(start);
-
-            while (extrapDate.compareTo(endDate) <= 0)
+            AbsoluteDate extrapDate = start;
+            while (extrapDate.compareTo(stop) <= 0)
             {
                 SpacecraftState currentState = tlePropagator.propagate(extrapDate);
                 coordinates.add(new OrekitCoordinate(currentState.getPVCoordinates(),
                                                      currentState.getDate(),
                                                      currentState.getFrame()));
-                extrapDate = new AbsoluteDate(extrapDate, stepSize, TimeScalesFactory.getUTC());
+                extrapDate = TimeUtils.create(extrapDate, stepSize);
             }
 
             // all external parameters that the position calculation is based
             // on. if these do not change, the outcome does not change.
             lastInitialCoordinate = initialCoordinate;
-            lastStartTime = start;
-            lastStopTime = stop;
+            lastStart = start;
+            lastStop = stop;
             lastStepSize = stepSize;
 
             return coordinates;
@@ -127,8 +124,8 @@ public class SGP4Propagator extends AbstractPropagator
     {
         coordinates.clear();
         lastInitialCoordinate = null;
-        lastStartTime = 0;
-        lastStopTime = 0;
+        lastStart = new AbsoluteDate();
+        lastStop = new AbsoluteDate();
         lastStepSize = 0;
     }
 }

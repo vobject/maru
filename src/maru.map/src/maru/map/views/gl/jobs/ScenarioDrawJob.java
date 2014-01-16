@@ -18,7 +18,6 @@ import maru.core.model.IVisibleElement;
 import maru.core.utils.EclipseState;
 import maru.core.utils.EclipseUtils;
 import maru.core.utils.NumberUtils;
-import maru.core.utils.OrekitUtils;
 import maru.map.jobs.gl.GLProjectDrawJob;
 import maru.map.views.GroundtrackPoint;
 import maru.map.views.GroundtrackRange;
@@ -261,7 +260,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         EquirectangularCoordinate lastMapPos = null;
         ArrayList<GroundtrackPoint> lineStrip = new ArrayList<>();
 
-        for (ICoordinate coordinate : propagator.getCoordinates(element, OrekitUtils.toSeconds(barrier.getStart()), OrekitUtils.toSeconds(barrier.getStop()), drawing.getGroundtrackStepSize()))
+        for (ICoordinate coordinate : propagator.getCoordinates(element, barrier.getStart(), barrier.getStop(), drawing.getGroundtrackStepSize()))
         {
             EquirectangularCoordinate mapPos = getMapPosition(coordinate);
             if (mapPos == null) {

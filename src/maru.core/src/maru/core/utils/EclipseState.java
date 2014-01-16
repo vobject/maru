@@ -4,5 +4,5 @@ public enum EclipseState
 {
     None,
     Umbra,
-    UmbraOrPenumbra
+    Penumbra
 }

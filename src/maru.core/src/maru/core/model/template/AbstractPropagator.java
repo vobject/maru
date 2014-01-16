@@ -8,6 +8,8 @@ import maru.core.model.IPropagationListener;
 import maru.core.model.IPropagator;
 import maru.core.model.ISpacecraft;
 
+import org.orekit.time.AbsoluteDate;
+
 public abstract class AbstractPropagator implements IPropagator
 {
     private static final long serialVersionUID = 1L;
@@ -39,21 +41,21 @@ public abstract class AbstractPropagator implements IPropagator
     }
 
     @Override
-    public void startTimeChanged(ISpacecraft element, long time)
+    public void startTimeChanged(ISpacecraft element, AbsoluteDate date)
     {
 
     }
 
     @Override
-    public void stopTimeChanged(ISpacecraft element, long time)
+    public void stopTimeChanged(ISpacecraft element, AbsoluteDate date)
     {
 
     }
 
     @Override
-    public void currentTimeChanged(ISpacecraft element, long currentTime)
+    public void currentTimeChanged(ISpacecraft element, AbsoluteDate date)
     {
-        ICoordinate position = getCoordinate(element, currentTime);
+        ICoordinate position = getCoordinate(element, date);
         notifyPropagationListeners(element, position);
     }
 

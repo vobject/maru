@@ -17,7 +17,6 @@ import maru.core.model.ITimeProvider;
 import maru.core.utils.AccessUtils;
 import maru.core.utils.EclipseState;
 import maru.core.utils.EclipseUtils;
-import maru.core.utils.TimeUtils;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.orekit.errors.OrekitException;
@@ -37,33 +36,34 @@ class NullPropagator implements IPropagator
     }
 
     @Override
-    public ICoordinate getCoordinate(ISpacecraft element, long time)
+    public ICoordinate getCoordinate(ISpacecraft element, AbsoluteDate time)
     {
         return COORDINATE;
     }
 
     @Override
     public Collection<ICoordinate> getCoordinates(ISpacecraft element,
-                                                  long start, long stop,
+                                                  AbsoluteDate start,
+                                                  AbsoluteDate stop,
                                                   long stepSize)
     {
         return Collections.emptyList();
     }
 
     @Override
-    public void startTimeChanged(ISpacecraft element, long time)
+    public void startTimeChanged(ISpacecraft element, AbsoluteDate date)
     {
 
     }
 
     @Override
-    public void stopTimeChanged(ISpacecraft element, long time)
+    public void stopTimeChanged(ISpacecraft element, AbsoluteDate date)
     {
 
     }
 
     @Override
-    public void currentTimeChanged(ISpacecraft element, long time)
+    public void currentTimeChanged(ISpacecraft element, AbsoluteDate date)
     {
 
     }
@@ -238,21 +238,21 @@ public abstract class AbstractSpacecraft extends VisibleElement implements ISpac
     }
 
     @Override
-    public void startTimeChanged(long time)
+    public void startTimeChanged(AbsoluteDate date)
     {
-        propagator.startTimeChanged(this, time);
+        propagator.startTimeChanged(this, date);
     }
 
     @Override
-    public void stopTimeChanged(long time)
+    public void stopTimeChanged(AbsoluteDate date)
     {
-        propagator.stopTimeChanged(this, time);
+        propagator.stopTimeChanged(this, date);
     }
 
     @Override
-    public void currentTimeChanged(long time)
+    public void currentTimeChanged(AbsoluteDate date)
     {
-        propagator.currentTimeChanged(this, time);
+        propagator.currentTimeChanged(this, date);
     }
 
     @Override
@@ -294,7 +294,7 @@ public abstract class AbstractSpacecraft extends VisibleElement implements ISpac
         props.put("Initial Vel X", Double.toString(initialCoordinate.getVelocity().getX()));
         props.put("Initial Vel Y", Double.toString(initialCoordinate.getVelocity().getY()));
         props.put("Initial Vel Z", Double.toString(initialCoordinate.getVelocity().getZ()));
-        props.put("Initial Time", TimeUtils.asISO8601(initialCoordinate.getDate()));
+        props.put("Initial Time", initialCoordinate.getDate().toString());
         props.put("Initial Frame", initialCoordinate.getFrame().toString());
 
         props.put("Current Pos X", Double.toString(currentCoordinate.getPosition().getX()));
@@ -303,7 +303,7 @@ public abstract class AbstractSpacecraft extends VisibleElement implements ISpac
         props.put("Current Vel X", Double.toString(currentCoordinate.getVelocity().getX()));
         props.put("Current Vel Y", Double.toString(currentCoordinate.getVelocity().getY()));
         props.put("Current Vel Z", Double.toString(currentCoordinate.getVelocity().getZ()));
-        props.put("Current Time", TimeUtils.asISO8601(currentCoordinate.getDate()));
+        props.put("Current Time", currentCoordinate.getDate().toString());
         props.put("Current Frame", currentCoordinate.getFrame().toString());
 
         return props;
@@ -317,7 +317,7 @@ public abstract class AbstractSpacecraft extends VisibleElement implements ISpac
             return;
         }
 
-        long currentTime = scenario.getCurrentTime().getTime();
+        AbsoluteDate currentTime = scenario.getCurrentTime().getTime();
         currentCoordinate = propagator.getCoordinate(this, currentTime);
     }
 }

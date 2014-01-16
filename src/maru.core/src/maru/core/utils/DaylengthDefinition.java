@@ -1,4 +1,4 @@
-package maru.core.units;
+package maru.core.utils;
 
 /**
  * The values are used with together with an algorithm to find out how long

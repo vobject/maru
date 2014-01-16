@@ -1,47 +1,64 @@
 package maru.core.utils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
 import maru.core.internal.model.Timepoint;
 import maru.core.model.ITimepoint;
 
+import org.eclipse.swt.widgets.DateTime;
+import org.orekit.errors.OrekitException;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.DateComponents;
+import org.orekit.time.DateTimeComponents;
+import org.orekit.time.TimeComponents;
+import org.orekit.time.TimeScale;
+import org.orekit.time.TimeScalesFactory;
 
 public final class TimeUtils
 {
+    private static TimeScale utc;
+
     public static final String ISO8601_PLACEHOLDER = "0000-00-00 00:00:00";
 
-    private static final TimeZone utc;
-    private static final Calendar calendar;
-    private static final SimpleDateFormat iso8601DateFormat;
-
-    static {
-        // this is the one and only time zone we will use
-        utc = TimeZone.getTimeZone("UTC");
-
-        // the calendar that we use will always be in UTC
-        calendar = Calendar.getInstance(utc);
-
-        // emulate ISO ISO8601 with SimpleDateFormat
-        final String ISO8601_DATETIME_FORMAT = "yyyy-MM-dd' 'HH:mm:ss";
-        iso8601DateFormat = new SimpleDateFormat(ISO8601_DATETIME_FORMAT);
-        iso8601DateFormat.setTimeZone(utc);
-        iso8601DateFormat.setLenient(false);
+    static
+    {
+        try {
+            // this is the one and only time zone we will use.
+            // may throw when orekit-data was not loaded.
+            utc = TimeScalesFactory.getUTC();
+        } catch (OrekitException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static Calendar getCalendar()
+    public static DateTimeComponents getComponents(AbsoluteDate date)
     {
-        return calendar;
+        return date.getComponents(utc);
     }
 
-    public static Calendar getCalendar(long seconds)
+    public static DateComponents getDateComponents(AbsoluteDate date)
     {
-        calendar.setTimeInMillis(seconds * 1000);
-        return calendar;
+        return date.getComponents(utc).getDate();
+    }
+
+    public static TimeComponents getTimeComponents(AbsoluteDate date)
+    {
+        return date.getComponents(utc).getTime();
+    }
+
+    public static AbsoluteDate now()
+    {
+        return new AbsoluteDate(new Date(), utc);
+    }
+
+    public static AbsoluteDate create(AbsoluteDate date, double offset)
+    {
+        return new AbsoluteDate(date, offset, utc);
+    }
+
+    public static AbsoluteDate copy(AbsoluteDate date)
+    {
+        return new AbsoluteDate(date, 0, utc);
     }
 
     public static String asISO8601(ITimepoint time)
@@ -49,19 +66,12 @@ public final class TimeUtils
         return asISO8601(time.getTime());
     }
 
-    public static String asISO8601(long time)
-    {
-        return asISO8601(new Date(time * 1000));
-    }
-
     public static String asISO8601(AbsoluteDate date)
     {
-        return asISO8601(OrekitUtils.toSeconds(date));
-    }
-
-    public static String asISO8601(Date time)
-    {
-        return iso8601DateFormat.format(time);
+        String original = date.toString(utc);
+        String noSeparator = original.replace('T', ' ');
+        String noSubSecond = noSeparator.substring(0, noSeparator.lastIndexOf('.'));
+        return noSubSecond;
     }
 
     public static ITimepoint fromTimepoint(ITimepoint timepoint)
@@ -69,14 +79,37 @@ public final class TimeUtils
         return new Timepoint(timepoint.getTime());
     }
 
-    public static ITimepoint fromSeconds(long seconds)
+    public static ITimepoint fromDate(AbsoluteDate date)
     {
-        return new Timepoint(seconds);
+        return new Timepoint(date);
     }
 
-    public static ITimepoint fromString(String timeString) throws ParseException
+    public static ITimepoint fromString(String dateString)
     {
-        Date date = iso8601DateFormat.parse(timeString);
-        return new Timepoint(date.getTime() / 1000);
+        String withSeparator = dateString.replace(' ', 'T');
+        return new Timepoint(new AbsoluteDate(withSeparator, utc));
+    }
+
+    public static AbsoluteDate getAbsoluteDate(DateTime date, DateTime time)
+    {
+        int year = date.getYear();
+        int month = date.getMonth() + 1;
+        int day = date.getDay();
+        int hours = time.getHours();
+        int minutes = time.getMinutes();
+        int seconds = time.getSeconds();
+
+        return new AbsoluteDate(year, month, day, hours, minutes, seconds, utc);
+    }
+
+    public static void populateControls(DateTime calendar, DateTime time, AbsoluteDate date)
+    {
+        DateTimeComponents components = date.getComponents(utc);
+        DateComponents dateComp = components.getDate();
+        TimeComponents timeComp = components.getTime();
+        int seconds = (int) Math.round(timeComp.getSecond());
+
+        calendar.setDate(dateComp.getYear(), dateComp.getMonth() - 1, dateComp.getDay());
+        time.setTime(timeComp.getHour(), timeComp.getMinute(), seconds);
     }
 }

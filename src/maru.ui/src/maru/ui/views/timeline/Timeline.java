@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.orekit.time.AbsoluteDate;
 
 public class Timeline extends ScenarioModelViewPart
                       implements IUiTimelineSettingsProvider
@@ -214,19 +215,19 @@ public class Timeline extends ScenarioModelViewPart
         return currentProject.getUnderlyingElement();
     }
 
-    private void changeStartTime(long startTime)
+    private void changeStartTime(AbsoluteDate startTime)
     {
         setTimeSliderRange(startTime, getStopTime());
         setStartTimePanel(startTime);
     }
 
-    private void changeStopTime(long stopTime)
+    private void changeStopTime(AbsoluteDate stopTime)
     {
         setTimeSliderRange(getStartTime(), stopTime);
         setStopTimePanel(stopTime);
     }
 
-    private void changeCurrentTime(long currentTime)
+    private void changeCurrentTime(AbsoluteDate currentTime)
     {
         setTimeSlider(currentTime);
         setCurrentTimePanel(currentTime);
@@ -241,17 +242,15 @@ public class Timeline extends ScenarioModelViewPart
 
     private void configureControls(UiProject project)
     {
-//        project.setRealtimeMode(false);
-
         // shutdown all sub components
         disableTimePanel();
         disableTimePlayer();
         disableTimeSettings();
         disableTimeSlider();
 
-        long startTime = project.getStartTime();
-        long stopTime = project.getStopTime();
-        long currentTime = project.getCurrentTime();
+        AbsoluteDate startTime = project.getStartTime();
+        AbsoluteDate stopTime = project.getStopTime();
+        AbsoluteDate currentTime = project.getCurrentTime();
         long stepSize = project.getStepSize();
 
         setTimePanel(startTime, stopTime, currentTime);
@@ -272,18 +271,18 @@ public class Timeline extends ScenarioModelViewPart
         panel = new TimePanel(container);
         panel.addTimeChangedListener(new ITimeChangedListener() {
             @Override
-            public void timeChanged(TimeLabelType label, long time)
+            public void timeChanged(TimeLabelType label, AbsoluteDate date)
             {
                 switch (label)
                 {
                     case Start:
-                        getCurrentProject().setStartTime(time);
+                        getCurrentProject().setStartTime(date);
                         break;
                     case Stop:
-                        getCurrentProject().setStopTime(time);
+                        getCurrentProject().setStopTime(date);
                         break;
                     case Current:
-                        getCurrentProject().setCurrentTime(time);
+                        getCurrentProject().setCurrentTime(date);
                         break;
                 }
             }
@@ -300,24 +299,24 @@ public class Timeline extends ScenarioModelViewPart
         panel.disable();
     }
 
-    private void setTimePanel(long start, long stop, long current)
+    private void setTimePanel(AbsoluteDate start, AbsoluteDate stop, AbsoluteDate current)
     {
         panel.changeStartTimeLabel(start);
         panel.changeStopTimeLabel(stop);
         panel.changeCurrentTimeLabel(current);
     }
 
-    private void setStartTimePanel(long start)
+    private void setStartTimePanel(AbsoluteDate start)
     {
         panel.changeStartTimeLabel(start);
     }
 
-    private void setStopTimePanel(long stop)
+    private void setStopTimePanel(AbsoluteDate stop)
     {
         panel.changeStopTimeLabel(stop);
     }
 
-    private void setCurrentTimePanel(long current)
+    private void setCurrentTimePanel(AbsoluteDate current)
     {
         panel.changeCurrentTimeLabel(current);
     }
@@ -341,17 +340,17 @@ public class Timeline extends ScenarioModelViewPart
         }
     }
 
-    private long getStartTime()
+    private AbsoluteDate getStartTime()
     {
         return panel.getStartTime();
     }
 
-    private long getStopTime()
+    private AbsoluteDate getStopTime()
     {
         return panel.getStopTime();
     }
 
-    private long getCurrentTime()
+    private AbsoluteDate getCurrentTime()
     {
         return panel.getCurrentTime();
     }
@@ -369,7 +368,7 @@ public class Timeline extends ScenarioModelViewPart
             @Override
             public void selectPreviousTimepoint()
             {
-                long previousTime = getCurrentProject().getPreviousTimepoint().getTime();
+                AbsoluteDate previousTime = getCurrentProject().getPreviousTimepoint().getTime();
 
                 setCurrentTimePanel(previousTime);
                 setTimeSlider(previousTime);
@@ -379,7 +378,7 @@ public class Timeline extends ScenarioModelViewPart
             @Override
             public void selectNextTimepoint()
             {
-                long nextTime = getCurrentProject().getNextTimepoint().getTime();
+                AbsoluteDate nextTime = getCurrentProject().getNextTimepoint().getTime();
 
                 setCurrentTimePanel(nextTime);
                 setTimeSlider(nextTime);
@@ -403,10 +402,10 @@ public class Timeline extends ScenarioModelViewPart
             }
 
             @Override
-            public void playRealtime(long time)
+            public void playRealtime(AbsoluteDate date)
             {
-                setCurrentTimePanel(time);
-                getCurrentProject().setPropagatablesTime(time);
+                setCurrentTimePanel(date);
+                getCurrentProject().setPropagatablesTime(date);
             }
         });
     }
@@ -511,10 +510,10 @@ public class Timeline extends ScenarioModelViewPart
         slider = new TimeSlider(container);
         slider.addSliderChangedListener(new ISliderChangedListener() {
             @Override
-            public void currentTimeChanged(long time)
+            public void currentTimeChanged(AbsoluteDate date)
             {
-                setCurrentTimePanel(time);
-                getCurrentProject().setCurrentTime(time);
+                setCurrentTimePanel(date);
+                getCurrentProject().setCurrentTime(date);
             }
         });
     }
@@ -529,12 +528,12 @@ public class Timeline extends ScenarioModelViewPart
         slider.disable();
     }
 
-    private void setTimeSliderRange(long startTime, long stopTime)
+    private void setTimeSliderRange(AbsoluteDate startTime, AbsoluteDate stopTime)
     {
         slider.changeRange(startTime, stopTime);
     }
 
-    private void setTimeSlider(long currentTime)
+    private void setTimeSlider(AbsoluteDate currentTime)
     {
         slider.changeCurrentTime(currentTime);
     }

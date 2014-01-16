@@ -1,6 +1,5 @@
 package maru.ui.views.timeline;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +19,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.orekit.time.AbsoluteDate;
 
 enum TimeLabelType
 {
@@ -41,7 +41,7 @@ enum TimeLabelType
         throw new IllegalStateException();
     }
 
-    RGB getRgb()
+    RGB getRGB()
     {
         switch (this)
         {
@@ -67,13 +67,10 @@ class TimePanel
             @Override
             public String isValid(String newText)
             {
-                try
-                {
+                try {
                     TimeUtils.fromString(newText);
                     return null;
-                }
-                catch (ParseException e)
-                {
+                } catch (IllegalArgumentException e) {
                     return "Invalid time input.";
                 }
             }
@@ -101,14 +98,7 @@ class TimePanel
                         return;
                     }
 
-                    try
-                    {
-                        notifyTimeChanged(type, TimeUtils.fromString(dlg.getValue()).getTime());
-                    }
-                    catch (ParseException ex)
-                    {
-                        // should never happen because isValid() handles exceptions
-                    }
+                    notifyTimeChanged(type, TimeUtils.fromString(dlg.getValue()).getTime());
                 }
 
                 @Override
@@ -118,7 +108,7 @@ class TimePanel
                 public void mouseDoubleClick(MouseEvent e) { }
             });
 
-            final Color color = new Color(null, type.getRgb());
+            final Color color = new Color(null, type.getRGB());
             label.setBackground(color);
             label.addDisposeListener(new DisposeListener() {
                 @Override
@@ -149,11 +139,11 @@ class TimePanel
     private TimeLabel stopLabel;
     private TimeLabel currentLabel;
 
-    private long startTime;
-    private long stopTime;
-    private long currentTime;
+    private AbsoluteDate startTime;
+    private AbsoluteDate stopTime;
+    private AbsoluteDate currentTime;
 
-    private long lastCurrentTime;
+    private AbsoluteDate lastCurrentTime;
 
     private final List<ITimeChangedListener> timeChangeListeners = new ArrayList<>();
 
@@ -170,11 +160,11 @@ class TimePanel
         // allow for time changes and notifications
         enabled = true;
 
-        if (lastCurrentTime != 0)
+        if (lastCurrentTime != null)
         {
             // we were just re-enabled after a real-time session
-            currentTime = lastCurrentTime;
-            lastCurrentTime = 0;
+            currentTime = TimeUtils.copy(lastCurrentTime);
+            lastCurrentTime = null;
         }
     }
 
@@ -184,10 +174,10 @@ class TimePanel
         stopLabel.reset();
         currentLabel.reset();
 
-        startTime = 0;
-        stopTime = 0;
-        currentTime = 0;
-        lastCurrentTime = 0;
+        startTime = null;
+        stopTime = null;
+        currentTime = null;
+        lastCurrentTime = null;
 
         // disable changes to the controls and  listener notifications
         enabled = false;
@@ -195,54 +185,54 @@ class TimePanel
 
     public void disableForRealtime()
     {
-        lastCurrentTime = currentTime;
+        lastCurrentTime = TimeUtils.copy(currentTime);
 
         // disable changes to the controls and  listener notifications
         enabled = false;
     }
 
-    public void changeStartTimeLabel(long time)
+    public void changeStartTimeLabel(AbsoluteDate date)
     {
-        startLabel.setText(TimeUtils.asISO8601(time));
-        startTime = time;
+        startLabel.setText(TimeUtils.asISO8601(date));
+        startTime = TimeUtils.copy(date);
     }
 
-    public void changeStopTimeLabel(long time)
+    public void changeStopTimeLabel(AbsoluteDate date)
     {
-        stopLabel.setText(TimeUtils.asISO8601(time));
-        stopTime = time;
+        stopLabel.setText(TimeUtils.asISO8601(date));
+        stopTime = TimeUtils.copy(date);
     }
 
-    public void changeCurrentTimeLabel(long time)
+    public void changeCurrentTimeLabel(AbsoluteDate date)
     {
-        currentLabel.setText(TimeUtils.asISO8601(time));
-        currentTime = time;
+        currentLabel.setText(TimeUtils.asISO8601(date));
+        currentTime = TimeUtils.copy(date);
     }
 
     public void shiftCurrentTimeLabel(long step)
     {
-        long newCurrentTime = currentTime + step;
+        AbsoluteDate newCurrentTime = TimeUtils.create(currentTime, step);
 
-        if (newCurrentTime < startTime) {
+        if (newCurrentTime.compareTo(startTime) < 0) {
             changeCurrentTimeLabel(startTime);
-        } else if (newCurrentTime > stopTime) {
+        } else if (newCurrentTime.compareTo(stopTime) > 0) {
             changeCurrentTimeLabel(stopTime);
         } else {
             changeCurrentTimeLabel(newCurrentTime);
         }
     }
 
-    public long getStartTime()
+    public AbsoluteDate getStartTime()
     {
         return startTime;
     }
 
-    public long getStopTime()
+    public AbsoluteDate getStopTime()
     {
         return stopTime;
     }
 
-    public long getCurrentTime()
+    public AbsoluteDate getCurrentTime()
     {
         return currentTime;
     }
@@ -283,14 +273,14 @@ class TimePanel
         return new TimeLabel(parent, SWT.BORDER, type);
     }
 
-    private void notifyTimeChanged(TimeLabelType label, long time)
+    private void notifyTimeChanged(TimeLabelType label, AbsoluteDate date)
     {
         if (!enabled) {
             return;
         }
 
         for (ITimeChangedListener listener : timeChangeListeners) {
-            listener.timeChanged(label, time);
+            listener.timeChanged(label, date);
         }
     }
 }

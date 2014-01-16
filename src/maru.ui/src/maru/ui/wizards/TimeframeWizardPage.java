@@ -1,7 +1,5 @@
 package maru.ui.wizards;
 
-import java.util.Calendar;
-
 import maru.core.utils.TimeUtils;
 
 import org.eclipse.jface.wizard.WizardPage;
@@ -13,6 +11,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Label;
+import org.orekit.time.AbsoluteDate;
 
 public class TimeframeWizardPage extends WizardPage
 {
@@ -20,16 +19,16 @@ public class TimeframeWizardPage extends WizardPage
     private static final String PAGE_TITLE = "Scenario Period";
     private static final String PAGE_DESCRIPTION = "Set the time period for the new scenario in UTC.";
 
-    private DateTime calendarBegin;
-    private DateTime calendarEnd;
-    private DateTime timeBegin;
-    private DateTime timeEnd;
+    private DateTime calendarStart;
+    private DateTime calendarStop;
+    private DateTime timeStart;
+    private DateTime timeStop;
 
     private final SelectionAdapter pageCompleteValidation = new SelectionAdapter()
     {
         @Override
         public void widgetSelected(SelectionEvent event) {
-            if (getEnd() > getBegin()) {
+            if (getStop().compareTo(getStart()) > 0) {
                 setPageComplete(true);
                 setErrorMessage(null);
             } else {
@@ -56,48 +55,34 @@ public class TimeframeWizardPage extends WizardPage
         new Label(container, SWT.NONE).setText("Start time in UTC:");
         new Label(container, SWT.NONE).setText("Stop time in UTC:");
 
-        calendarBegin = new DateTime(container, SWT.CALENDAR);
-        calendarBegin.addSelectionListener(pageCompleteValidation);
-        calendarBegin.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        calendarStart = new DateTime(container, SWT.CALENDAR);
+        calendarStart.addSelectionListener(pageCompleteValidation);
+        calendarStart.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        calendarEnd = new DateTime(container, SWT.CALENDAR);
-        calendarEnd.addSelectionListener(pageCompleteValidation);
-        calendarEnd.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        calendarStop = new DateTime(container, SWT.CALENDAR);
+        calendarStop.addSelectionListener(pageCompleteValidation);
+        calendarStop.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        timeBegin = new DateTime(container, SWT.TIME);
-        timeBegin.addSelectionListener(pageCompleteValidation);
-        timeBegin.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+        timeStart = new DateTime(container, SWT.TIME);
+        timeStart.addSelectionListener(pageCompleteValidation);
+        timeStart.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
-        timeEnd = new DateTime(container, SWT.TIME);
-        timeEnd.addSelectionListener(pageCompleteValidation);
-        timeEnd.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+        timeStop = new DateTime(container, SWT.TIME);
+        timeStop.addSelectionListener(pageCompleteValidation);
+        timeStop.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
         setControl(container);
         setPageComplete(false);
         setErrorMessage("Specify a valid start and stop time (UTC).");
     }
 
-    public long getBegin()
+    public AbsoluteDate getStart()
     {
-        Calendar calendar = TimeUtils.getCalendar();
-        calendar.set(Calendar.YEAR, calendarBegin.getYear());
-        calendar.set(Calendar.MONTH, calendarBegin.getMonth());
-        calendar.set(Calendar.DAY_OF_MONTH, calendarBegin.getDay());
-        calendar.set(Calendar.HOUR_OF_DAY, timeBegin.getHours());
-        calendar.set(Calendar.MINUTE, timeBegin.getMinutes());
-        calendar.set(Calendar.SECOND, timeBegin.getSeconds());
-        return calendar.getTimeInMillis() / 1000;
+        return TimeUtils.getAbsoluteDate(calendarStart, timeStart);
     }
 
-    public long getEnd()
+    public AbsoluteDate getStop()
     {
-        Calendar calendar = TimeUtils.getCalendar();
-        calendar.set(Calendar.YEAR, calendarEnd.getYear());
-        calendar.set(Calendar.MONTH, calendarEnd.getMonth());
-        calendar.set(Calendar.DAY_OF_MONTH, calendarEnd.getDay());
-        calendar.set(Calendar.HOUR_OF_DAY, timeEnd.getHours());
-        calendar.set(Calendar.MINUTE, timeEnd.getMinutes());
-        calendar.set(Calendar.SECOND, timeEnd.getSeconds());
-        return calendar.getTimeInMillis() / 1000;
+        return TimeUtils.getAbsoluteDate(calendarStop, timeStop);
     }
 }

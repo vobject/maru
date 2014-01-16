@@ -32,6 +32,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.swt.graphics.RGB;
 import org.orekit.bodies.GeodeticPoint;
+import org.orekit.time.AbsoluteDate;
 
 final public class ScenarioModelManager implements IResourceChangeListener
 {
@@ -252,9 +253,9 @@ final public class ScenarioModelManager implements IResourceChangeListener
         }, element, true);
     }
 
-    public void addTimepoint(IScenarioProject scenario, long time, boolean update)
+    public void addTimepoint(IScenarioProject scenario, AbsoluteDate date, boolean update)
     {
-        final Timepoint tp = new Timepoint(time);
+        final Timepoint tp = new Timepoint(date);
 
         ((ScenarioProject) scenario).addTimepoint(tp);
 
@@ -262,6 +263,8 @@ final public class ScenarioModelManager implements IResourceChangeListener
             return;
         }
 
+        // did the new timepoint become the start/stop timepoint after it
+        // has been added to the scenario?
         boolean startChanged = scenario.getStartTime() == tp;
         boolean stopChanged = scenario.getStopTime() == tp;
 
@@ -337,17 +340,19 @@ final public class ScenarioModelManager implements IResourceChangeListener
         }
     }
 
-    public void changeTimepoint(ITimepoint timepoint, long time, boolean update)
+    public void changeTimepoint(ITimepoint timepoint, AbsoluteDate date, boolean update)
     {
         ScenarioProject scenario = (ScenarioProject) timepoint.getScenarioProject();
         final Timepoint tp = (Timepoint) timepoint;
 
-        scenario.changeTimepoint(tp, time);
+        scenario.changeTimepoint(tp, date);
 
         if (!update) {
             return;
         }
 
+        // did the changed timepoint become the start/stop/current timepoint
+        // after the scenario has been changed?
         boolean startChanged = scenario.getStartTime() == tp;
         boolean stopChanged = scenario.getStopTime() == tp;
         boolean currentChanged = scenario.getCurrentTime() == tp;
@@ -390,14 +395,14 @@ final public class ScenarioModelManager implements IResourceChangeListener
         }
     }
 
-    public void changePropagatablesTime(final IScenarioProject scenario, long time, boolean update)
+    public void changeScenarioElementsTime(final IScenarioProject scenario, AbsoluteDate date, boolean update)
     {
         for (ISpacecraft element : scenario.getSpacecrafts()) {
-            element.currentTimeChanged(time);
+            element.currentTimeChanged(date);
         }
 
         for (IGroundstation element : scenario.getGroundstations()) {
-            element.currentTimeChanged(time);
+            element.currentTimeChanged(date);
         }
 
         if (!update) {

@@ -16,6 +16,5 @@ Bundle-ActivationPolicy: lazy
 Export-Package: maru.core,
  maru.core.model,
  maru.core.model.template,
- maru.core.units,
  maru.core.utils
 Eclipse-BuddyPolicy: registered

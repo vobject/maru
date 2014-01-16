@@ -1,7 +1,5 @@
 package maru.ui.propertypages;
 
-import java.text.ParseException;
-
 import maru.core.model.CoreModel;
 import maru.core.model.ITimepoint;
 import maru.core.utils.TimeUtils;
@@ -15,26 +13,27 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.orekit.time.AbsoluteDate;
 
 public class UiTimepointPropertyPage extends UiPropertyPage
 {
     private Text time;
 
-    private long initialTime;
-    private long newTime;
+    private AbsoluteDate initialTime;
+    private AbsoluteDate newTime;
 
     private final ModifyListener dateValidator = new ModifyListener()
     {
         @Override
-        public void modifyText(ModifyEvent event)
+        public void modifyText(ModifyEvent e)
         {
-            String newText = ((Text) event.widget).getText();
+            String newText = ((Text) e.widget).getText();
 
             try {
                 newTime = TimeUtils.fromString(newText).getTime();
                 setErrorMessage(null);
                 setValid(true);
-            } catch (ParseException ex) {
+            } catch (IllegalArgumentException ex) {
                 newTime = initialTime;
                 setErrorMessage("Invalid time input.");
                 setValid(false);
@@ -59,7 +58,7 @@ public class UiTimepointPropertyPage extends UiPropertyPage
     {
         ITimepoint element = getScenarioElement();
 
-        if (newTime != initialTime) {
+        if (newTime.compareTo(initialTime) != 0) {
             CoreModel.getDefault().changeTimepoint(element, newTime, true);
         }
 
@@ -104,6 +103,7 @@ public class UiTimepointPropertyPage extends UiPropertyPage
         }
 
         initialTime = element.getTime();
+        newTime = element.getTime();
     }
 
     private void initControls()

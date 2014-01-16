@@ -15,18 +15,26 @@ import org.orekit.utils.Constants;
 
 public final class EclipseUtils
 {
+    private static CelestialBody sun;
+
+    static
+    {
+        try {
+            sun = CelestialBodyFactory.getSun();
+        } catch (OrekitException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static EclipseState getEclipseState(ICentralBody centralBody, ICoordinate coordinate) throws OrekitException
     {
         // based on orekit EclipseDetector class
 
-        CelestialBody sun = CelestialBodyFactory.getSun();
-
         AbsoluteDate date = coordinate.getDate();
         Frame frame = coordinate.getFrame();
-        Vector3D position = centralBody.getPosition(coordinate.getFrame(), date);
 
         Vector3D pted = sun.getPVCoordinates(date, frame).getPosition();
-        Vector3D ping = position;
+        Vector3D ping = centralBody.getPosition(frame, date);
         Vector3D psat = coordinate.getPosition();
 
         Vector3D ps = pted.subtract(psat);
@@ -39,7 +47,7 @@ public final class EclipseUtils
         if ((angle - ro + rs) < 0) {
             return EclipseState.Umbra;
         } else if ((angle - ro - rs) < 0) {
-            return EclipseState.UmbraOrPenumbra;
+            return EclipseState.Penumbra;
         } else {
             return EclipseState.None;
         }

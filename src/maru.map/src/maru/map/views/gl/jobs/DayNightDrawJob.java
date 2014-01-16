@@ -2,13 +2,15 @@ package maru.map.views.gl.jobs;
 
 import javax.media.opengl.GL2;
 
-import maru.core.units.DaylengthDefinition;
-import maru.core.utils.DayLengthUtils;
+import maru.core.utils.DaylengthUtils;
+import maru.core.utils.DaylengthDefinition;
 import maru.map.jobs.gl.GLProjectDrawJob;
 import maru.map.utils.MapUtils;
 import maru.map.views.DayLength;
 import maru.map.views.MapViewParameters;
 import maru.map.views.MapViewSettings;
+
+import org.orekit.time.AbsoluteDate;
 
 public class DayNightDrawJob extends GLProjectDrawJob
 {
@@ -22,7 +24,7 @@ public class DayNightDrawJob extends GLProjectDrawJob
             return;
         }
 
-        long currentTime = getProject().getCurrentTime();
+        AbsoluteDate currentTime = getProject().getCurrentTime();
         int currentMapX = timeToHorizontalPixel(currentTime);
         DayLength[] currentDayTimes = getDayTimes(currentTime, area.mapHeight, drawing.getNightStepSize(), drawing.getDaylengthDefinition());
         drawDayNightTimes(currentMapX, currentDayTimes);
@@ -34,33 +36,33 @@ public class DayNightDrawJob extends GLProjectDrawJob
         // this job does not own any resources
     }
 
-    private int timeToHorizontalPixel(long time)
+    private int timeToHorizontalPixel(AbsoluteDate date)
     {
         MapViewParameters area = getParameters();
 
-        long minutesOfDay = DayLengthUtils.getMinutesOfDay(time);
-        double pixelsPerMinute = (double) area.mapWidth / DayLengthUtils.MINUTES_IN_A_DAY;
+        double minutesInDay = DaylengthUtils.getMinutesInDay(date);
+        double pixelsPerMinute = (double) area.mapWidth / DaylengthUtils.MINUTES_IN_A_DAY;
 
         double posX;
-        if (minutesOfDay <= DayLengthUtils.MINUTES_IN_HALF_A_DAY) {
-            posX = (area.mapWidth / 2) + (pixelsPerMinute * minutesOfDay);
+        if (minutesInDay <= DaylengthUtils.MINUTES_IN_HALF_A_DAY) {
+            posX = (area.mapWidth / 2) + (pixelsPerMinute * minutesInDay);
         } else {
-            posX = pixelsPerMinute * (minutesOfDay - DayLengthUtils.MINUTES_IN_HALF_A_DAY);
+            posX = pixelsPerMinute * (minutesInDay - DaylengthUtils.MINUTES_IN_HALF_A_DAY);
         }
         return area.mapWidth - (int) Math.round(posX);
     }
 
-    private static DayLength[] getDayTimes(long time, int verticalPixels, int verticalStepSize, DaylengthDefinition definition)
+    private static DayLength[] getDayTimes(AbsoluteDate date, int verticalPixels, int verticalStepSize, DaylengthDefinition definition)
     {
         int dayTimesCount = verticalPixels / verticalStepSize;
         DayLength[] dayTimes = new DayLength[dayTimesCount];
-        double dayOfYear = DayLengthUtils.getDayOfYear(time);
+        double dayOfYear = DaylengthUtils.getDayOfYear(date);
 
         for (int i = 0; i < dayTimesCount; i++)
         {
             int verticalPixel = i * verticalStepSize;
             double latDeg = MapUtils.verticalPixelToLatitude(verticalPixel, verticalPixels);
-            double dayLen = DayLengthUtils.getLengthOfDay(dayOfYear, latDeg, definition);
+            double dayLen = DaylengthUtils.getLengthOfDay(dayOfYear, latDeg, definition);
             dayTimes[i] = new DayLength(verticalPixel, dayLen);
         }
 

@@ -18,19 +18,24 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.orekit.errors.OrekitException;
+import org.orekit.time.AbsoluteDate;
 
 enum EclipseType
 {
     Umbra,
+    Penumbra,
     UmbraAndPenumbra;
 
     private static final String NAME_UMBRA = "Umbra";
+    private static final String NAME_PENUMBRA = "Penumbra";
     private static final String NAME_UMBRA_AND_PENUMBRA = "Umbra + Penumbra";
 
     public static EclipseType fromString(String str)
     {
         if (str.equals(NAME_UMBRA)) {
             return Umbra;
+        } else if (str.equals(NAME_PENUMBRA)) {
+            return Penumbra;
         } else if (str.equals(NAME_UMBRA_AND_PENUMBRA)) {
             return UmbraAndPenumbra;
         }
@@ -44,6 +49,8 @@ enum EclipseType
         {
             case Umbra:
                 return NAME_UMBRA;
+            case Penumbra:
+                return NAME_PENUMBRA;
             case UmbraAndPenumbra:
                 return NAME_UMBRA_AND_PENUMBRA;
         }
@@ -139,8 +146,8 @@ public class EclipseReportControl extends AbstractPropagationReportControl
         ISpacecraft element = getSelectedElement();
         IPropagator propagator = element.getPropagator();
 
-        long startTime = getCurrentProject().getStartTime();
-        long stopTime = getCurrentProject().getStopTime();
+        AbsoluteDate start = getCurrentProject().getStartTime();
+        AbsoluteDate stop = getCurrentProject().getStopTime();
         long stepSize = getSelectedStepSize();
         EclipseType type = getCurrentType();
 
@@ -151,16 +158,17 @@ public class EclipseReportControl extends AbstractPropagationReportControl
         double sunDuration = 0.0;
         int count = 0;
 
-        for (ICoordinate coordinate : propagator.getCoordinates(element, startTime, stopTime, stepSize))
+        for (ICoordinate coordinate : propagator.getCoordinates(element, start, stop, stepSize))
         {
-            boolean inEclipse = false;
+            EclipseState state = EclipseUtils.getEclipseState(element.getCentralBody(), coordinate);
 
+            boolean inEclipse = false;
             if (type == EclipseType.Umbra) {
-                inEclipse = EclipseUtils.getEclipseState(element.getCentralBody(), coordinate) == EclipseState.Umbra;
-            } else if (type == EclipseType.UmbraAndPenumbra) {
-                inEclipse = EclipseUtils.getEclipseState(element.getCentralBody(), coordinate) == EclipseState.UmbraOrPenumbra;
+                inEclipse = (state == EclipseState.Umbra);
+            } else if (type == EclipseType.Penumbra) {
+                inEclipse = (state == EclipseState.Penumbra);
             } else {
-                throw new IllegalStateException();
+                inEclipse = (state != EclipseState.None);
             }
 
             if (inEclipse)
@@ -201,7 +209,7 @@ public class EclipseReportControl extends AbstractPropagationReportControl
         if (!Double.isNaN(currentDuration))
         {
             // the current duration was not yet closed
-            append(TimeUtils.asISO8601(stopTime));
+            append(TimeUtils.asISO8601(stop));
             append("\t");
             appendln(toDuration(currentDuration));
             if (currentDuration < minDuration) {
@@ -227,6 +235,7 @@ public class EclipseReportControl extends AbstractPropagationReportControl
     {
         return new String[] {
             EclipseType.Umbra.toString(),
+            EclipseType.Penumbra.toString(),
             EclipseType.UmbraAndPenumbra.toString()
         };
     }

@@ -7,7 +7,7 @@ import java.util.Collections;
 import maru.core.model.ICoordinate;
 import maru.core.model.ISpacecraft;
 import maru.core.model.template.AbstractPropagator;
-import maru.core.utils.OrekitUtils;
+import maru.core.utils.TimeUtils;
 import maru.spacecraft.OrekitCoordinate;
 
 import org.orekit.errors.OrekitException;
@@ -15,7 +15,6 @@ import org.orekit.orbits.KeplerianOrbit;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.analytical.KeplerianPropagator;
 import org.orekit.time.AbsoluteDate;
-import org.orekit.time.TimeScalesFactory;
 
 public class KeplerPropagator extends AbstractPropagator
 {
@@ -23,9 +22,9 @@ public class KeplerPropagator extends AbstractPropagator
 
     // return the cached position only when these variables did not change
     private InitialKeplerCoordinate lastInitialCoordinate;
-    private long lastStartTime;
-    private long lastStopTime;
-    private long lastStepSize;
+    private AbsoluteDate lastStart = new AbsoluteDate();
+    private AbsoluteDate lastStop = new AbsoluteDate();
+    private long lastStepSize = 0;
 
     // TODO: buffer positions of a few (2-3) different step sizes because
     // it is planned that different components ask for propagated positions
@@ -34,7 +33,7 @@ public class KeplerPropagator extends AbstractPropagator
     private final Collection<ICoordinate> coordinates = new ArrayList<>();
 
     @Override
-    public OrekitCoordinate getCoordinate(ISpacecraft element, long time)
+    public OrekitCoordinate getCoordinate(ISpacecraft element, AbsoluteDate date)
     {
         KeplerSatellite satellite = (KeplerSatellite) element;
         InitialKeplerCoordinate initialCoordinate = satellite.getInitialCoordinate();
@@ -44,8 +43,7 @@ public class KeplerPropagator extends AbstractPropagator
             KeplerianOrbit initialOrbit = initialCoordinate.getInitialOrbit();
             KeplerianPropagator keplerPropagator = new KeplerianPropagator(initialOrbit);
 
-            AbsoluteDate currentDate = OrekitUtils.toAbsoluteDate(time);
-            SpacecraftState currentState = keplerPropagator.propagate(currentDate);
+            SpacecraftState currentState = keplerPropagator.propagate(date);
 
             return new OrekitCoordinate(currentState.getPVCoordinates(),
                                         currentState.getDate(),
@@ -60,17 +58,18 @@ public class KeplerPropagator extends AbstractPropagator
 
     @Override
     public Collection<ICoordinate> getCoordinates(ISpacecraft element,
-                                                  long start, long stop,
+                                                  AbsoluteDate start,
+                                                  AbsoluteDate stop,
                                                   long stepSize)
     {
         KeplerSatellite satellite = (KeplerSatellite) element;
         InitialKeplerCoordinate initialCoordinate = satellite.getInitialCoordinate();
 
-        if ((lastInitialCoordinate != null)
-                && (initialCoordinate.equals(lastInitialCoordinate))
-                && (start == lastStartTime)
-                && (stop == lastStopTime)
-                && (stepSize == lastStepSize))
+        if ((lastInitialCoordinate != null) &&
+            (initialCoordinate.equals(lastInitialCoordinate)) &&
+            ((start == lastStart) || (start.compareTo(lastStart) == 0)) &&
+            ((stop == lastStop) || (stop.compareTo(lastStop) == 0)) &&
+            (stepSize == lastStepSize))
         {
             // do not bother to recalculate all positions
             return coordinates;
@@ -82,24 +81,21 @@ public class KeplerPropagator extends AbstractPropagator
             KeplerianOrbit initialOrbit = initialCoordinate.getInitialOrbit();
             KeplerianPropagator keplerPropagator = new KeplerianPropagator(initialOrbit);
 
-            AbsoluteDate endDate = OrekitUtils.toAbsoluteDate(stop);
-            AbsoluteDate extrapDate = OrekitUtils.toAbsoluteDate(start);
-
-            while (extrapDate.compareTo(endDate) <= 0)
+            AbsoluteDate extrapDate = start;
+            while (extrapDate.compareTo(stop) <= 0)
             {
                 SpacecraftState currentState = keplerPropagator.propagate(extrapDate);
                 coordinates.add(new OrekitCoordinate(currentState.getPVCoordinates(),
                                                      currentState.getDate(),
                                                      currentState.getFrame()));
-
-                extrapDate = new AbsoluteDate(extrapDate, stepSize, TimeScalesFactory.getUTC());
+                extrapDate = TimeUtils.create(extrapDate, stepSize);
             }
 
             // all external parameters that the position calculation is based
             // on. if these do not change, the outcome does not change.
             lastInitialCoordinate = initialCoordinate;
-            lastStartTime = start;
-            lastStopTime = stop;
+            lastStart = start;
+            lastStop = stop;
             lastStepSize = stepSize;
 
             return coordinates;
@@ -122,8 +118,8 @@ public class KeplerPropagator extends AbstractPropagator
     {
         coordinates.clear();
         lastInitialCoordinate = null;
-        lastStartTime = 0;
-        lastStopTime = 0;
+        lastStart = new AbsoluteDate();
+        lastStop = new AbsoluteDate();
         lastStepSize = 0;
     }
 }

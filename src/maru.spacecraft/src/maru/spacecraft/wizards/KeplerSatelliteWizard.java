@@ -3,7 +3,6 @@ package maru.spacecraft.wizards;
 import maru.IMaruResource;
 import maru.core.model.CoreModel;
 import maru.core.model.IScenarioProject;
-import maru.core.utils.OrekitUtils;
 import maru.spacecraft.MaruSpacecraftResources;
 import maru.spacecraft.ckesatellite.InitialKeplerCoordinate;
 import maru.spacecraft.ckesatellite.KeplerPropagator;
@@ -71,7 +70,7 @@ public class KeplerSatelliteWizard extends ScenarioElementWizard
         double anomaly = mainPage.getAnomaly();
         PositionAngle type = mainPage.getAnomalyType();
         Frame frame = mainPage.getFrame();
-        AbsoluteDate date = OrekitUtils.toAbsoluteDate(mainPage.getTime());
+        AbsoluteDate date = mainPage.getDate();
         double mu = mainPage.getCentralAttractionCoefficient();
 
         KeplerianOrbit initialOrbit =

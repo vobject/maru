@@ -3,6 +3,8 @@ package maru.ui.model;
 import maru.core.model.CoreModel;
 import maru.core.model.ITimepoint;
 
+import org.orekit.time.AbsoluteDate;
+
 public class UiTimepoint extends UiElement
 {
     // the UiTimepoint type determines which icon to show for the item.
@@ -24,16 +26,16 @@ public class UiTimepoint extends UiElement
     }
 
     // convenience method do access the underlying element's date information
-    public long getTime()
+    public AbsoluteDate getTime()
     {
         return getUnderlyingElement().getTime();
     }
 
     // convenience method to the underlying element
-    public void setTime(long time)
+    public void setTime(AbsoluteDate date)
     {
         CoreModel coreModel = CoreModel.getDefault();
-        coreModel.changeTimepoint(getUnderlyingElement(), time, true);
+        coreModel.changeTimepoint(getUnderlyingElement(), date, true);
     }
 
     @Override

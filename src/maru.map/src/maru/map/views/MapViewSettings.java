@@ -1,6 +1,6 @@
 package maru.map.views;
 
-import maru.core.units.DaylengthDefinition;
+import maru.core.utils.DaylengthDefinition;
 import maru.map.MaruMapPlugin;
 import maru.map.preferences.PreferenceConstants;
 

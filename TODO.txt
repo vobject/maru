@@ -1,6 +1,14 @@
 Low-level coding notes:
 
 - Orekit propagator objects are always recreated
-- Replace long (unix timestamp) with Orekit's AbsoluteDate everywhere
-- Write conversion utils for SWT <-> AbsoluteDate
-
+- rename ICoreModelListener.propagatablesChanged() or get rid of CoreModel.changeScenarioElementsTime() altogether by proagating (elem.currentTimeChanged()) all scenario element whenever the scenarios current time changes automatically inside ScenarioModelManager ----> we cannot get rid of changeScenarioElementsTime() easily because it is used for Real-time mode!
+- Bug: delete StartTimepoint, currenttime will not be updated.
+- change stepSize type to double
+- add custom central body where attributes can be changed; pre defined central bodies are constant
+- remove central body alteration interfaces from maru.core. for the core data model, the central body should be immutable. but it may be altered using property pages from inside maru.centralbody plugin
+- add move central bodies
+- disallow TLE satellites for central bodies other than Earth
+- add notifyXZYchanged() functions to CoreModel to indicate changes to a property of a scenario element that could not be expressed through standard CoreModel interfaces (e.g. implementation details were changed by the owning plugin) but CoreModelListeners should be notified nevertheless.
+- create scenario project specific settings. then, move Image/Color/Texture out of the coremodel and into the new ui-settings-model.
+- fix JOGL redraw issue for Linux/Mac
+- add more Orbit types (OrbitWizard?) from Orekit

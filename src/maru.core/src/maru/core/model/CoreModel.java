@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.RGB;
 import org.orekit.bodies.GeodeticPoint;
+import org.orekit.time.AbsoluteDate;
 
 /**
  * Core model class.
@@ -74,8 +75,8 @@ public class CoreModel
     public IScenarioProject createScenarioProject(final IProject project,
                                                   final String comment,
                                                   final ICentralBody centralBody,
-                                                  final long startTime,
-                                                  final long stopTime) throws CoreException
+                                                  final AbsoluteDate startTime,
+                                                  final AbsoluteDate stopTime) throws CoreException
     {
         getWorkspace().run(new IWorkspaceRunnable()
         {
@@ -128,9 +129,9 @@ public class CoreModel
         modelManager.changeElementComment(element, comment, update);
     }
 
-    public void addTimepoint(IScenarioProject project, long time, boolean update)
+    public void addTimepoint(IScenarioProject project, AbsoluteDate date, boolean update)
     {
-        modelManager.addTimepoint(project, time, update);
+        modelManager.addTimepoint(project, date, update);
     }
 
     public void removeTimepoint(ITimepoint timepoint, boolean update)
@@ -138,9 +139,9 @@ public class CoreModel
         modelManager.removeTimepoint(timepoint, update);
     }
 
-    public void changeTimepoint(ITimepoint timepoint, long time, boolean update)
+    public void changeTimepoint(ITimepoint timepoint, AbsoluteDate date, boolean update)
     {
-        modelManager.changeTimepoint(timepoint, time, update);
+        modelManager.changeTimepoint(timepoint, date, update);
     }
 
     /**
@@ -154,9 +155,9 @@ public class CoreModel
      * scenario may not be modified but its propagatable elements must appear
      * as if its current time were.
      */
-    public void changePropagatablesTime(IScenarioProject project, long time, boolean update)
+    public void changeScenarioElementsTime(IScenarioProject project, AbsoluteDate date, boolean update)
     {
-        modelManager.changePropagatablesTime(project, time, update);
+        modelManager.changeScenarioElementsTime(project, date, update);
     }
 
     public void addGroundstation(IScenarioProject project, IGroundstation groundstation, boolean update)

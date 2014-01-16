@@ -1,10 +1,8 @@
 package maru.core.utils;
 
-import java.util.Calendar;
+import org.orekit.time.AbsoluteDate;
 
-import maru.core.units.DaylengthDefinition;
-
-public final class DayLengthUtils
+public final class DaylengthUtils
 {
     public static final long SECONDS_IN_A_DAY = 24 * 60 * 60;
     public static final long MINUTES_IN_A_DAY = 24 * 60;
@@ -12,56 +10,28 @@ public final class DayLengthUtils
 
     /**
      * Get the day of the year.
-     *
-     * @param time Seconds since start of the epoch.
-     * @return The day of the year as a fraction.
      */
-    public static double getDayOfYear(long time)
+    public static double getDayOfYear(AbsoluteDate date)
     {
-        Calendar calendar = TimeUtils.getCalendar(time);
-
-        // get the day of the year from the calendar
-        double dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
-
-        // get the fraction of the day by looking at the seconds passed
-        double secondsOfDay = getSecondsOfDay(time);
-
-        return dayOfYear + (secondsOfDay / SECONDS_IN_A_DAY);
+        double dayOfYear = TimeUtils.getDateComponents(date).getDayOfYear();
+        double secondsInDay = TimeUtils.getTimeComponents(date).getSecondsInDay();
+        return dayOfYear + (secondsInDay / SECONDS_IN_A_DAY);
     }
 
     /**
-     * Get the minutes passed on the day of the given time.
-     *
-     * @param time Seconds since start of the epoch.
-     * @return The number of minutes passed on the day of the given time.
+     * Get the minutes passed on the day of a given date.
      */
-    public static long getMinutesOfDay(long time)
+    public static double getMinutesInDay(AbsoluteDate date)
     {
-        return getSecondsOfDay(time) / 60;
+        return getSecondsInDay(date) / 60;
     }
 
     /**
-     * Get the seconds passed on the day of the given time.
-     *
-     * @param time Seconds since start of the epoch.
-     * @return The number of seconds passed on the day of the given time.
+     * Get the seconds passed on the day of a given date.
      */
-    public static long getSecondsOfDay(long time)
+    public static double getSecondsInDay(AbsoluteDate date)
     {
-        // Is this OK for stuff like leap-seconds?
-        return (time % SECONDS_IN_A_DAY);
-    }
-
-    /**
-     * Get the length of a day with default daylength definition.
-     *
-     * @param dayOfYear The fractional day of the year.
-     * @param latitude The latitude for which to calculate the daylength.
-     * @return The Length of a day as a fraction of hours.
-     */
-    public static double getLengthOfDay(double dayOfYear, double latitude)
-    {
-        return getLengthOfDay(dayOfYear, latitude, DaylengthDefinition.SUN_TOP_APPERANTLY_EVEN_WITH_HORIZON);
+        return TimeUtils.getTimeComponents(date).getSecondsInDay();
     }
 
     /**

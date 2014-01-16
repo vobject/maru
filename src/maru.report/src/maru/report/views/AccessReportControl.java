@@ -2,7 +2,6 @@ package maru.report.views;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import maru.core.model.ICoordinate;
@@ -13,7 +12,6 @@ import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.core.utils.AccessUtils;
 import maru.core.utils.NumberUtils;
-import maru.core.utils.OrekitUtils;
 import maru.core.utils.TimeUtils;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiProject;
@@ -27,6 +25,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.orekit.errors.OrekitException;
+import org.orekit.time.AbsoluteDate;
 
 public class AccessReportControl extends ReportTypeControl
 {
@@ -176,16 +175,16 @@ public class AccessReportControl extends ReportTypeControl
         IScenarioElement element1 = getSelectedElement1();
         IScenarioElement element2 = getSelectedElement2();
 
-        long startTime = getCurrentProject().getStartTime();
-        long stopTime = getCurrentProject().getStopTime();
-        long duration = stopTime - startTime;
+        AbsoluteDate start = getCurrentProject().getStartTime();
+        AbsoluteDate stop = getCurrentProject().getStopTime();
+        long duration = (long) stop.durationFrom(start);
         long stepSize = getSelectedStepSize();
 
         appendln(getReportName());
-        appendln("Date: " + TimeUtils.asISO8601(new Date()));
+        appendln("Date: " + TimeUtils.asISO8601(TimeUtils.now()));
         appendln(element1.getElementName() + " <---> " + element2.getElementName());
-        appendln("Propagation Start: " + TimeUtils.asISO8601(startTime));
-        appendln("Propagation Stop: " + TimeUtils.asISO8601(stopTime));
+        appendln("Propagation Start: " + TimeUtils.asISO8601(start));
+        appendln("Propagation Stop: " + TimeUtils.asISO8601(stop));
         appendln("Propagation Duration: " + duration + "sec");
         appendln("Step size: " + stepSize + "sec");
     }
@@ -278,8 +277,8 @@ public class AccessReportControl extends ReportTypeControl
         }
         IPropagator propagator = alpha.getPropagator();
 
-        long startTime = getCurrentProject().getStartTime();
-        long stopTime = getCurrentProject().getStopTime();
+        AbsoluteDate start = getCurrentProject().getStartTime();
+        AbsoluteDate stop = getCurrentProject().getStopTime();
         long stepSize = getSelectedStepSize();
 
         double minDuration = Double.MAX_VALUE;
@@ -289,13 +288,13 @@ public class AccessReportControl extends ReportTypeControl
         double separationDuration = 0.0;
         int count = 0;
 
-        for (ICoordinate coordinate : propagator.getCoordinates(alpha, startTime, stopTime, stepSize))
+        for (ICoordinate coordinate : propagator.getCoordinates(alpha, start, stop, stepSize))
         {
             double distance;
             if (beta instanceof ISpacecraft) {
                 ISpacecraft betaSc = (ISpacecraft) beta;
                 IPropagator betaProp = betaSc.getPropagator();
-                ICoordinate betaCoord = betaProp.getCoordinate(betaSc, OrekitUtils.toSeconds(coordinate.getDate()));
+                ICoordinate betaCoord = betaProp.getCoordinate(betaSc, coordinate.getDate());
                 distance = AccessUtils.getDistanceTo(alpha.getCentralBody(), coordinate, betaCoord);
             } else if (beta instanceof IGroundstation) {
                 distance = AccessUtils.getDistanceTo(alpha.getCentralBody(), coordinate, (IGroundstation) beta);
@@ -345,7 +344,7 @@ public class AccessReportControl extends ReportTypeControl
         if (!Double.isNaN(currentDuration))
         {
             // the current duration was not yet closed
-            append(TimeUtils.asISO8601(stopTime));
+            append(TimeUtils.asISO8601(stop));
             append("\t");
             appendln(toDuration(currentDuration));
             if (currentDuration < minDuration) {

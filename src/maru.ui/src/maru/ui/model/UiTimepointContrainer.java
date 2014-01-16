@@ -9,6 +9,8 @@ import maru.core.model.ITimepoint;
 import maru.core.utils.TimeUtils;
 import maru.ui.model.UiTimepoint.UiTimepointType;
 
+import org.orekit.time.AbsoluteDate;
+
 public class UiTimepointContrainer extends UiElementContrainer
 {
     public UiTimepointContrainer(UiParent parent, IScenarioProject project)
@@ -61,15 +63,15 @@ public class UiTimepointContrainer extends UiElementContrainer
         return getUnderlyingElement().getStopTime();
     }
 
-    public ITimepoint getPreviousTimepoint(long time)
+    public ITimepoint getPreviousTimepoint(AbsoluteDate date)
     {
-        ITimepoint timepoint = TimeUtils.fromSeconds(time);
+        ITimepoint timepoint = TimeUtils.fromDate(date);
         return getUnderlyingElement().getPreviousTimepoint(timepoint);
     }
 
-    public ITimepoint getNextTimepoint(long time)
+    public ITimepoint getNextTimepoint(AbsoluteDate date)
     {
-        ITimepoint timepoint = TimeUtils.fromSeconds(time);
+        ITimepoint timepoint = TimeUtils.fromDate(date);
         return getUnderlyingElement().getNextTimepoint(timepoint);
     }
 }
