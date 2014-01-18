@@ -13,12 +13,12 @@ import maru.core.utils.TimeUtils;
 import maru.groundstation.MaruGroundstationResources;
 import maru.groundstation.earth.Groundstation;
 import maru.spacecraft.MaruSpacecraftResources;
-import maru.spacecraft.ckesatellite.InitialKeplerCoordinate;
-import maru.spacecraft.ckesatellite.KeplerPropagator;
-import maru.spacecraft.ckesatellite.KeplerSatellite;
-import maru.spacecraft.tlesatellite.InitialTleCoordinate;
-import maru.spacecraft.tlesatellite.SGP4Propagator;
-import maru.spacecraft.tlesatellite.TleSatellite;
+import maru.spacecraft.custom.InitialCustomCoordinate;
+import maru.spacecraft.custom.KeplerPropagator;
+import maru.spacecraft.custom.KeplerSatellite;
+import maru.spacecraft.tle.InitialTLECoordinate;
+import maru.spacecraft.tle.SGP4Propagator;
+import maru.spacecraft.tle.TLESatellite;
 import maru.spacecraft.utils.TleUtils;
 
 import org.eclipse.core.resources.IProject;
@@ -134,7 +134,7 @@ public final class CreateScenarioHelper
         double mu = scenario.getCentralBody().getGM();
 
         KeplerianOrbit initialOrbit = new KeplerianOrbit(a, e, i, pa, raan, anomaly, type, frame, date, mu);
-        InitialKeplerCoordinate initialCoordinate = new InitialKeplerCoordinate(initialOrbit);
+        InitialCustomCoordinate initialCoordinate = new InitialCustomCoordinate(initialOrbit);
         KeplerPropagator propagator = new KeplerPropagator();
 
         KeplerSatellite satellite = new KeplerSatellite(name);
@@ -155,10 +155,10 @@ public final class CreateScenarioHelper
 
         // the fresh TLE data for the ISS
         String url = "http://www.celestrak.com/NORAD/elements/stations.txt";
-        InitialTleCoordinate initialCoordinate = TleUtils.parseTleSource(url).get(0);
+        InitialTLECoordinate initialCoordinate = TleUtils.parseTleSource(url).get(0);
         SGP4Propagator propagator = new SGP4Propagator();
 
-        TleSatellite satellite = new TleSatellite(initialCoordinate.getName());
+        TLESatellite satellite = new TLESatellite(initialCoordinate.getName());
         satellite.setElementComment(comment);
         satellite.setElementColor(color);
         satellite.setElementImage(DEFAULT_TLE_SATELLITE_GRAPHIC2D);

@@ -12,7 +12,7 @@ import maru.core.utils.PathUtils;
 import maru.spacecraft.MaruSpacecraftPlugin;
 import maru.spacecraft.preferences.PreferenceConstants;
 import maru.spacecraft.preferences.TleSourceEditor;
-import maru.spacecraft.tlesatellite.InitialTleCoordinate;
+import maru.spacecraft.tle.InitialTLECoordinate;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.orekit.errors.OrekitException;
@@ -44,9 +44,9 @@ public final class TleUtils
         return elements.toArray(new String[elements.size()]);
     }
 
-    public static List<InitialTleCoordinate> parseTleSource(String source)
+    public static List<InitialTLECoordinate> parseTleSource(String source)
     {
-        List<InitialTleCoordinate> tleList = new ArrayList<>();
+        List<InitialTLECoordinate> tleList = new ArrayList<>();
 
         try
         {
@@ -62,7 +62,7 @@ public final class TleUtils
                 String line2 = reader.readLine();
 
                 TLE tle = new TLE(line1, line2);
-                tleList.add(new InitialTleCoordinate(name, tle));
+                tleList.add(new InitialTLECoordinate(name, tle));
             }
             reader.close();
         }

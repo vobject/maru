@@ -24,8 +24,8 @@ Export-Package: maru.spacecraft;
    org.osgi.framework,
    org.orekit.time,
    maru.core.units",
- maru.spacecraft.ckesatellite,
- maru.spacecraft.tlesatellite,
+ maru.spacecraft.custom,
+ maru.spacecraft.tle,
  maru.spacecraft.utils
 Eclipse-RegisterBuddy: maru.core,
  maru.ui

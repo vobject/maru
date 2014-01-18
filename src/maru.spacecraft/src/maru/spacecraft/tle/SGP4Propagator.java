@@ -1,4 +1,4 @@
-package maru.spacecraft.ckesatellite;
+package maru.spacecraft.tle;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,20 +11,22 @@ import maru.core.utils.TimeUtils;
 import maru.spacecraft.OrekitCoordinate;
 
 import org.orekit.errors.OrekitException;
-import org.orekit.orbits.KeplerianOrbit;
 import org.orekit.propagation.SpacecraftState;
-import org.orekit.propagation.analytical.KeplerianPropagator;
+import org.orekit.propagation.analytical.tle.TLE;
+import org.orekit.propagation.analytical.tle.TLEPropagator;
 import org.orekit.time.AbsoluteDate;
 
-public class KeplerPropagator extends AbstractPropagator
+public class SGP4Propagator extends AbstractPropagator
 {
     private static final long serialVersionUID = 1L;
 
+    private String propagatorName = "SGP4/SDP4";
+
     // return the cached position only when these variables did not change
-    private InitialKeplerCoordinate lastInitialCoordinate;
+    private InitialTLECoordinate lastInitialCoordinate;
     private AbsoluteDate lastStart = new AbsoluteDate();
     private AbsoluteDate lastStop = new AbsoluteDate();
-    private long lastStepSize = 0;
+    private long lastStepSize;
 
     // TODO: buffer positions of a few (2-3) different step sizes because
     // it is planned that different components ask for propagated positions
@@ -35,15 +37,16 @@ public class KeplerPropagator extends AbstractPropagator
     @Override
     public OrekitCoordinate getCoordinate(ISpacecraft element, AbsoluteDate date)
     {
-        KeplerSatellite satellite = (KeplerSatellite) element;
-        InitialKeplerCoordinate initialCoordinate = satellite.getInitialCoordinate();
+        TLESatellite satellite = (TLESatellite) element;
+        InitialTLECoordinate initialPosition = satellite.getInitialCoordinate();
 
         try
         {
-            KeplerianOrbit initialOrbit = initialCoordinate.getInitialOrbit();
-            KeplerianPropagator keplerPropagator = new KeplerianPropagator(initialOrbit);
+            TLE tle = initialPosition.getTle();
+            TLEPropagator tlePropagator = TLEPropagator.selectExtrapolator(tle);
+            propagatorName = tlePropagator.getClass().getSimpleName();
 
-            SpacecraftState currentState = keplerPropagator.propagate(date);
+            SpacecraftState currentState = tlePropagator.propagate(date);
 
             return new OrekitCoordinate(currentState.getPVCoordinates(),
                                         currentState.getDate(),
@@ -62,8 +65,8 @@ public class KeplerPropagator extends AbstractPropagator
                                                   AbsoluteDate stop,
                                                   long stepSize)
     {
-        KeplerSatellite satellite = (KeplerSatellite) element;
-        InitialKeplerCoordinate initialCoordinate = satellite.getInitialCoordinate();
+        TLESatellite satellite = (TLESatellite) element;
+        InitialTLECoordinate initialCoordinate = satellite.getInitialCoordinate();
 
         if ((lastInitialCoordinate != null) &&
             (initialCoordinate.equals(lastInitialCoordinate)) &&
@@ -76,15 +79,18 @@ public class KeplerPropagator extends AbstractPropagator
         }
         coordinates.clear();
 
+        TLE tle = initialCoordinate.getTle();
+
         try
         {
-            KeplerianOrbit initialOrbit = initialCoordinate.getInitialOrbit();
-            KeplerianPropagator keplerPropagator = new KeplerianPropagator(initialOrbit);
+            // select the right propagator. might be SGP4 or SDP4, based on the given TLE.
+            TLEPropagator tlePropagator = TLEPropagator.selectExtrapolator(tle);
+            propagatorName = tlePropagator.getClass().getSimpleName();
 
             AbsoluteDate extrapDate = start;
             while (extrapDate.compareTo(stop) <= 0)
             {
-                SpacecraftState currentState = keplerPropagator.propagate(extrapDate);
+                SpacecraftState currentState = tlePropagator.propagate(extrapDate);
                 coordinates.add(new OrekitCoordinate(currentState.getPVCoordinates(),
                                                      currentState.getDate(),
                                                      currentState.getFrame()));
@@ -110,7 +116,7 @@ public class KeplerPropagator extends AbstractPropagator
     @Override
     public String getName()
     {
-        return "KeplerPropagator";
+        return propagatorName;
     }
 
     @Override

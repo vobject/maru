@@ -1,12 +1,6 @@
-package maru.spacecraft.propertypages;
+package maru.spacecraft;
 
-import maru.core.model.IScenarioElement;
 import maru.core.utils.TimeUtils;
-import maru.spacecraft.KeplerianOrbitControls;
-import maru.spacecraft.OrbitControls;
-import maru.spacecraft.custom.InitialCustomCoordinate;
-import maru.spacecraft.custom.KeplerSatellite;
-import maru.ui.propertypages.UiPropertyPage;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -15,16 +9,18 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
+import org.orekit.frames.FramesFactory;
+import org.orekit.frames.Predefined;
 import org.orekit.orbits.KeplerianOrbit;
 import org.orekit.orbits.Orbit;
+import org.orekit.orbits.OrbitType;
 import org.orekit.orbits.PositionAngle;
 import org.orekit.time.AbsoluteDate;
 
-public class KeplerSatellitePropertyPage extends UiPropertyPage
+public class KeplerianOrbitControls extends OrbitControls
 {
-    private OrbitControls orbitControls;
-
     private Text semimajorAxis;
     private Text eccentricity;
     private Text inclination;
@@ -43,82 +39,121 @@ public class KeplerSatellitePropertyPage extends UiPropertyPage
     private String initialRaan;
     private String initialAnomaly;
     private String initialAnomalyType;
+    private String initialDate;
+    private String initialFrame;
+    private String initialAttractionCoefficient;
 
-    @Override
-    public KeplerSatellite getScenarioElement()
+    public KeplerianOrbitControls(Composite parent)
     {
-        IScenarioElement element = super.getScenarioElement();
-        if (element instanceof KeplerSatellite) {
-            return (KeplerSatellite) element;
-        } else {
-            return null;
-        }
-    }
+        createControls(parent);
 
-    @Override
-    public boolean performOk()
-    {
-        if (!super.performOk()) {
-            return false;
-        }
-        Orbit newOrbit = null;
-
-        if (orbitControls.isModified())
-        {
-//            KeplerSatellite element = getScenarioElement();
-            newOrbit = orbitControls.getOrbit();
-            // TODO creat icoordinate from orbit and tell coremodel
-
-            orbitControls.refreshDefaults(newOrbit);
-        }
-
-//        if (hasInitialCoordinateChanged())
-//        {
-//            KeplerSatellite element = getScenarioElement();
-//            InitialCustomCoordinate newCoordinate = createNewCoordinate(element);
-//            CoreModel.getDefault().changeInitialCoordinate(element, newCoordinate, true);
-//        }
-
-        initDefaults();
-        return true;
-    }
-
-    @Override
-    protected Composite createContents(Composite parent)
-    {
-        KeplerSatellite element = getScenarioElement();
-        if (element == null) {
-            // this case should not happen if the property page filter
-            // in the plugin.xml is configured correctly
-            new Label(parent, SWT.NONE).setText("The selected element is no KeplerSatellite.");
-            return null;
-        }
-
-        Composite container = createControls(parent);
         initDefaults();
         initControls();
+    }
 
-        Orbit orbit = element.getInitialCoordinate().getInitialOrbit();
-        switch (orbit.getType())
+    public KeplerianOrbitControls(Composite parent, Orbit orbit)
+    {
+        createControls(parent);
+
+        if (orbit != null)
         {
-            case CARTESIAN:
-                // TODO
-                break;
-
-            case CIRCULAR:
-                // TODO
-                break;
-
-            case EQUINOCTIAL:
-                // TODO
-                break;
-
-            case KEPLERIAN:
-                orbitControls = new KeplerianOrbitControls(container, orbit);
-                break;
+            KeplerianOrbit keplerianOrbit = (KeplerianOrbit) OrbitType.KEPLERIAN.convertType(orbit);
+            initDefaults(keplerianOrbit);
+            initControls(keplerianOrbit);
         }
+        else
+        {
+            initDefaults();
+            initControls();
+        }
+    }
 
-        return container;
+    @Override
+    public boolean isModified()
+    {
+        return hasCoordinateChanged();
+    }
+
+    @Override
+    public void refreshDefaults(Orbit orbit)
+    {
+        if (orbit != null)
+        {
+            KeplerianOrbit keplerianOrbit = (KeplerianOrbit) OrbitType.KEPLERIAN.convertType(orbit);
+            initDefaults(keplerianOrbit);
+            initControls(keplerianOrbit);
+        }
+        else
+        {
+            initDefaults();
+            initControls();
+        }
+    }
+
+    @Override
+    public Orbit getOrbit()
+    {
+        return createKeplerianOrbit();
+    }
+
+    public double getSemimajorAxis()
+    {
+        // convert to meters. meters are used internally
+        return (Double.parseDouble(semimajorAxis.getText()) * 1000.0);
+    }
+
+    public double getEccentricity()
+    {
+        return Double.parseDouble(eccentricity.getText());
+    }
+
+    public double getInclination()
+    {
+        return Math.toRadians(Double.parseDouble(inclination.getText()));
+    }
+
+    public double getArgumentOfPerigee()
+    {
+        return Math.toRadians(Double.parseDouble(argumentOfPerigee.getText()));
+    }
+
+    public double getRaan()
+    {
+        return Math.toRadians(Double.parseDouble(raan.getText()));
+    }
+
+    public double getAnomaly()
+    {
+        return Math.toRadians(Double.parseDouble(anomaly.getText()));
+    }
+
+    public PositionAngle getAnomalyType()
+    {
+        return PositionAngle.valueOf(anomalyType.getText());
+    }
+
+    public AbsoluteDate getDate()
+    {
+        // isInputValid() ensures that the date string is ok
+        return TimeUtils.fromString(date.getText()).getTime();
+    }
+
+    public Frame getFrame()
+    {
+        try
+        {
+            return FramesFactory.getFrame(Predefined.valueOf(frame.getText()));
+        }
+        catch (OrekitException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public double getCentralAttractionCoefficient()
+    {
+        return Double.parseDouble(attractionCoefficient.getText());
     }
 
     private Composite createControls(Composite parent)
@@ -170,7 +205,6 @@ public class KeplerSatellitePropertyPage extends UiPropertyPage
         new Label(container, SWT.NONE).setText("Date:");
         date = new Text(container, SWT.BORDER);
         date.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-        date.setEnabled(false);
 
         new Label(container, SWT.NONE).setText("Frame:");
         frame = new Text(container, SWT.BORDER);
@@ -180,24 +214,26 @@ public class KeplerSatellitePropertyPage extends UiPropertyPage
         new Label(container, SWT.NONE).setText("Central attraction coefficient  (m\u00b3/s\u00b2):");
         attractionCoefficient = new Text(container, SWT.BORDER);
         attractionCoefficient.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-        attractionCoefficient.setEnabled(false);
 
         return container;
     }
 
     private void initDefaults()
     {
-        KeplerSatellite element = getScenarioElement();
-        if (element == null) {
-            return;
-        }
+        initialSemimajorAxis = "0";
+        initialEccentricity = "0";
+        initialInclination = "0";
+        initialArgumentOfPerigee = "0";
+        initialRaan = "0";
+        initialAnomaly = "0";
+        initialAnomalyType = PositionAngle.MEAN.toString();
+        initialDate = TimeUtils.asISO8601(TimeUtils.now());
+        initialFrame = FramesFactory.getEME2000().toString();
+        initialAttractionCoefficient = "0";
+    }
 
-        InitialCustomCoordinate coordinate = element.getInitialCoordinate();
-        KeplerianOrbit orbit = coordinate.getInitialOrbit();
-
-        // angles are processes in radiant internally
-        // convert them to degrees for user interface interactions
-
+    private void initDefaults(KeplerianOrbit orbit)
+    {
         initialSemimajorAxis = Double.toString(orbit.getA() / 1000.0); // convert to km
         initialEccentricity = Double.toString(orbit.getE());
         initialInclination = Double.toString(Math.toDegrees(orbit.getI()));
@@ -205,17 +241,13 @@ public class KeplerSatellitePropertyPage extends UiPropertyPage
         initialRaan = Double.toString(Math.toDegrees(orbit.getRightAscensionOfAscendingNode()));
         initialAnomaly = Double.toString(Math.toDegrees(orbit.getAnomaly(PositionAngle.MEAN)));
         initialAnomalyType = PositionAngle.MEAN.toString();
+        initialDate = TimeUtils.asISO8601(orbit.getDate());
+        initialFrame = orbit.getFrame().toString();
+        initialAttractionCoefficient = Double.toString(orbit.getMu());
     }
 
     private void initControls()
     {
-        KeplerSatellite element = getScenarioElement();
-        if (element == null) {
-            return;
-        }
-
-        InitialCustomCoordinate coordinate = element.getInitialCoordinate();
-
         semimajorAxis.setText(initialSemimajorAxis);
         eccentricity.setText(initialEccentricity);
         inclination.setText(initialInclination);
@@ -223,12 +255,26 @@ public class KeplerSatellitePropertyPage extends UiPropertyPage
         raan.setText(initialRaan);
         anomaly.setText(initialAnomaly);
         anomalyType.select(0); // select PositionAngle.MEAN
-        date.setText(TimeUtils.asISO8601(coordinate.getDate()));
-        frame.setText(coordinate.getFrame().toString());
-        attractionCoefficient.setText(Double.toString(element.getCentralBody().getGM()));
+        date.setText(initialDate);
+        frame.setText(initialFrame);
+        attractionCoefficient.setText(initialAttractionCoefficient);
     }
 
-    private boolean hasInitialCoordinateChanged()
+    private void initControls(KeplerianOrbit orbit)
+    {
+        semimajorAxis.setText(initialSemimajorAxis);
+        eccentricity.setText(initialEccentricity);
+        inclination.setText(initialInclination);
+        argumentOfPerigee.setText(initialArgumentOfPerigee);
+        raan.setText(initialRaan);
+        anomaly.setText(initialAnomaly);
+        anomalyType.select(0); // select PositionAngle.MEAN
+        date.setText(initialDate);
+        frame.setText(initialFrame);
+        attractionCoefficient.setText(initialAttractionCoefficient);
+    }
+
+    private boolean hasCoordinateChanged()
     {
         String newSemimajorAxis = semimajorAxis.getText();
         String newEccentricity = eccentricity.getText();
@@ -237,14 +283,20 @@ public class KeplerSatellitePropertyPage extends UiPropertyPage
         String newRaan = raan.getText();
         String newAnomaly = anomaly.getText();
         String newAnomalyType = anomalyType.getText();
+        String newDate = date.getText();
+        String newFrame = frame.getText();
+        String newAttractionCoefficient = attractionCoefficient.getText();
 
-        if (!newSemimajorAxis.equals(initialSemimajorAxis)   ||
+        if (!newSemimajorAxis.equals(initialSemimajorAxis) ||
             !newEccentricity.equals(initialEccentricity) ||
-            !newInclination.equals(initialInclination)   ||
+            !newInclination.equals(initialInclination) ||
             !newArgumentOfPerigee.equals(initialArgumentOfPerigee) ||
-            !newRaan.equals(initialRaan)   ||
+            !newRaan.equals(initialRaan) ||
             !newAnomaly.equals(initialAnomaly) ||
-            !newAnomalyType.equals(initialAnomalyType))
+            !newAnomalyType.equals(initialAnomalyType) ||
+            !newDate.equals(initialDate) ||
+            !newFrame.equals(initialFrame) ||
+            !newAttractionCoefficient.equals(initialAttractionCoefficient))
         {
             return true;
         }
@@ -255,28 +307,19 @@ public class KeplerSatellitePropertyPage extends UiPropertyPage
         }
     }
 
-    private InitialCustomCoordinate createNewCoordinate(KeplerSatellite element)
+    private KeplerianOrbit createKeplerianOrbit()
     {
-        InitialCustomCoordinate coordinate = element.getInitialCoordinate();
-        KeplerianOrbit orbit = coordinate.getInitialOrbit();
+        double a = getSemimajorAxis();
+        double e = getEccentricity();
+        double i = getInclination();
+        double pa = getArgumentOfPerigee();
+        double raan = getRaan();
+        double anomaly = getAnomaly();
+        PositionAngle type = getAnomalyType();
+        Frame frame = getFrame();
+        AbsoluteDate date = getDate();
+        double mu = getCentralAttractionCoefficient();
 
-        // angles are displayed in degree in the user interface
-        // convert them to radiant for internal use
-
-        double a = Double.parseDouble(semimajorAxis.getText()) * 1000.0; // convert to meters
-        double e = Double.parseDouble(eccentricity.getText());
-        double i = Math.toRadians(Double.parseDouble(inclination.getText()));
-        double pa = Math.toRadians(Double.parseDouble(argumentOfPerigee.getText()));
-        double raan_ = Math.toRadians(Double.parseDouble(raan.getText()));
-        double anomaly_ = Math.toRadians(Double.parseDouble(anomaly.getText()));
-        PositionAngle type = PositionAngle.valueOf(anomalyType.getText());
-        Frame frame = orbit.getFrame();
-        AbsoluteDate date = orbit.getDate();
-        double mu = orbit.getMu();
-
-        KeplerianOrbit initialOrbit =
-            new KeplerianOrbit(a, e, i, pa, raan_, anomaly_, type, frame, date, mu);
-
-        return new InitialCustomCoordinate(initialOrbit);
+        return new KeplerianOrbit(a, e, i, pa, raan, anomaly, type, frame, date, mu);
     }
 }

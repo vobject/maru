@@ -18,7 +18,7 @@ import org.orekit.frames.FramesFactory;
 import org.orekit.orbits.PositionAngle;
 import org.orekit.time.AbsoluteDate;
 
-public class KeplerSatelliteWizardPage extends ScenarioElementWizardNamingPage
+public class CustomSatelliteWizardPage extends ScenarioElementWizardNamingPage
 {
     private static final String PAGE_NAME = "New Satellite";
     private static final String PAGE_TITLE = "Satellite";
@@ -35,7 +35,7 @@ public class KeplerSatelliteWizardPage extends ScenarioElementWizardNamingPage
     private Text frameText;
     private Text attractionCoefficientText;
 
-    public KeplerSatelliteWizardPage(IScenarioProject project)
+    public CustomSatelliteWizardPage(IScenarioProject project)
     {
         super(PAGE_NAME, PAGE_TITLE, PAGE_DESCRIPTION, project);
     }

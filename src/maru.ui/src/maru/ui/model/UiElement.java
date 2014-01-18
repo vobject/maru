@@ -100,17 +100,31 @@ public abstract class UiElement implements IActionFilter
     @Override
     public boolean testAttribute(Object target, String name, String value)
     {
+        // this is usually invoked by a property page filter to test
+        // whether its property page should be displayed or not
+
         if (name.equals("instanceof.underlying"))
         {
-            // this is usually invoked by a property page filter to test
-            // whether its property page should be displayed or not
-
             try
             {
                 Class<?> classToCheckFor = Class.forName(value);
                 Class<?> underlyingClass = getUnderlyingElement().getClass();
 
                 return underlyingClass.isAssignableFrom(classToCheckFor);
+            }
+            catch (ClassNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        else if (name.equals("noinstanceof.underlying"))
+        {
+            try
+            {
+                Class<?> classToCheckFor = Class.forName(value);
+                Class<?> underlyingClass = getUnderlyingElement().getClass();
+
+                return !underlyingClass.isAssignableFrom(classToCheckFor);
             }
             catch (ClassNotFoundException e)
             {

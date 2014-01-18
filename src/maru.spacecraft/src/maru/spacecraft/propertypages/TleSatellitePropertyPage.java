@@ -1,7 +1,7 @@
 package maru.spacecraft.propertypages;
 
 import maru.core.model.IScenarioElement;
-import maru.spacecraft.tlesatellite.TleSatellite;
+import maru.spacecraft.tle.TLESatellite;
 import maru.ui.propertypages.UiPropertyPage;
 
 import org.eclipse.swt.SWT;
@@ -11,11 +11,11 @@ import org.eclipse.swt.widgets.Label;
 public class TleSatellitePropertyPage extends UiPropertyPage
 {
     @Override
-    public TleSatellite getScenarioElement()
+    public TLESatellite getScenarioElement()
     {
         IScenarioElement element = super.getScenarioElement();
-        if (element instanceof TleSatellite) {
-            return (TleSatellite) element;
+        if (element instanceof TLESatellite) {
+            return (TLESatellite) element;
         } else {
             return null;
         }

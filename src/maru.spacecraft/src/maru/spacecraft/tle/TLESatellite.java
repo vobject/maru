@@ -1,20 +1,20 @@
-package maru.spacecraft.tlesatellite;
+package maru.spacecraft.tle;
 
 import maru.core.model.ICoordinate;
 import maru.spacecraft.OrekitSpacecraft;
 
-public class TleSatellite extends OrekitSpacecraft
+public class TLESatellite extends OrekitSpacecraft
 {
     private static final long serialVersionUID = 1L;
 
     private final String category;
 
-    public TleSatellite(String name)
+    public TLESatellite(String name)
     {
         this(name, "Custom");
     }
 
-    public TleSatellite(String name, String category)
+    public TLESatellite(String name, String category)
     {
         super(name);
         this.category = category;
@@ -26,9 +26,9 @@ public class TleSatellite extends OrekitSpacecraft
     }
 
     @Override
-    public InitialTleCoordinate getInitialCoordinate()
+    public InitialTLECoordinate getInitialCoordinate()
     {
-        return (InitialTleCoordinate) super.getInitialCoordinate();
+        return (InitialTLECoordinate) super.getInitialCoordinate();
     }
 
     @Override

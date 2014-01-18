@@ -15,7 +15,10 @@ import org.orekit.errors.OrekitException;
  */
 public enum CentralBodyFactory
 {
-    Earth;
+    Earth,
+//    Moon,
+
+    ;
 
     public ICentralBody createCentralBody(String imageName)
     {
@@ -36,16 +39,33 @@ public enum CentralBodyFactory
                     res = MaruCentralBodyResources.fromName(imageName);
                 }
 
-                try
-                {
+                try {
                     return new Earth(res);
-                }
-                catch (OrekitException e)
-                {
+                } catch (OrekitException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
+                break;
             }
+
+//            case Moon:
+//            {
+//                // try to interpret the image name as an external resource first
+//                IMaruResource res = MapImagesEditor.fromName(imageName);
+//
+//                if (res == null) {
+//                    // try to get a bundle resource if it is no external resource
+//                    res = MaruCentralBodyResources.fromName(imageName);
+//                }
+//
+//                try {
+//                    return new Moon(res);
+//                } catch (OrekitException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                }
+//                break;
+//            }
         }
         return null;
     }
@@ -65,7 +85,14 @@ public enum CentralBodyFactory
                 images.add(MaruCentralBodyResources.MAP_EARTH_4.getName());
                 images.add(MaruCentralBodyResources.MAP_EARTH_5.getName());
                 images.add(MaruCentralBodyResources.MAP_EARTH_6.getName());
+                break;
             }
+
+//            case Moon:
+//            {
+//                images.add(MaruCentralBodyResources.MAP_MOON_1.getName());
+//                break;
+//            }
         }
 
         // FIXME: external map images are currently not assigned to a specific

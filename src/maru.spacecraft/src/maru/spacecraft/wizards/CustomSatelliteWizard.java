@@ -4,9 +4,9 @@ import maru.IMaruResource;
 import maru.core.model.CoreModel;
 import maru.core.model.IScenarioProject;
 import maru.spacecraft.MaruSpacecraftResources;
-import maru.spacecraft.ckesatellite.InitialKeplerCoordinate;
-import maru.spacecraft.ckesatellite.KeplerPropagator;
-import maru.spacecraft.ckesatellite.KeplerSatellite;
+import maru.spacecraft.custom.InitialCustomCoordinate;
+import maru.spacecraft.custom.KeplerPropagator;
+import maru.spacecraft.custom.KeplerSatellite;
 import maru.ui.wizards.ScenarioElementWizard;
 
 import org.eclipse.swt.graphics.RGB;
@@ -15,11 +15,11 @@ import org.orekit.orbits.KeplerianOrbit;
 import org.orekit.orbits.PositionAngle;
 import org.orekit.time.AbsoluteDate;
 
-public class KeplerSatelliteWizard extends ScenarioElementWizard
+public class CustomSatelliteWizard extends ScenarioElementWizard
 {
-    private KeplerSatelliteWizardPage mainPage;
+    private CustomSatelliteWizardPage mainPage;
 
-    public KeplerSatelliteWizard()
+    public CustomSatelliteWizard()
     {
         super("Satellite Wizard");
     }
@@ -28,7 +28,7 @@ public class KeplerSatelliteWizard extends ScenarioElementWizard
     public void addPages()
     {
         IScenarioProject project = getScenarioProjectFromSelection();
-        mainPage = new KeplerSatelliteWizardPage(project);
+        mainPage = new CustomSatelliteWizardPage(project);
         addPage(mainPage);
     }
 
@@ -45,7 +45,7 @@ public class KeplerSatelliteWizard extends ScenarioElementWizard
         if ((imageName != null) && !imageName.isEmpty()) {
             image = MaruSpacecraftResources.fromName(imageName);
         }
-        InitialKeplerCoordinate initialCoordinate = createInitialCoordinate(scenario);
+        InitialCustomCoordinate initialCoordinate = createInitialCoordinate(scenario);
         KeplerPropagator propagator = new KeplerPropagator();
 
         KeplerSatellite satellite = new KeplerSatellite(name);
@@ -60,7 +60,7 @@ public class KeplerSatelliteWizard extends ScenarioElementWizard
         return true;
     }
 
-    private InitialKeplerCoordinate createInitialCoordinate(IScenarioProject project)
+    private InitialCustomCoordinate createInitialCoordinate(IScenarioProject project)
     {
         double a = mainPage.getSemimajorAxis();
         double e = mainPage.getEccentricity();
@@ -76,6 +76,6 @@ public class KeplerSatelliteWizard extends ScenarioElementWizard
         KeplerianOrbit initialOrbit =
             new KeplerianOrbit(a, e, i, pa, raan, anomaly, type, frame, date, mu);
 
-        return new InitialKeplerCoordinate(initialOrbit);
+        return new InitialCustomCoordinate(initialOrbit);
     }
 }

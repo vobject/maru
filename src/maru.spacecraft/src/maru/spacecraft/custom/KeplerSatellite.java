@@ -1,4 +1,4 @@
-package maru.spacecraft.ckesatellite;
+package maru.spacecraft.custom;
 
 import maru.core.model.ICoordinate;
 import maru.spacecraft.OrekitSpacecraft;
@@ -16,9 +16,9 @@ public class KeplerSatellite extends OrekitSpacecraft
     }
 
     @Override
-    public InitialKeplerCoordinate getInitialCoordinate()
+    public InitialCustomCoordinate getInitialCoordinate()
     {
-        return (InitialKeplerCoordinate) super.getInitialCoordinate();
+        return (InitialCustomCoordinate) super.getInitialCoordinate();
     }
 
     @Override
@@ -33,7 +33,7 @@ public class KeplerSatellite extends OrekitSpacecraft
     @Override
     public void centralbodyChanged()
     {
-        InitialKeplerCoordinate formerCoordinate = getInitialCoordinate();
+        InitialCustomCoordinate formerCoordinate = getInitialCoordinate();
         KeplerianOrbit formerOrbit = formerCoordinate.getInitialOrbit();
 
         KeplerianOrbit newInitialOrbit = new KeplerianOrbit(
@@ -49,6 +49,6 @@ public class KeplerSatellite extends OrekitSpacecraft
                 getCentralBody().getGM()
         );
 
-        setInitialCoordinate(new InitialKeplerCoordinate(newInitialOrbit));
+        setInitialCoordinate(new InitialCustomCoordinate(newInitialOrbit));
     }
 }

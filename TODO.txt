@@ -12,3 +12,5 @@ Low-level coding notes:
 - create scenario project specific settings. then, move Image/Color/Texture out of the coremodel and into the new ui-settings-model.
 - fix JOGL redraw issue for Linux/Mac
 - add more Orbit types (OrbitWizard?) from Orekit
+- image-combobox
+- allow keplerian satellites to change its Date

@@ -4,9 +4,9 @@ import maru.IMaruResource;
 import maru.core.model.CoreModel;
 import maru.core.model.IScenarioProject;
 import maru.spacecraft.MaruSpacecraftResources;
-import maru.spacecraft.tlesatellite.InitialTleCoordinate;
-import maru.spacecraft.tlesatellite.SGP4Propagator;
-import maru.spacecraft.tlesatellite.TleSatellite;
+import maru.spacecraft.tle.InitialTLECoordinate;
+import maru.spacecraft.tle.SGP4Propagator;
+import maru.spacecraft.tle.TLESatellite;
 import maru.ui.wizards.ScenarioElementWizard;
 
 import org.eclipse.swt.graphics.RGB;
@@ -38,7 +38,7 @@ public class TleSatelliteWizard extends ScenarioElementWizard
     {
         IScenarioProject scenario = getScenarioProjectFromSelection();
 
-        InitialTleCoordinate initialCoordinate;
+        InitialTLECoordinate initialCoordinate;
         try {
             initialCoordinate = createInitialPosition();
         }
@@ -56,7 +56,7 @@ public class TleSatelliteWizard extends ScenarioElementWizard
         }
         SGP4Propagator propagator = new SGP4Propagator();
 
-        TleSatellite satellite = new TleSatellite(initialCoordinate.getName());
+        TLESatellite satellite = new TLESatellite(initialCoordinate.getName());
         satellite.setElementComment(comment);
         satellite.setElementColor(color);
         satellite.setElementImage(image);
@@ -68,10 +68,10 @@ public class TleSatelliteWizard extends ScenarioElementWizard
         return true;
     }
 
-    private InitialTleCoordinate createInitialPosition() throws OrekitException
+    private InitialTLECoordinate createInitialPosition() throws OrekitException
     {
         String name = mainPage.getLine0().trim();
         TLE tle = new TLE(mainPage.getLine1(), mainPage.getLine2());
-        return new InitialTleCoordinate(name, tle);
+        return new InitialTLECoordinate(name, tle);
     }
 }

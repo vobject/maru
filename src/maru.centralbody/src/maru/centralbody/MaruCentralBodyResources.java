@@ -12,6 +12,8 @@ public enum MaruCentralBodyResources implements IMaruPluginResource
     MAP_EARTH_5("images/world.topo.bathy.200407_2048.jpg", "Blue Marple 2004 (July, topography, bathymetry)", "http://visibleearth.nasa.gov/view.php?id=73751", ""),
     MAP_EARTH_6("images/gebco_bathy_2048.jpg", "Blue Marple 2005 (July, raw bathymetry)", "http://visibleearth.nasa.gov/view.php?id=73963", ""),
 
+//    MAP_MOON_1("images/moonmap2k.jpg", "James Hastings-Trew's Moon", "http://planetpixelemporium.com/earth.html", ""),
+
     ; // enum constants end
 
     private MaruPluginResource resourceImpl;

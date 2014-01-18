@@ -1,4 +1,4 @@
-package maru.spacecraft.tlesatellite;
+package maru.spacecraft.tle;
 
 import maru.spacecraft.OrekitCoordinate;
 
@@ -8,14 +8,14 @@ import org.orekit.propagation.analytical.tle.TLE;
 import org.orekit.propagation.analytical.tle.TLEPropagator;
 import org.orekit.utils.PVCoordinates;
 
-public class InitialTleCoordinate extends OrekitCoordinate
+public class InitialTLECoordinate extends OrekitCoordinate
 {
     private static final long serialVersionUID = 1L;
 
     private final String name;
     private final TLE tle;
 
-    public InitialTleCoordinate(String name, TLE tle) throws OrekitException
+    public InitialTLECoordinate(String name, TLE tle) throws OrekitException
     {
         super(coordinatesFromTle(tle), tle.getDate(), FramesFactory.getTEME());
 

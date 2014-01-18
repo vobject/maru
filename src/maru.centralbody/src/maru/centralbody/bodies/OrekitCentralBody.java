@@ -92,4 +92,14 @@ public abstract class OrekitCentralBody extends AbstractCentralBody
 
         return Math.sqrt(coodinateAltitudeAboveGround * (radius2 + coodinateAltitudeAboveGround));
     }
+
+    protected CelestialBody getBody()
+    {
+        return body;
+    }
+
+    protected OneAxisEllipsoid getEllipsoid()
+    {
+        return ellipsoid;
+    }
 }

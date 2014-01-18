@@ -5,6 +5,8 @@ import maru.ui.wizards.ICentralBodyWizardPage;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -56,6 +58,14 @@ public class NewCentralBodyWizardPage extends WizardPage implements ICentralBody
         centralBody.setItems(getAvailableBodies());
         centralBody.select(0);
         centralBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        centralBody.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                images.setItems(getMapImages());
+                images.select(0);
+            }
+        });
 
         new Label(container, SWT.NONE).setText("Map image:");
         images = new Combo(container, SWT.READ_ONLY);
@@ -101,7 +111,8 @@ public class NewCentralBodyWizardPage extends WizardPage implements ICentralBody
     private String[] getAvailableBodies()
     {
         return new String[] {
-            CentralBodyFactory.Earth.toString()
+            CentralBodyFactory.Earth.toString(),
+//            CentralBodyFactory.Moon.toString(),
         };
     }
 
