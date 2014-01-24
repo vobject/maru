@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Maru Central Body
 Bundle-SymbolicName: maru.centralbody;singleton:=true
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: maru.centralbody.MaruCentralBodyPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  maru,
  maru.core,
  maru.ui,
- org.apache.commons.math3;bundle-version="3.2.0",
+ org.apache.commons.math3,
  org.orekit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
