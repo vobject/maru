@@ -1,5 +1,6 @@
 package maru.spacecraft.controls;
 
+import maru.core.model.IScenarioProject;
 import maru.core.utils.TimeUtils;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
@@ -43,19 +44,26 @@ public class CartesianOrbitControls extends OrbitControls
     private String initialFrame;
     private String initialAttractionCoefficient;
 
-    public CartesianOrbitControls(Composite parent)
+    public CartesianOrbitControls(Composite parent, IScenarioProject scenario)
     {
-        super(parent);
+        super(parent, scenario);
 
-        initDefaults();
-        initControls();
+        initDefaults(scenario);
+        initControls(scenario);
     }
 
-    public CartesianOrbitControls(Composite parent, Orbit orbit)
+    public CartesianOrbitControls(Composite parent, IScenarioProject scenario, Orbit orbit)
     {
-        super(parent, orbit);
+        super(parent, scenario, orbit);
 
-        refreshDefaults(orbit);
+        if (orbit != null) {
+            CartesianOrbit cartesian = (CartesianOrbit) OrbitType.CARTESIAN.convertType(orbit);
+            initDefaults(scenario, cartesian);
+            initControls(scenario, cartesian);
+        } else {
+            initDefaults(scenario);
+            initControls(scenario);
+        }
     }
 
     @Override
@@ -98,19 +106,11 @@ public class CartesianOrbitControls extends OrbitControls
     }
 
     @Override
-    public void refreshDefaults(Orbit orbit)
+    public void refreshDefaults(IScenarioProject scenario, Orbit orbit)
     {
-        if (orbit != null)
-        {
-            CartesianOrbit cartesian = (CartesianOrbit) OrbitType.CARTESIAN.convertType(orbit);
-            initDefaults(cartesian);
-            initControls(cartesian);
-        }
-        else
-        {
-            initDefaults();
-            initControls();
-        }
+        CartesianOrbit cartesian = (CartesianOrbit) OrbitType.CARTESIAN.convertType(orbit);
+        initDefaults(scenario, cartesian);
+        initControls(scenario, cartesian);
     }
 
     public double getPositionX()
@@ -173,7 +173,7 @@ public class CartesianOrbitControls extends OrbitControls
     }
 
     @Override
-    protected void createControls()
+    protected void createControls(IScenarioProject scenario)
     {
         Composite container = getContainer();
 
@@ -216,7 +216,7 @@ public class CartesianOrbitControls extends OrbitControls
         attractionCoefficient.setEnabled(false);
     }
 
-    private void initDefaults()
+    private void initDefaults(IScenarioProject scenario)
     {
         initialPosX = "0";
         initialPosY = "0";
@@ -224,12 +224,12 @@ public class CartesianOrbitControls extends OrbitControls
         initialVelX = "0";
         initialVelY = "0";
         initialVelZ = "0";
-        initialDate = TimeUtils.asISO8601(TimeUtils.now());
+        initialDate = TimeUtils.asISO8601(scenario.getStartTime());
         initialFrame = FramesFactory.getEME2000().toString();
-        initialAttractionCoefficient = "0";
+        initialAttractionCoefficient = Double.toString(scenario.getCentralBody().getGM());
     }
 
-    private void initDefaults(CartesianOrbit orbit)
+    private void initDefaults(IScenarioProject scenario, CartesianOrbit orbit)
     {
         Vector3D pos = orbit.getPVCoordinates().getPosition();
         Vector3D vel = orbit.getPVCoordinates().getVelocity();
@@ -246,7 +246,7 @@ public class CartesianOrbitControls extends OrbitControls
         initialAttractionCoefficient = Double.toString(orbit.getMu());
     }
 
-    private void initControls()
+    private void initControls(IScenarioProject scenario)
     {
         setDescription(ORBIT_TYPE_DESCRIPTION);
 
@@ -261,9 +261,9 @@ public class CartesianOrbitControls extends OrbitControls
         attractionCoefficient.setText(initialAttractionCoefficient);
     }
 
-    private void initControls(final CartesianOrbit orbit)
+    private void initControls(IScenarioProject scenario, final CartesianOrbit orbit)
     {
-        initControls();
+        initControls(scenario);
     }
 
     private boolean hasOrbitChanged()

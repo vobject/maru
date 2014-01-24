@@ -1,5 +1,6 @@
 package maru.spacecraft.controls;
 
+import maru.core.model.IScenarioProject;
 import maru.core.utils.TimeUtils;
 
 import org.eclipse.swt.SWT;
@@ -47,19 +48,26 @@ public class CircularOrbitControls extends OrbitControls
     private String initialFrame;
     private String initialAttractionCoefficient;
 
-    public CircularOrbitControls(Composite parent)
+    public CircularOrbitControls(Composite parent, IScenarioProject scenario)
     {
-        super(parent);
+        super(parent, scenario);
 
-        initDefaults();
-        initControls();
+        initDefaults(scenario);
+        initControls(scenario);
     }
 
-    public CircularOrbitControls(Composite parent, Orbit orbit)
+    public CircularOrbitControls(Composite parent, IScenarioProject scenario, Orbit orbit)
     {
-        super(parent, orbit);
+        super(parent, scenario, orbit);
 
-        refreshDefaults(orbit);
+        if (orbit != null) {
+            CircularOrbit circular = (CircularOrbit) OrbitType.CIRCULAR.convertType(orbit);
+            initDefaults(scenario, circular);
+            initControls(scenario, circular);
+        } else {
+            initDefaults(scenario);
+            initControls(scenario);
+        }
     }
 
     @Override
@@ -102,19 +110,11 @@ public class CircularOrbitControls extends OrbitControls
     }
 
     @Override
-    public void refreshDefaults(Orbit orbit)
+    public void refreshDefaults(IScenarioProject scenario, Orbit orbit)
     {
-        if (orbit != null)
-        {
-            CircularOrbit circular = (CircularOrbit) OrbitType.CIRCULAR.convertType(orbit);
-            initDefaults(circular);
-            initControls(circular);
-        }
-        else
-        {
-            initDefaults();
-            initControls();
-        }
+        CircularOrbit circular = (CircularOrbit) OrbitType.CIRCULAR.convertType(orbit);
+        initDefaults(scenario, circular);
+        initControls(scenario, circular);
     }
 
     public double getSemimajorAxis()
@@ -177,7 +177,7 @@ public class CircularOrbitControls extends OrbitControls
     }
 
     @Override
-    protected void createControls()
+    protected void createControls(IScenarioProject scenario)
     {
         Composite container = getContainer();
 
@@ -227,21 +227,21 @@ public class CircularOrbitControls extends OrbitControls
         attractionCoefficient.setEnabled(false);
     }
 
-    private void initDefaults()
+    private void initDefaults(IScenarioProject scenario)
     {
-        initialSemimajorAxis = "0";
+        initialSemimajorAxis = "6678.14";
         initialCircularEccentricityX = "0";
         initialCircularEccentricityY = "0";
-        initialInclination = "0";
+        initialInclination = "28.5";
         initialRaan = "0";
         initialAlpha = "0";
         initialAlphaType = PositionAngle.TRUE.toString();
-        initialDate = TimeUtils.asISO8601(TimeUtils.now());
+        initialDate = TimeUtils.asISO8601(scenario.getStartTime());
         initialFrame = FramesFactory.getEME2000().toString();
-        initialAttractionCoefficient = "0";
+        initialAttractionCoefficient = Double.toString(scenario.getCentralBody().getGM());
     }
 
-    private void initDefaults(CircularOrbit orbit)
+    private void initDefaults(IScenarioProject scenario, CircularOrbit orbit)
     {
         initialSemimajorAxis = Double.toString(orbit.getA() / 1000.0); // convert to km
         initialCircularEccentricityX = Double.toString(orbit.getCircularEx());
@@ -255,7 +255,7 @@ public class CircularOrbitControls extends OrbitControls
         initialAttractionCoefficient = Double.toString(orbit.getMu());
     }
 
-    private void initControls()
+    private void initControls(IScenarioProject scenario)
     {
         setDescription(ORBIT_TYPE_DESCRIPTION);
 
@@ -271,7 +271,7 @@ public class CircularOrbitControls extends OrbitControls
         attractionCoefficient.setText(initialAttractionCoefficient);
     }
 
-    private void initControls(final CircularOrbit orbit)
+    private void initControls(IScenarioProject scenario, final CircularOrbit orbit)
     {
         setDescription(ORBIT_TYPE_DESCRIPTION);
 

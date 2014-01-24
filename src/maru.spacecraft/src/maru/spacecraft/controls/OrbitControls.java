@@ -1,5 +1,7 @@
 package maru.spacecraft.controls;
 
+import maru.core.model.IScenarioProject;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -13,15 +15,15 @@ public abstract class OrbitControls
     private Label description;
     private String errorMsg = "";
 
-    public OrbitControls(Composite parent)
+    public OrbitControls(Composite parent, IScenarioProject scenario)
     {
         createContainer(parent);
-        createControls();
+        createControls(scenario);
     }
 
-    public OrbitControls(Composite parent, Orbit orbit)
+    public OrbitControls(Composite parent, IScenarioProject scenario, Orbit orbit)
     {
-        this(parent);
+        this(parent, scenario);
     }
 
     public Composite getContainer()
@@ -65,9 +67,9 @@ public abstract class OrbitControls
     public abstract Orbit getOrbit();
     public abstract boolean isValid();
     public abstract boolean isModified();
-    public abstract void refreshDefaults(Orbit orbit);
+    public abstract void refreshDefaults(IScenarioProject scenario, Orbit orbit);
 
-    protected abstract void createControls();
+    protected abstract void createControls(IScenarioProject scenario);
 
     private void createContainer(Composite parent)
     {

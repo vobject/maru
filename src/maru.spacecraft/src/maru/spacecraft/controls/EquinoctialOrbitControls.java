@@ -1,5 +1,6 @@
 package maru.spacecraft.controls;
 
+import maru.core.model.IScenarioProject;
 import maru.core.utils.TimeUtils;
 
 import org.eclipse.swt.SWT;
@@ -47,19 +48,26 @@ public class EquinoctialOrbitControls extends OrbitControls
     private String initialFrame;
     private String initialAttractionCoefficient;
 
-    public EquinoctialOrbitControls(Composite parent)
+    public EquinoctialOrbitControls(Composite parent, IScenarioProject scenario)
     {
-        super(parent);
+        super(parent, scenario);
 
-        initDefaults();
-        initControls();
+        initDefaults(scenario);
+        initControls(scenario);
     }
 
-    public EquinoctialOrbitControls(Composite parent, Orbit orbit)
+    public EquinoctialOrbitControls(Composite parent, IScenarioProject scenario, Orbit orbit)
     {
-        super(parent, orbit);
+        super(parent, scenario, orbit);
 
-        refreshDefaults(orbit);
+        if (orbit != null) {
+            EquinoctialOrbit equinoctial = (EquinoctialOrbit) OrbitType.EQUINOCTIAL.convertType(orbit);
+            initDefaults(scenario, equinoctial);
+            initControls(scenario, equinoctial);
+        } else {
+            initDefaults(scenario);
+            initControls(scenario);
+        }
     }
 
     @Override
@@ -102,19 +110,11 @@ public class EquinoctialOrbitControls extends OrbitControls
     }
 
     @Override
-    public void refreshDefaults(Orbit orbit)
+    public void refreshDefaults(IScenarioProject scenario, Orbit orbit)
     {
-        if (orbit != null)
-        {
-            EquinoctialOrbit equinoctial = (EquinoctialOrbit) OrbitType.EQUINOCTIAL.convertType(orbit);
-            initDefaults(equinoctial);
-            initControls(equinoctial);
-        }
-        else
-        {
-            initDefaults();
-            initControls();
-        }
+        EquinoctialOrbit equinoctial = (EquinoctialOrbit) OrbitType.EQUINOCTIAL.convertType(orbit);
+        initDefaults(scenario, equinoctial);
+        initControls(scenario, equinoctial);
     }
 
     public double getSemimajorAxis()
@@ -177,7 +177,7 @@ public class EquinoctialOrbitControls extends OrbitControls
     }
 
     @Override
-    protected void createControls()
+    protected void createControls(IScenarioProject scenario)
     {
         Composite container = getContainer();
 
@@ -227,21 +227,21 @@ public class EquinoctialOrbitControls extends OrbitControls
         attractionCoefficient.setEnabled(false);
     }
 
-    private void initDefaults()
+    private void initDefaults(IScenarioProject scenario)
     {
-        initialSemimajorAxis = "0";
+        initialSemimajorAxis = "6678.14";
         initialEquinoctialEccentricityX = "0";
         initialEquinoctialEccentricityY = "0";
         initialInclinationX = "0";
         initialInclinationY = "0";
         initialLongitude = "0";
         initialLongitudeType = PositionAngle.TRUE.toString();
-        initialDate = TimeUtils.asISO8601(TimeUtils.now());
+        initialDate = TimeUtils.asISO8601(scenario.getStartTime());
         initialFrame = FramesFactory.getEME2000().toString();
-        initialAttractionCoefficient = "0";
+        initialAttractionCoefficient = Double.toString(scenario.getCentralBody().getGM());
     }
 
-    private void initDefaults(EquinoctialOrbit orbit)
+    private void initDefaults(IScenarioProject scenario, EquinoctialOrbit orbit)
     {
         initialSemimajorAxis = Double.toString(orbit.getA() / 1000.0); // convert to km
         initialEquinoctialEccentricityX = Double.toString(orbit.getEquinoctialEx());
@@ -255,7 +255,7 @@ public class EquinoctialOrbitControls extends OrbitControls
         initialAttractionCoefficient = Double.toString(orbit.getMu());
     }
 
-    private void initControls()
+    private void initControls(IScenarioProject scenario)
     {
         setDescription(ORBIT_TYPE_DESCRIPTION);
 
@@ -271,7 +271,7 @@ public class EquinoctialOrbitControls extends OrbitControls
         attractionCoefficient.setText(initialAttractionCoefficient);
     }
 
-    private void initControls(final EquinoctialOrbit orbit)
+    private void initControls(IScenarioProject scenario, final EquinoctialOrbit orbit)
     {
         setDescription(ORBIT_TYPE_DESCRIPTION);
 

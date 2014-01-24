@@ -4,16 +4,13 @@ import maru.IMaruResource;
 import maru.core.model.CoreModel;
 import maru.core.model.IScenarioProject;
 import maru.spacecraft.MaruSpacecraftResources;
+import maru.spacecraft.custom.CustomSatellite;
 import maru.spacecraft.custom.InitialCustomCoordinate;
 import maru.spacecraft.custom.KeplerPropagator;
-import maru.spacecraft.custom.CustomSatellite;
 import maru.ui.wizards.ScenarioElementWizard;
 
 import org.eclipse.swt.graphics.RGB;
-import org.orekit.frames.Frame;
-import org.orekit.orbits.KeplerianOrbit;
-import org.orekit.orbits.PositionAngle;
-import org.orekit.time.AbsoluteDate;
+import org.orekit.orbits.Orbit;
 
 public class CustomSatelliteWizard extends ScenarioElementWizard
 {
@@ -45,7 +42,8 @@ public class CustomSatelliteWizard extends ScenarioElementWizard
         if ((imageName != null) && !imageName.isEmpty()) {
             image = MaruSpacecraftResources.fromName(imageName);
         }
-        InitialCustomCoordinate initialCoordinate = createInitialCoordinate(scenario);
+        Orbit orbit = mainPage.getOrbit();
+        InitialCustomCoordinate initialCoordinate = new InitialCustomCoordinate(orbit);
         KeplerPropagator propagator = new KeplerPropagator();
 
         CustomSatellite satellite = new CustomSatellite(name);
@@ -58,24 +56,5 @@ public class CustomSatelliteWizard extends ScenarioElementWizard
         CoreModel coreModel = CoreModel.getDefault();
         coreModel.addSpacecraft(scenario, satellite, true);
         return true;
-    }
-
-    private InitialCustomCoordinate createInitialCoordinate(IScenarioProject project)
-    {
-        double a = mainPage.getSemimajorAxis();
-        double e = mainPage.getEccentricity();
-        double i = mainPage.getInclination();
-        double pa = mainPage.getArgumentOfPerigee();
-        double raan = mainPage.getRaan();
-        double anomaly = mainPage.getAnomaly();
-        PositionAngle type = mainPage.getAnomalyType();
-        Frame frame = mainPage.getFrame();
-        AbsoluteDate date = mainPage.getDate();
-        double mu = mainPage.getCentralAttractionCoefficient();
-
-        KeplerianOrbit initialOrbit =
-            new KeplerianOrbit(a, e, i, pa, raan, anomaly, type, frame, date, mu);
-
-        return new InitialCustomCoordinate(initialOrbit);
     }
 }

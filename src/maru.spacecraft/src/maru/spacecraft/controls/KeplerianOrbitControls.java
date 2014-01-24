@@ -1,5 +1,6 @@
 package maru.spacecraft.controls;
 
+import maru.core.model.IScenarioProject;
 import maru.core.utils.TimeUtils;
 
 import org.eclipse.swt.SWT;
@@ -47,19 +48,26 @@ public class KeplerianOrbitControls extends OrbitControls
     private String initialFrame;
     private String initialAttractionCoefficient;
 
-    public KeplerianOrbitControls(Composite parent)
+    public KeplerianOrbitControls(Composite parent, IScenarioProject scenario)
     {
-        super(parent);
+        super(parent, scenario);
 
-        initDefaults();
-        initControls();
+        initDefaults(scenario);
+        initControls(scenario);
     }
 
-    public KeplerianOrbitControls(Composite parent, Orbit orbit)
+    public KeplerianOrbitControls(Composite parent, IScenarioProject scenario, Orbit orbit)
     {
-        super(parent, orbit);
+        super(parent, scenario, orbit);
 
-        refreshDefaults(orbit);
+        if (orbit != null) {
+            KeplerianOrbit keplerian = (KeplerianOrbit) OrbitType.KEPLERIAN.convertType(orbit);
+            initDefaults(scenario, keplerian);
+            initControls(scenario, keplerian);
+        } else {
+            initDefaults(scenario);
+            initControls(scenario);
+        }
     }
 
     @Override
@@ -102,19 +110,11 @@ public class KeplerianOrbitControls extends OrbitControls
     }
 
     @Override
-    public void refreshDefaults(Orbit orbit)
+    public void refreshDefaults(IScenarioProject scenario, Orbit orbit)
     {
-        if (orbit != null)
-        {
-            KeplerianOrbit keplerian = (KeplerianOrbit) OrbitType.KEPLERIAN.convertType(orbit);
-            initDefaults(keplerian);
-            initControls(keplerian);
-        }
-        else
-        {
-            initDefaults();
-            initControls();
-        }
+        KeplerianOrbit keplerian = (KeplerianOrbit) OrbitType.KEPLERIAN.convertType(orbit);
+        initDefaults(scenario, keplerian);
+        initControls(scenario, keplerian);
     }
 
     public double getSemimajorAxis()
@@ -177,7 +177,7 @@ public class KeplerianOrbitControls extends OrbitControls
     }
 
     @Override
-    protected void createControls()
+    protected void createControls(IScenarioProject scenario)
     {
         Composite container = getContainer();
 
@@ -227,21 +227,21 @@ public class KeplerianOrbitControls extends OrbitControls
         attractionCoefficient.setEnabled(false);
     }
 
-    private void initDefaults()
+    private void initDefaults(IScenarioProject scenario)
     {
-        initialSemimajorAxis = "0";
+        initialSemimajorAxis = "6678.14";
         initialEccentricity = "0";
-        initialInclination = "0";
+        initialInclination = "28.5";
         initialArgumentOfPerigee = "0";
         initialRaan = "0";
         initialAnomaly = "0";
         initialAnomalyType = PositionAngle.TRUE.toString();
-        initialDate = TimeUtils.asISO8601(TimeUtils.now());
+        initialDate = TimeUtils.asISO8601(scenario.getStartTime());
         initialFrame = FramesFactory.getEME2000().toString();
-        initialAttractionCoefficient = "0";
+        initialAttractionCoefficient = Double.toString(scenario.getCentralBody().getGM());
     }
 
-    private void initDefaults(KeplerianOrbit orbit)
+    private void initDefaults(IScenarioProject scenario, KeplerianOrbit orbit)
     {
         initialSemimajorAxis = Double.toString(orbit.getA() / 1000.0); // convert to km
         initialEccentricity = Double.toString(orbit.getE());
@@ -255,7 +255,7 @@ public class KeplerianOrbitControls extends OrbitControls
         initialAttractionCoefficient = Double.toString(orbit.getMu());
     }
 
-    private void initControls()
+    private void initControls(IScenarioProject scenario)
     {
         setDescription(ORBIT_TYPE_DESCRIPTION);
 
@@ -271,7 +271,7 @@ public class KeplerianOrbitControls extends OrbitControls
         attractionCoefficient.setText(initialAttractionCoefficient);
     }
 
-    private void initControls(final KeplerianOrbit orbit)
+    private void initControls(IScenarioProject scenario, final KeplerianOrbit orbit)
     {
         setDescription(ORBIT_TYPE_DESCRIPTION);
 

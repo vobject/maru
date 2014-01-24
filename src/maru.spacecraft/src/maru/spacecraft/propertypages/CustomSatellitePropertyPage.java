@@ -3,6 +3,7 @@ package maru.spacecraft.propertypages;
 import maru.MaruRuntimeException;
 import maru.core.model.CoreModel;
 import maru.core.model.IScenarioElement;
+import maru.core.model.IScenarioProject;
 import maru.spacecraft.controls.CartesianOrbitControls;
 import maru.spacecraft.controls.CircularOrbitControls;
 import maru.spacecraft.controls.EquinoctialOrbitControls;
@@ -25,8 +26,7 @@ import org.orekit.orbits.OrbitType;
 
 public class CustomSatellitePropertyPage extends UiPropertyPage
 {
-    private Composite container;
-
+    private Composite orbitControlContainer;
     private Combo orbitType;
     private OrbitControls orbitControls;
 
@@ -62,10 +62,11 @@ public class CustomSatellitePropertyPage extends UiPropertyPage
             Orbit newOrbit = orbitControls.getOrbit();
 
             CustomSatellite element = getScenarioElement();
+            IScenarioProject scenario = element.getScenarioProject();
             InitialCustomCoordinate newCoordinate = new InitialCustomCoordinate(newOrbit);
             CoreModel.getDefault().changeInitialCoordinate(element, newCoordinate, true);
 
-            orbitControls.refreshDefaults(newOrbit);
+            orbitControls.refreshDefaults(scenario, newOrbit);
         }
 
         initDefaults();
@@ -82,17 +83,18 @@ public class CustomSatellitePropertyPage extends UiPropertyPage
             new Label(parent, SWT.NONE).setText("The selected element is no CustomSatellite.");
             return null;
         }
+        IScenarioProject scenario = element.getScenarioProject();
         InitialCustomCoordinate coordinate = element.getInitialCoordinate();
         Orbit orbit = coordinate.getOrbit();
         OrbitType type = coordinate.getOrbitType();
 
-        container = createControls(parent);
+        orbitControlContainer = createControls(parent);
         initDefaults();
         initControls();
 
-        orbitControls = createOrbitControls(container, type, orbit);
+        orbitControls = createOrbitControls(orbitControlContainer, scenario, type, orbit);
 
-        return container;
+        return orbitControlContainer;
     }
 
     private Composite createControls(Composite parent)
@@ -106,7 +108,7 @@ public class CustomSatellitePropertyPage extends UiPropertyPage
         data.grabExcessVerticalSpace = true;
         data.horizontalSpan = 2;
 
-        container = new Composite(parent, SWT.NONE);
+        Composite container = new Composite(parent, SWT.NONE);
         container.setLayout(layout);
         container.setLayoutData(data);
 
@@ -146,28 +148,29 @@ public class CustomSatellitePropertyPage extends UiPropertyPage
                 InitialCustomCoordinate coordinate = element.getInitialCoordinate();
 
                 orbitControls.dispose();
-                orbitControls = createOrbitControls(container,
+                orbitControls = createOrbitControls(orbitControlContainer,
+                                                    element.getScenarioProject(),
                                                     getSelectedOrbitType(),
                                                     coordinate.getOrbit());
-                //container.pack(true);
-                //container.getParent().redraw();
-                container.getParent().layout(true, true);
+                orbitControlContainer.getParent().getParent().layout(true, true);
+                orbitControlContainer.getParent().layout(true, true);
+                orbitControlContainer.layout(true, true);
             }
         });
     }
 
-    private OrbitControls createOrbitControls(Composite container, OrbitType type, Orbit orbit)
+    private OrbitControls createOrbitControls(Composite container, IScenarioProject scenario, OrbitType type, Orbit orbit)
     {
         switch (type)
         {
             case CARTESIAN:
-                return new CartesianOrbitControls(container, orbit);
+                return new CartesianOrbitControls(container, scenario, orbit);
             case CIRCULAR:
-                return new CircularOrbitControls(container, orbit);
+                return new CircularOrbitControls(container, scenario, orbit);
             case EQUINOCTIAL:
-                return new EquinoctialOrbitControls(container, orbit);
+                return new EquinoctialOrbitControls(container, scenario, orbit);
             case KEPLERIAN:
-                return new KeplerianOrbitControls(container, orbit);
+                return new KeplerianOrbitControls(container, scenario, orbit);
         }
 
         throw new MaruRuntimeException("Invalid orbit type.");
