@@ -218,12 +218,12 @@ public class CartesianOrbitControls extends OrbitControls
 
     private void initDefaults(IScenarioProject scenario)
     {
-        initialPosX = "0";
+        initialPosX = "6678.14";
         initialPosY = "0";
         initialPosZ = "0";
         initialVelX = "0";
-        initialVelY = "0";
-        initialVelZ = "0";
+        initialVelY = "6.789529";
+        initialVelZ = "3.686413";
         initialDate = TimeUtils.asISO8601(scenario.getStartTime());
         initialFrame = FramesFactory.getEME2000().toString();
         initialAttractionCoefficient = Double.toString(scenario.getCentralBody().getGM());

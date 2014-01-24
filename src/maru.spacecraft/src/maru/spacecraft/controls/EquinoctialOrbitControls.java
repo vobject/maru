@@ -232,7 +232,7 @@ public class EquinoctialOrbitControls extends OrbitControls
         initialSemimajorAxis = "6678.14";
         initialEquinoctialEccentricityX = "0";
         initialEquinoctialEccentricityY = "0";
-        initialInclinationX = "0";
+        initialInclinationX = "0.254";
         initialInclinationY = "0";
         initialLongitude = "0";
         initialLongitudeType = PositionAngle.TRUE.toString();

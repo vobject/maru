@@ -11,9 +11,7 @@ Low-level coding notes:
 - add notifyXZYchanged() functions to CoreModel to indicate changes to a property of a scenario element that could not be expressed through standard CoreModel interfaces (e.g. implementation details were changed by the owning plugin) but CoreModelListeners should be notified nevertheless.
 - create scenario project specific settings. then, move Image/Color/Texture out of the coremodel and into the new ui-settings-model.
 - fix JOGL redraw issue for Linux/Mac
-- add more Orbit types (OrbitWizard?) from Orekit
 - image-combobox
-- allow keplerian satellites to change its Date
 - Date-Selction Control: a SWT Text control with a popup dialog that enables the user to select a date (via calender) and time
 - make true anomaly the default anomaly type of the enire application -> sensible? currently it's mean anomaly. -> true anomaly is less computation, but it seems orekit-internal classes prefer MEAN anomaly type.
 - should ICoordinate have a reference to a centralbody?
