@@ -91,9 +91,9 @@ public class CustomSatelliteWizardPage extends ScenarioElementWizardNamingPage
 
         new Label(container, SWT.NONE).setText("Anomaly type:");
         anomalyTypeCombo = new Combo(container, SWT.BORDER | SWT.READ_ONLY);
-        anomalyTypeCombo.setItems(new String[] { PositionAngle.MEAN.toString(),
-                                     PositionAngle.TRUE.toString(),
-                                     PositionAngle.ECCENTRIC.toString() });
+        anomalyTypeCombo.setItems(new String[] { PositionAngle.TRUE.toString(),
+                                                 PositionAngle.ECCENTRIC.toString(),
+                                                 PositionAngle.MEAN.toString() });
         anomalyTypeCombo.addKeyListener(inputValidation);
         anomalyTypeCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         anomalyTypeCombo.select(0);

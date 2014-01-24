@@ -15,7 +15,7 @@ import maru.groundstation.earth.Groundstation;
 import maru.spacecraft.MaruSpacecraftResources;
 import maru.spacecraft.custom.InitialCustomCoordinate;
 import maru.spacecraft.custom.KeplerPropagator;
-import maru.spacecraft.custom.KeplerSatellite;
+import maru.spacecraft.custom.CustomSatellite;
 import maru.spacecraft.tle.InitialTLECoordinate;
 import maru.spacecraft.tle.SGP4Propagator;
 import maru.spacecraft.tle.TLESatellite;
@@ -137,7 +137,7 @@ public final class CreateScenarioHelper
         InitialCustomCoordinate initialCoordinate = new InitialCustomCoordinate(initialOrbit);
         KeplerPropagator propagator = new KeplerPropagator();
 
-        KeplerSatellite satellite = new KeplerSatellite(name);
+        CustomSatellite satellite = new CustomSatellite(name);
         satellite.setElementComment(comment);
         satellite.setElementColor(color);
         satellite.setElementImage(DEFAULT_KEPLER_SATELLITE_GRAPHIC2D);

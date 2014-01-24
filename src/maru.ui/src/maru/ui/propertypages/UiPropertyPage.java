@@ -42,7 +42,7 @@ public abstract class UiPropertyPage extends PropertyPage
     @Override
     protected void performDefaults()
     {
-        setMessage("\"Restore Defaults\" is not implemented.", WARNING);
+        setMessage("\"Restore Defaults\" is not available.", WARNING);
     }
 
     protected void addSeparator(Composite parent)

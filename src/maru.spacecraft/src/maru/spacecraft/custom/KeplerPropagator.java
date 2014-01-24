@@ -35,12 +35,12 @@ public class KeplerPropagator extends AbstractPropagator
     @Override
     public OrekitCoordinate getCoordinate(ISpacecraft element, AbsoluteDate date)
     {
-        KeplerSatellite satellite = (KeplerSatellite) element;
+        CustomSatellite satellite = (CustomSatellite) element;
         InitialCustomCoordinate initialCoordinate = satellite.getInitialCoordinate();
 
         try
         {
-            Orbit initialOrbit = initialCoordinate.getInitialOrbit();
+            Orbit initialOrbit = initialCoordinate.getOrbit();
             KeplerianPropagator keplerPropagator = new KeplerianPropagator(initialOrbit);
 
             SpacecraftState currentState = keplerPropagator.propagate(date);
@@ -62,7 +62,7 @@ public class KeplerPropagator extends AbstractPropagator
                                                   AbsoluteDate stop,
                                                   long stepSize)
     {
-        KeplerSatellite satellite = (KeplerSatellite) element;
+        CustomSatellite satellite = (CustomSatellite) element;
         InitialCustomCoordinate initialCoordinate = satellite.getInitialCoordinate();
 
         if ((lastInitialCoordinate != null) &&
@@ -78,7 +78,7 @@ public class KeplerPropagator extends AbstractPropagator
 
         try
         {
-            Orbit initialOrbit = initialCoordinate.getInitialOrbit();
+            Orbit initialOrbit = initialCoordinate.getOrbit();
             KeplerianPropagator keplerPropagator = new KeplerianPropagator(initialOrbit);
 
             AbsoluteDate extrapDate = start;

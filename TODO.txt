@@ -14,3 +14,6 @@ Low-level coding notes:
 - add more Orbit types (OrbitWizard?) from Orekit
 - image-combobox
 - allow keplerian satellites to change its Date
+- Date-Selction Control: a SWT Text control with a popup dialog that enables the user to select a date (via calender) and time
+- make true anomaly the default anomaly type of the enire application -> sensible? currently it's mean anomaly. -> true anomaly is less computation, but it seems orekit-internal classes prefer MEAN anomaly type.
+- should ICoordinate have a reference to a centralbody?

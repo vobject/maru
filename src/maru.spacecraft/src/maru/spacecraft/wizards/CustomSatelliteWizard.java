@@ -6,7 +6,7 @@ import maru.core.model.IScenarioProject;
 import maru.spacecraft.MaruSpacecraftResources;
 import maru.spacecraft.custom.InitialCustomCoordinate;
 import maru.spacecraft.custom.KeplerPropagator;
-import maru.spacecraft.custom.KeplerSatellite;
+import maru.spacecraft.custom.CustomSatellite;
 import maru.ui.wizards.ScenarioElementWizard;
 
 import org.eclipse.swt.graphics.RGB;
@@ -48,7 +48,7 @@ public class CustomSatelliteWizard extends ScenarioElementWizard
         InitialCustomCoordinate initialCoordinate = createInitialCoordinate(scenario);
         KeplerPropagator propagator = new KeplerPropagator();
 
-        KeplerSatellite satellite = new KeplerSatellite(name);
+        CustomSatellite satellite = new CustomSatellite(name);
         satellite.setElementComment(comment);
         satellite.setElementColor(color);
         satellite.setElementImage(image);
