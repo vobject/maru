@@ -1,18 +1,14 @@
-package maru.core.model.template;
+package maru.core.model;
 
 import java.util.Map;
 
 import maru.MaruRuntimeException;
-import maru.core.model.ICentralBody;
-import maru.core.model.IGroundstation;
-import maru.core.model.IScenarioProject;
-import maru.core.model.ITimeProvider;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.orekit.bodies.GeodeticPoint;
 import org.orekit.time.AbsoluteDate;
 
-public abstract class AbstractGroundstation extends VisibleElement implements IGroundstation
+public abstract class AbstractGroundstation extends AbstractVisibleElement implements IGroundstation
 {
     private static final long serialVersionUID = 1L;
 

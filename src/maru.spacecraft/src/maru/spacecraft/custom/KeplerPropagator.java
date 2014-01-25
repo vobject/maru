@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import maru.core.model.AbstractPropagator;
 import maru.core.model.ICoordinate;
 import maru.core.model.ISpacecraft;
-import maru.core.model.template.AbstractPropagator;
 import maru.core.utils.TimeUtils;
 import maru.spacecraft.OrekitCoordinate;
 

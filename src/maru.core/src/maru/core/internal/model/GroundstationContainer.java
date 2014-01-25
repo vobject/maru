@@ -2,9 +2,9 @@ package maru.core.internal.model;
 
 import java.util.Collection;
 
+import maru.core.model.AbstractScenarioElement;
 import maru.core.model.IGroundstation;
 import maru.core.model.IGroundstationContainer;
-import maru.core.model.template.ScenarioElement;
 
 public class GroundstationContainer extends Parent implements IGroundstationContainer
 {
@@ -23,7 +23,7 @@ public class GroundstationContainer extends Parent implements IGroundstationCont
 
     public void addGroundstation(IGroundstation gs)
     {
-        ((ScenarioElement) gs).setParent(this);
+        ((AbstractScenarioElement) gs).setParent(this);
 
         gs.startTimeChanged(getScenarioProject().getStartTime().getTime());
         gs.stopTimeChanged(getScenarioProject().getStopTime().getTime());

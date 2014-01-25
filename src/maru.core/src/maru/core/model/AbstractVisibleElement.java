@@ -1,18 +1,17 @@
-package maru.core.model.template;
+package maru.core.model;
 
 import maru.IMaruResource;
-import maru.core.model.IVisibleElement;
 
 import org.eclipse.swt.graphics.RGB;
 
-public abstract class VisibleElement extends ScenarioElement implements IVisibleElement
+public abstract class AbstractVisibleElement extends AbstractScenarioElement implements IVisibleElement
 {
     private static final long serialVersionUID = 1L;
 
     private RGB elementColor;
     private IMaruResource elementImage;
 
-    public VisibleElement(String name)
+    public AbstractVisibleElement(String name)
     {
         super(name);
 

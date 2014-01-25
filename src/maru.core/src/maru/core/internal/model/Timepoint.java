@@ -2,14 +2,14 @@ package maru.core.internal.model;
 
 import java.util.Map;
 
+import maru.core.model.AbstractScenarioElement;
 import maru.core.model.IScenarioElement;
 import maru.core.model.ITimepoint;
-import maru.core.model.template.ScenarioElement;
 import maru.core.utils.TimeUtils;
 
 import org.orekit.time.AbsoluteDate;
 
-public class Timepoint extends ScenarioElement implements ITimepoint
+public class Timepoint extends AbstractScenarioElement implements ITimepoint
 {
     private static final long serialVersionUID = 1L;
 

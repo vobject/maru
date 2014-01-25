@@ -1,12 +1,9 @@
-package maru.core.model.template;
+package maru.core.model;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import maru.core.model.IScenarioElement;
-import maru.core.model.IScenarioProject;
-
-public abstract class ScenarioElement implements IScenarioElement
+public abstract class AbstractScenarioElement implements IScenarioElement
 {
     private static final long serialVersionUID = 1L;
 
@@ -14,7 +11,7 @@ public abstract class ScenarioElement implements IScenarioElement
     private String name;
     private String comment;
 
-    public ScenarioElement(String name)
+    public AbstractScenarioElement(String name)
     {
         this.name = name;
         this.comment = "";

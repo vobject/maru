@@ -1,13 +1,12 @@
-package maru.core.model.template;
+package maru.core.model;
 
 import java.util.Map;
 
 import maru.IMaruResource;
-import maru.core.model.ICentralBody;
 
 import org.orekit.frames.Frame;
 
-public abstract class AbstractCentralBody extends ScenarioElement implements ICentralBody
+public abstract class AbstractCentralBody extends AbstractScenarioElement implements ICentralBody
 {
     private static final long serialVersionUID = 1L;
 

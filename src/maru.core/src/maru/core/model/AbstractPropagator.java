@@ -1,12 +1,7 @@
-package maru.core.model.template;
+package maru.core.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
-import maru.core.model.ICoordinate;
-import maru.core.model.IPropagationListener;
-import maru.core.model.IPropagator;
-import maru.core.model.ISpacecraft;
 
 import org.orekit.time.AbsoluteDate;
 

@@ -2,13 +2,13 @@ package maru.core.test;
 
 import java.util.Collection;
 
+import maru.core.model.AbstractCentralBody;
+import maru.core.model.AbstractGroundstation;
+import maru.core.model.AbstractPropagator;
+import maru.core.model.AbstractSpacecraft;
 import maru.core.model.ICentralBody;
 import maru.core.model.ICoordinate;
 import maru.core.model.ISpacecraft;
-import maru.core.model.template.AbstractCentralBody;
-import maru.core.model.template.AbstractGroundstation;
-import maru.core.model.template.AbstractPropagator;
-import maru.core.model.template.AbstractSpacecraft;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.orekit.bodies.GeodeticPoint;

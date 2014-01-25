@@ -4,7 +4,6 @@ import maru.IMaruResource;
 import maru.core.internal.model.ScenarioModelManager;
 import maru.core.internal.model.ScenarioNature;
 import maru.core.internal.model.Timepoint;
-import maru.core.model.template.AbstractPropagator;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;

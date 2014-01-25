@@ -6,6 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import maru.IMaruResource;
+import maru.core.model.AbstractCentralBody;
+import maru.core.model.AbstractGroundstation;
+import maru.core.model.AbstractPropagator;
+import maru.core.model.AbstractScenarioElement;
+import maru.core.model.AbstractSpacecraft;
+import maru.core.model.AbstractVisibleElement;
 import maru.core.model.ICentralBody;
 import maru.core.model.ICoordinate;
 import maru.core.model.IGroundstation;
@@ -17,12 +23,6 @@ import maru.core.model.ISpacecraft;
 import maru.core.model.ITimeProvider;
 import maru.core.model.ITimepoint;
 import maru.core.model.IVisibleElement;
-import maru.core.model.template.AbstractCentralBody;
-import maru.core.model.template.AbstractGroundstation;
-import maru.core.model.template.AbstractPropagator;
-import maru.core.model.template.AbstractSpacecraft;
-import maru.core.model.template.ScenarioElement;
-import maru.core.model.template.VisibleElement;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -223,7 +223,7 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void changeElementName(final IScenarioElement element, String name, boolean update)
     {
-        ((ScenarioElement) element).setElementName(name);
+        ((AbstractScenarioElement) element).setElementName(name);
 
         if (!update) {
             return;
@@ -239,7 +239,7 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void changeElementComment(final IScenarioElement element, String comment, boolean update)
     {
-        ((ScenarioElement) element).setElementComment(comment);
+        ((AbstractScenarioElement) element).setElementComment(comment);
 
         if (!update) {
             return;
@@ -451,7 +451,7 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void changeElementColor(final IVisibleElement element, RGB color, boolean update)
     {
-        ((VisibleElement) element).setElementColor(color);
+        ((AbstractVisibleElement) element).setElementColor(color);
 
         if (!update) {
             return;
@@ -467,7 +467,7 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void changeElementImage(final IVisibleElement element, IMaruResource image, boolean update)
     {
-        ((VisibleElement) element).setElementImage(image);
+        ((AbstractVisibleElement) element).setElementImage(image);
 
         if (!update) {
             return;

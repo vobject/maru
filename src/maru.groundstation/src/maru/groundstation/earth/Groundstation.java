@@ -1,7 +1,7 @@
 package maru.groundstation.earth;
 
+import maru.core.model.AbstractGroundstation;
 import maru.core.model.ICentralBody;
-import maru.core.model.template.AbstractGroundstation;
 
 import org.orekit.bodies.GeodeticPoint;
 

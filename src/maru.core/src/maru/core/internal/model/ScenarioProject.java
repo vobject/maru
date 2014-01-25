@@ -5,17 +5,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import maru.core.model.AbstractScenarioElement;
 import maru.core.model.ICentralBody;
 import maru.core.model.IGroundstation;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.core.model.ITimepoint;
-import maru.core.model.template.ScenarioElement;
 
 import org.eclipse.core.resources.IProject;
 import org.orekit.time.AbsoluteDate;
 
-public class ScenarioProject extends ScenarioElement implements IScenarioProject
+public class ScenarioProject extends AbstractScenarioElement implements IScenarioProject
 {
     private static final long serialVersionUID = 1L;
 
@@ -150,7 +150,7 @@ public class ScenarioProject extends ScenarioElement implements IScenarioProject
 
     public void setCentralBody(ICentralBody centralBody)
     {
-        ((ScenarioElement) centralBody).setParent(this);
+        ((AbstractScenarioElement) centralBody).setParent(this);
         this.centralBody = centralBody;
     }
 

@@ -1,8 +1,8 @@
 package maru.centralbody.bodies;
 
 import maru.IMaruResource;
+import maru.core.model.AbstractCentralBody;
 import maru.core.model.ICoordinate;
-import maru.core.model.template.AbstractCentralBody;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Line;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;

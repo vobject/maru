@@ -1,4 +1,4 @@
-package maru.core.model.template;
+package maru.core.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,14 +6,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import maru.MaruRuntimeException;
-import maru.core.model.ICentralBody;
-import maru.core.model.ICoordinate;
-import maru.core.model.IGroundstation;
-import maru.core.model.IPropagationListener;
-import maru.core.model.IPropagator;
-import maru.core.model.IScenarioProject;
-import maru.core.model.ISpacecraft;
-import maru.core.model.ITimeProvider;
 import maru.core.utils.AccessUtils;
 import maru.core.utils.EclipseState;
 import maru.core.utils.EclipseUtils;
@@ -26,85 +18,27 @@ import org.orekit.time.AbsoluteDate;
 class NullPropagator implements IPropagator
 {
     private static final long serialVersionUID = 1L;
-
-    private static final ICoordinate COORDINATE = new NullCoordinate();
-
-    @Override
-    public String getName()
-    {
-        return "NullPropagator";
-    }
-
-    @Override
-    public ICoordinate getCoordinate(ISpacecraft element, AbsoluteDate time)
-    {
-        return COORDINATE;
-    }
-
-    @Override
-    public Collection<ICoordinate> getCoordinates(ISpacecraft element,
-                                                  AbsoluteDate start,
-                                                  AbsoluteDate stop,
-                                                  long stepSize)
-    {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public void startTimeChanged(ISpacecraft element, AbsoluteDate date)
-    {
-
-    }
-
-    @Override
-    public void stopTimeChanged(ISpacecraft element, AbsoluteDate date)
-    {
-
-    }
-
-    @Override
-    public void currentTimeChanged(ISpacecraft element, AbsoluteDate date)
-    {
-
-    }
-
-    @Override
-    public void clearCoordinateCache()
-    {
-
-    }
+    private static final ICoordinate NULL_COORDINATE = new NullCoordinate();
+    private static final Collection<ICoordinate> NULL_COORDINATES = Collections.emptyList();;
+    @Override public String getName() { return "NullPropagator"; }
+    @Override public ICoordinate getCoordinate(ISpacecraft element, AbsoluteDate time) { return NULL_COORDINATE; }
+    @Override public Collection<ICoordinate> getCoordinates(ISpacecraft element,  AbsoluteDate start, AbsoluteDate stop, long stepSize) { return NULL_COORDINATES; }
+    @Override public void startTimeChanged(ISpacecraft element, AbsoluteDate date) { }
+    @Override public void stopTimeChanged(ISpacecraft element, AbsoluteDate date) { }
+    @Override public void currentTimeChanged(ISpacecraft element, AbsoluteDate date) { }
+    @Override public void clearCoordinateCache() { }
 }
 
 class NullCoordinate implements ICoordinate
 {
     private static final long serialVersionUID = 1L;
-
-    @Override
-    public Vector3D getPosition()
-    {
-        return Vector3D.ZERO;
-    }
-
-    @Override
-    public Vector3D getVelocity()
-    {
-        return Vector3D.ZERO;
-    }
-
-    @Override
-    public AbsoluteDate getDate()
-    {
-        return null;
-    }
-
-    @Override
-    public Frame getFrame()
-    {
-        return null;
-    }
+    @Override public Vector3D getPosition() { return Vector3D.ZERO; }
+    @Override public Vector3D getVelocity() { return Vector3D.ZERO; }
+    @Override public AbsoluteDate getDate() {  return null; }
+    @Override public Frame getFrame() { return null; }
 }
 
-public abstract class AbstractSpacecraft extends VisibleElement implements ISpacecraft
+public abstract class AbstractSpacecraft extends AbstractVisibleElement implements ISpacecraft
 {
     private static final long serialVersionUID = 1L;
 

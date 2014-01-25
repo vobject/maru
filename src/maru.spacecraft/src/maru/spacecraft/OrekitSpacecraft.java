@@ -1,6 +1,6 @@
 package maru.spacecraft;
 
-import maru.core.model.template.AbstractSpacecraft;
+import maru.core.model.AbstractSpacecraft;
 
 public abstract class OrekitSpacecraft extends AbstractSpacecraft
 {
