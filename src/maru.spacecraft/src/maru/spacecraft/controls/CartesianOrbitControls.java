@@ -22,7 +22,7 @@ import org.orekit.utils.PVCoordinates;
 public class CartesianOrbitControls extends OrbitControls
 {
     // source (20140124): https://www.orekit.org/static/architecture/orbits.html
-    private static final String ORBIT_TYPE_DESCRIPTION = "Cartesian orbit, associated to its frame definition.";
+    private static final String ORBIT_TYPE_DESCRIPTION = "<a href=\"https://www.orekit.org/forge/projects/orekit/wiki/Orbits\">Orekit:</a> Cartesian orbit, associated to its frame definition.";
 
     private Text posX;
     private Text posY;

@@ -24,7 +24,7 @@ import org.orekit.time.AbsoluteDate;
 public class EquinoctialOrbitControls extends OrbitControls
 {
     // source (20140124): https://www.orekit.org/static/architecture/orbits.html
-    private static final String ORBIT_TYPE_DESCRIPTION = "Equinoctial orbit, used to represent equinoctial orbits (almost circular orbit with almost null inclination).";
+    private static final String ORBIT_TYPE_DESCRIPTION = "<a href=\"https://www.orekit.org/forge/projects/orekit/wiki/Orbits\">Orekit:</a> Equinoctial orbit, used to represent equinoctial orbits (almost circular orbit with almost null inclination).";
 
     private Text semimajorAxis;
     private Text equinoctialEccentricityX;

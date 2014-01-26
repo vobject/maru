@@ -24,7 +24,7 @@ import org.orekit.time.AbsoluteDate;
 public class CircularOrbitControls extends OrbitControls
 {
     // source (20140124): https://www.orekit.org/static/architecture/orbits.html
-    private static final String ORBIT_TYPE_DESCRIPTION = "Circular orbit, used to represent almost circular orbit, i.e orbit with low eccentricity.";
+    private static final String ORBIT_TYPE_DESCRIPTION = "<a href=\"https://www.orekit.org/forge/projects/orekit/wiki/Orbits\">Orekit:</a> Circular orbit, used to represent almost circular orbit, i.e orbit with low eccentricity.";
 
     private Text semimajorAxis;
     private Text circularEccentricityX;

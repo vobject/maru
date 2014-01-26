@@ -24,7 +24,7 @@ import org.orekit.time.AbsoluteDate;
 public class KeplerianOrbitControls extends OrbitControls
 {
     // source (20140124): https://www.orekit.org/static/architecture/orbits.html
-    private static final String ORBIT_TYPE_DESCRIPTION = "Classic elliptical keplerian orbit.";
+    private static final String ORBIT_TYPE_DESCRIPTION = "<a href=\"https://www.orekit.org/forge/projects/orekit/wiki/Orbits\">Orekit:</a> Classic elliptical keplerian orbit.";
 
     private Text semimajorAxis;
     private Text eccentricity;

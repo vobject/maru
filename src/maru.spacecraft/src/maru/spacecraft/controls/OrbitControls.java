@@ -1,18 +1,26 @@
 package maru.spacecraft.controls;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import maru.core.model.IScenarioProject;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.orekit.orbits.Orbit;
 
 public abstract class OrbitControls
 {
     private Composite container;
-    private Label description;
+    private Link description;
     private String errorMsg = "";
 
     public OrbitControls(Composite parent, IScenarioProject scenario)
@@ -90,8 +98,20 @@ public abstract class OrbitControls
 
         GridData descriptionData = new GridData(SWT.FILL, SWT.FILL, true, false);
         descriptionData.horizontalSpan = 2;
-        description = new Label(container, SWT.BORDER | SWT.WRAP);
+        description = new Link(container, SWT.BORDER | SWT.WRAP);
         description.setLayoutData(descriptionData);
+        description.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               try {
+                    PlatformUI.getWorkbench().getBrowserSupport()
+                                             .getExternalBrowser()
+                                             .openURL(new URL(e.text));
+               } catch (PartInitException | MalformedURLException ex) {
+                   ex.printStackTrace();
+               }
+            }
+        });
 
         GridData lineData = new GridData(SWT.FILL, SWT.FILL, true, false);
         lineData.horizontalSpan = 2;
