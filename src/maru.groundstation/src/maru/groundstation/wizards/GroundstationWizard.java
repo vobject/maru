@@ -5,8 +5,8 @@ import maru.core.MaruCorePlugin;
 import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
 import maru.core.model.IScenarioProject;
+import maru.groundstation.Groundstation;
 import maru.groundstation.MaruGroundstationResources;
-import maru.groundstation.earth.Groundstation;
 import maru.ui.wizards.ScenarioElementWizard;
 
 import org.eclipse.swt.graphics.RGB;
@@ -38,11 +38,6 @@ public class GroundstationWizard extends ScenarioElementWizard
         IScenarioProject scenario = getScenarioProjectFromSelection();
         ICentralBody centralBody = scenario.getCentralBody();
 
-        double latitude = mainPage.getLatitude();
-        double longitude = mainPage.getLongitude();
-        double altitude = mainPage.getAltitude();
-
-        GeodeticPoint position = new GeodeticPoint(latitude, longitude, altitude);
         String name = mainPage.getElementName();
         String comment = mainPage.getElementComment();
         RGB color = mainPage.getElementColor();
@@ -52,7 +47,10 @@ public class GroundstationWizard extends ScenarioElementWizard
             image = MaruGroundstationResources.fromName(imageName);
         }
 
-        Groundstation groundstation = new Groundstation(name, position, centralBody);
+        GeodeticPoint position = mainPage.getGeodeticPoint();
+        double elevationAngle = mainPage.getElevationAngle();
+
+        Groundstation groundstation = new Groundstation(name, position, elevationAngle, centralBody);
         groundstation.setElementComment(comment);
         groundstation.setElementColor(color);
         groundstation.setElementImage(image);

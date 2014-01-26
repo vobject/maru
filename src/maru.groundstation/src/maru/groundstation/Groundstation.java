@@ -1,4 +1,4 @@
-package maru.groundstation.earth;
+package maru.groundstation;
 
 import maru.core.model.AbstractGroundstation;
 import maru.core.model.ICentralBody;
@@ -9,8 +9,8 @@ public class Groundstation extends AbstractGroundstation
 {
     private static final long serialVersionUID = 1L;
 
-    public Groundstation(String name, GeodeticPoint position, ICentralBody centralBody)
+    public Groundstation(String name, GeodeticPoint position, double elevation, ICentralBody centralBody)
     {
-        super(name, position, centralBody);
+        super(name, position, elevation, centralBody);
     }
 }

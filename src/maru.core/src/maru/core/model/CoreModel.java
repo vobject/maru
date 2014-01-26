@@ -179,9 +179,9 @@ public class CoreModel
         modelManager.changeElementImage(element, image, update);
     }
 
-    public void changeInitialCoordinate(IGroundstation element, GeodeticPoint coordinate, boolean update)
+    public void changeInitialCoordinate(IGroundstation element, GeodeticPoint position, double elevation, boolean update)
     {
-        modelManager.changeInitialCoordinate(element, coordinate, update);
+        modelManager.changeInitialCoordinate(element, position, elevation, update);
     }
 
     public void changeInitialCoordinate(ISpacecraft element, ICoordinate coordinate, boolean update)

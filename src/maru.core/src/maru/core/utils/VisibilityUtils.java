@@ -11,16 +11,19 @@ import org.orekit.frames.Frame;
 import org.orekit.frames.Transform;
 import org.orekit.time.AbsoluteDate;
 
-public final class AccessUtils
+public final class VisibilityUtils
 {
     public static boolean hasAccessTo(ICentralBody centralBody, ICoordinate from, ICoordinate to) throws OrekitException
     {
         return getDistanceTo(centralBody, from, to) > 0;
     }
 
-    public static boolean hasAccessTo(ICentralBody centralBody, ICoordinate from, IGroundstation to) throws OrekitException
+    public static boolean hasAccessTo(ICoordinate sat, IGroundstation gs) throws OrekitException
     {
-        return getDistanceTo(centralBody, from, to) > 0;
+        double elevation = gs.getFrame().getElevation(sat.getPosition(),
+                                                      sat.getFrame(),
+                                                      sat.getDate());
+        return (elevation - gs.getElevationAngle()) > 0.0;
     }
 
     public static double getDistanceTo(ICentralBody centralBody, ICoordinate from, ICoordinate to) throws OrekitException
@@ -63,25 +66,8 @@ public final class AccessUtils
         }
     }
 
-    public static double getDistanceTo(ICentralBody centralBody, ICoordinate from, IGroundstation to) throws OrekitException
+    public static double getDistanceTo(ICoordinate sat, IGroundstation gs) throws OrekitException
     {
-        // TODO: consider the ground station's altitude
-        // TODO: consider the ground station's elevation angle
-
-        Frame centralBodyFrame = centralBody.getFrame();
-
-        ICoordinate myCoordinate = from;
-        Frame myFrame = myCoordinate.getFrame();
-        AbsoluteDate myDate = myCoordinate.getDate();
-        Vector3D myVec = myCoordinate.getPosition();
-
-        Transform toMyFrame = centralBodyFrame.getTransformTo(myFrame, myDate);
-        Vector3D gsVec = to.getCartesianPosition();
-        Vector3D gsVecInMyFrame = toMyFrame.transformPosition(gsVec);
-
-        double distanceToHorizon = centralBody.getDistanceToHorizon(myCoordinate);
-        double distanceToGs = myVec.distance(gsVecInMyFrame);
-
-        return (distanceToGs < distanceToHorizon) ? distanceToGs : -1.0;
+        return gs.getFrame().getRange(sat.getPosition(), sat.getFrame(), sat.getDate());
     }
 }

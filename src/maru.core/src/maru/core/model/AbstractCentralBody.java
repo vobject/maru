@@ -4,8 +4,6 @@ import java.util.Map;
 
 import maru.IMaruResource;
 
-import org.orekit.frames.Frame;
-
 public abstract class AbstractCentralBody extends AbstractScenarioElement implements ICentralBody
 {
     private static final long serialVersionUID = 1L;
@@ -15,8 +13,6 @@ public abstract class AbstractCentralBody extends AbstractScenarioElement implem
     private double gm;
     private double equatorialRadius;
     private double flattening;
-
-    private Frame frame;
 
     public AbstractCentralBody(String name)
     {
@@ -52,12 +48,6 @@ public abstract class AbstractCentralBody extends AbstractScenarioElement implem
         return flattening;
     }
 
-    @Override
-    public Frame getFrame()
-    {
-        return frame;
-    }
-
     public void setGM(double gm)
     {
         this.gm = gm;
@@ -71,11 +61,6 @@ public abstract class AbstractCentralBody extends AbstractScenarioElement implem
     public void setFlattening(double flattening)
     {
         this.flattening = flattening;
-    }
-
-    public void setFrame(Frame frame)
-    {
-        this.frame = frame;
     }
 
     @Override

@@ -92,6 +92,14 @@ public class CustomSatelliteWizardPage extends ScenarioElementWizardNamingPage
             return false;
         }
 
+        // FIXME: is not called because it is only triggered when
+        // a control of this page changes, but not one that is located
+        // inside the GroundstationControls object.
+        if (!orbitControls.isValid()) {
+            setErrorMessage(orbitControls.getErrorMessage());
+            return false;
+        }
+
         setErrorMessage(null);
         return true;
     }

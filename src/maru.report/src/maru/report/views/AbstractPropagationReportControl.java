@@ -18,6 +18,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
@@ -57,15 +58,25 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
     @Override
     public void enable()
     {
-        reportElement.setEnabled(true);
-        reportStepSize.setEnabled(true);
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                reportElement.setEnabled(true);
+                reportStepSize.setEnabled(true);
+            }
+        });
     }
 
     @Override
     public void disable()
     {
-        reportElement.setEnabled(false);
-        reportStepSize.setEnabled(false);
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                reportElement.setEnabled(false);
+                reportStepSize.setEnabled(false);
+            }
+        });
     }
 
     @Override

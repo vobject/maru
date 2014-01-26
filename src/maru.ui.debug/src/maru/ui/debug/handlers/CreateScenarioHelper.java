@@ -10,12 +10,12 @@ import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
 import maru.core.model.IScenarioProject;
 import maru.core.utils.TimeUtils;
+import maru.groundstation.Groundstation;
 import maru.groundstation.MaruGroundstationResources;
-import maru.groundstation.earth.Groundstation;
 import maru.spacecraft.MaruSpacecraftResources;
+import maru.spacecraft.custom.CustomSatellite;
 import maru.spacecraft.custom.InitialCustomCoordinate;
 import maru.spacecraft.custom.KeplerPropagator;
-import maru.spacecraft.custom.CustomSatellite;
 import maru.spacecraft.tle.InitialTLECoordinate;
 import maru.spacecraft.tle.SGP4Propagator;
 import maru.spacecraft.tle.TLESatellite;
@@ -104,10 +104,11 @@ public final class CreateScenarioHelper
         double longitude = Math.toRadians(DEFAULT_GROUNDSTATION_LONGITUDE_DEG);
         double altitude = DEFAULT_GROUNDSTATION_ALTITUDE;
         GeodeticPoint position = new GeodeticPoint(latitude, longitude, altitude);
+        double elevation = 0.0;
 
         ICentralBody centralBody = scenario.getCentralBody();
 
-        Groundstation groundstation = new Groundstation(name, position, centralBody);
+        Groundstation groundstation = new Groundstation(name, position, elevation, centralBody);
         groundstation.setElementComment(comment);
         groundstation.setElementColor(color);
         groundstation.setElementImage(DEFAULT_GROUNDSTATION_GRAPHIC2D);

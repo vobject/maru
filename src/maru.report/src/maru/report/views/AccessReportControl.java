@@ -10,9 +10,9 @@ import maru.core.model.IPropagator;
 import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
-import maru.core.utils.AccessUtils;
 import maru.core.utils.NumberUtils;
 import maru.core.utils.TimeUtils;
+import maru.core.utils.VisibilityUtils;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiProject;
 
@@ -290,15 +290,27 @@ public class AccessReportControl extends ReportTypeControl
 
         for (ICoordinate coordinate : propagator.getCoordinates(alpha, start, stop, stepSize))
         {
-            double distance;
-            if (beta instanceof ISpacecraft) {
+            double distance = -1.0;
+            if (beta instanceof ISpacecraft)
+            {
                 ISpacecraft betaSc = (ISpacecraft) beta;
                 IPropagator betaProp = betaSc.getPropagator();
                 ICoordinate betaCoord = betaProp.getCoordinate(betaSc, coordinate.getDate());
-                distance = AccessUtils.getDistanceTo(alpha.getCentralBody(), coordinate, betaCoord);
-            } else if (beta instanceof IGroundstation) {
-                distance = AccessUtils.getDistanceTo(alpha.getCentralBody(), coordinate, (IGroundstation) beta);
-            } else {
+
+                if (VisibilityUtils.hasAccessTo(alpha.getCentralBody(), coordinate, betaCoord)) {
+                    distance = VisibilityUtils.getDistanceTo(alpha.getCentralBody(), coordinate, betaCoord);
+                }
+            }
+            else if (beta instanceof IGroundstation)
+            {
+                IGroundstation betaGs = (IGroundstation) beta;
+
+                if (VisibilityUtils.hasAccessTo(coordinate, betaGs)) {
+                    distance = VisibilityUtils.getDistanceTo(coordinate, betaGs);
+                }
+            }
+            else
+            {
                 throw new IllegalStateException();
             }
 

@@ -6,9 +6,9 @@ import java.util.Collections;
 import java.util.Map;
 
 import maru.MaruRuntimeException;
-import maru.core.utils.AccessUtils;
 import maru.core.utils.EclipseState;
 import maru.core.utils.EclipseUtils;
+import maru.core.utils.VisibilityUtils;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.orekit.errors.OrekitException;
@@ -78,10 +78,6 @@ public abstract class AbstractSpacecraft extends AbstractVisibleElement implemen
 
     public void setInitialCoordinate(ICoordinate coordinate)
     {
-        if (coordinate == null) {
-            throw new MaruRuntimeException("The initial coordinate may not be null.");
-        }
-
         initialCoordinate = coordinate;
         updateCurrentCoordinate();
     }
@@ -95,29 +91,27 @@ public abstract class AbstractSpacecraft extends AbstractVisibleElement implemen
     @Override
     public boolean hasAccessTo(ICoordinate coordinate) throws OrekitException
     {
-        return getDistanceTo(coordinate) > 0;
+        return VisibilityUtils.hasAccessTo(getCentralBody(),getCurrentCoordinate(), coordinate);
     }
 
     @Override
     public boolean hasAccessTo(IGroundstation groundstation) throws OrekitException
     {
-        return getDistanceTo(groundstation) > 0;
+        return VisibilityUtils.hasAccessTo(getCurrentCoordinate(), groundstation);
     }
 
     @Override
     public double getDistanceTo(ICoordinate coordinate) throws OrekitException
     {
-        return AccessUtils.getDistanceTo(getCentralBody(),
-                                         getCurrentCoordinate(),
-                                         coordinate);
+        return VisibilityUtils.getDistanceTo(getCentralBody(),
+                                             getCurrentCoordinate(),
+                                             coordinate);
     }
 
     @Override
     public double getDistanceTo(IGroundstation groundstation) throws OrekitException
     {
-        return AccessUtils.getDistanceTo(getCentralBody(),
-                                         getCurrentCoordinate(),
-                                         groundstation);
+        return VisibilityUtils.getDistanceTo(getCurrentCoordinate(), groundstation);
     }
 
     @Override

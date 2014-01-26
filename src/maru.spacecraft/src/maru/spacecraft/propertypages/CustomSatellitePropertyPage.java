@@ -63,6 +63,7 @@ public class CustomSatellitePropertyPage extends UiPropertyPage
 
             CustomSatellite element = getScenarioElement();
             IScenarioProject scenario = element.getScenarioProject();
+
             InitialCustomCoordinate newCoordinate = new InitialCustomCoordinate(newOrbit);
             CoreModel.getDefault().changeInitialCoordinate(element, newCoordinate, true);
 

@@ -15,11 +15,6 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: maru.groundstation;uses:="org.eclipse.ui.plugin,org.osgi.framework",
- maru.groundstation.earth;
-  uses:="maru.core.model,
-   maru.core.model.template,
-   org.eclipse.swt.graphics,
-   maru.core.units",
  maru.groundstation.wizards
 Eclipse-RegisterBuddy: maru.core,
  maru.ui

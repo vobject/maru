@@ -6,6 +6,7 @@ import maru.core.model.ICoordinate;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Line;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.orekit.bodies.BodyShape;
 import org.orekit.bodies.CelestialBody;
 import org.orekit.bodies.GeodeticPoint;
 import org.orekit.bodies.OneAxisEllipsoid;
@@ -19,7 +20,7 @@ public abstract class OrekitCentralBody extends AbstractCentralBody
     private static final long serialVersionUID = 1L;
 
     private final CelestialBody body;
-    private final OneAxisEllipsoid ellipsoid;
+    private final BodyShape bodyShape;
 
     public OrekitCentralBody(CelestialBody body, IMaruResource mapImage) throws OrekitException
     {
@@ -27,11 +28,15 @@ public abstract class OrekitCentralBody extends AbstractCentralBody
         setTexture(mapImage);
 
         this.body = body;
-        setFrame(body.getBodyOrientedFrame());
-
-        this.ellipsoid = new OneAxisEllipsoid(getEquatorialRadius(),
+        this.bodyShape = new OneAxisEllipsoid(getEquatorialRadius(),
                                               getFlattening(),
-                                              getFrame());
+                                              body.getBodyOrientedFrame());
+    }
+
+    @Override
+    public Frame getFrame()
+    {
+        return bodyShape.getBodyFrame();
     }
 
     @Override
@@ -61,7 +66,7 @@ public abstract class OrekitCentralBody extends AbstractCentralBody
     @Override
     public GeodeticPoint getIntersection(ICoordinate from, Vector3D to) throws OrekitException
     {
-        return ellipsoid.getIntersectionPoint(
+        return bodyShape.getIntersectionPoint(
             new Line(from.getPosition(), to),
             from.getPosition(),
             from.getFrame(),
@@ -72,7 +77,7 @@ public abstract class OrekitCentralBody extends AbstractCentralBody
     @Override
     public Vector3D getCartesianPoint(GeodeticPoint point)
     {
-        return ellipsoid.transform(point);
+        return bodyShape.transform(point);
     }
 
     @Override
@@ -98,8 +103,8 @@ public abstract class OrekitCentralBody extends AbstractCentralBody
         return body;
     }
 
-    protected OneAxisEllipsoid getEllipsoid()
+    protected BodyShape getBodyShape()
     {
-        return ellipsoid;
+        return bodyShape;
     }
 }

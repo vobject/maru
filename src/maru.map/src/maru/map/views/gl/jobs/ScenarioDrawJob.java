@@ -85,7 +85,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
             drawGroundtrack(element, currentGtBarrier, defaultColor, nightColor);
             drawElement(element, mapPos, currentColor);
-            drawAccessIndicators(scenario, element);
+            drawVisibilityIndicators(scenario, element);
         }
     }
 
@@ -153,7 +153,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
                          true);
     }
 
-    private void drawAccessIndicators(IScenarioProject scenario, ISpacecraft element)
+    private void drawVisibilityIndicators(IScenarioProject scenario, ISpacecraft element)
     {
         MapViewSettings settings = getSettings();
         ICentralBody centralBody = element.getCentralBody();
@@ -169,14 +169,15 @@ public class ScenarioDrawJob extends GLProjectDrawJob
                         continue;
                     }
 
-                    double distToSc = element.getDistanceTo(sc.getCurrentCoordinate());
-                    if (distToSc > 0)
-                    {
-                        EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
-                        EquirectangularCoordinate sat2Pos = getMapPosition(centralBody.getIntersection(sc.getCurrentCoordinate()));
-
-                        drawAccessLine(satPos, sat2Pos, distToSc, true);
+                    if (!element.hasAccessTo(sc.getCurrentCoordinate())) {
+                        continue;
                     }
+
+                    double distToSc = element.getDistanceTo(sc.getCurrentCoordinate());
+                    EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
+                    EquirectangularCoordinate sat2Pos = getMapPosition(centralBody.getIntersection(sc.getCurrentCoordinate()));
+
+                    drawAccessLine(satPos, sat2Pos, distToSc, true);
                 }
             }
 
@@ -184,14 +185,15 @@ public class ScenarioDrawJob extends GLProjectDrawJob
             {
                 for (IGroundstation gs : scenario.getGroundstations())
                 {
-                    double distToGs = element.getDistanceTo(gs);
-                    if (distToGs > 0)
-                    {
-                        EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
-                        EquirectangularCoordinate gsPos = getMapPosition(gs.getGeodeticPosition());
-
-                        drawAccessLine(satPos, gsPos, distToGs, true);
+                    if (!element.hasAccessTo(gs)) {
+                        continue;
                     }
+
+                    double distToGs = element.getDistanceTo(gs);
+                    EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
+                    EquirectangularCoordinate gsPos = getMapPosition(gs.getGeodeticPosition());
+
+                    drawAccessLine(satPos, gsPos, distToGs, true);
                 }
             }
         }

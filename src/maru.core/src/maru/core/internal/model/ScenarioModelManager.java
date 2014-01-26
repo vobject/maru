@@ -481,9 +481,10 @@ final public class ScenarioModelManager implements IResourceChangeListener
         }, element, true);
     }
 
-    public void changeInitialCoordinate(final IGroundstation element, GeodeticPoint coordinate, boolean update)
+    public void changeInitialCoordinate(final IGroundstation element, GeodeticPoint position, double elevation, boolean update)
     {
-        ((AbstractGroundstation) element).setGeodeticPosition(coordinate);
+        ((AbstractGroundstation) element).setGeodeticPosition(position);
+        ((AbstractGroundstation) element).setElevationAngle(elevation);
 
         if (!update) {
             return;
