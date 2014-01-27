@@ -12,6 +12,7 @@ public class InitialTLECoordinate extends OrekitCoordinate
 {
     private static final long serialVersionUID = 1L;
 
+    // TODO: get rid of the unnecessary 'name' member.
     private final String name;
     private final TLE tle;
 

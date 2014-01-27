@@ -41,12 +41,12 @@ public class TleSatelliteWizard extends ScenarioElementWizard
         InitialTLECoordinate initialCoordinate;
         try {
             initialCoordinate = createInitialPosition();
-        }
-        catch (OrekitException e) {
+        } catch (OrekitException e) {
             e.printStackTrace();
             return false;
         }
 
+        String name = mainPage.getElementName();
         String comment = mainPage.getElementComment();
         RGB color = mainPage.getElementColor();
         String imageName = mainPage.getElementImage();
@@ -56,7 +56,7 @@ public class TleSatelliteWizard extends ScenarioElementWizard
         }
         SGP4Propagator propagator = new SGP4Propagator();
 
-        TLESatellite satellite = new TLESatellite(initialCoordinate.getName());
+        TLESatellite satellite = new TLESatellite(name);
         satellite.setElementComment(comment);
         satellite.setElementColor(color);
         satellite.setElementImage(image);
@@ -70,7 +70,7 @@ public class TleSatelliteWizard extends ScenarioElementWizard
 
     private InitialTLECoordinate createInitialPosition() throws OrekitException
     {
-        String name = mainPage.getLine0().trim();
+        String name = mainPage.getElementName();
         TLE tle = new TLE(mainPage.getLine1(), mainPage.getLine2());
         return new InitialTLECoordinate(name, tle);
     }
