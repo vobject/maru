@@ -95,7 +95,7 @@ public class TimeSlider
         this.startTime = TimeUtils.copy(start);
         this.stopTime = TimeUtils.copy(stop);
 
-        final long periodSec = (long) stopTime.durationFrom(startTime);
+        final long periodSec = Math.round(stopTime.durationFrom(startTime));
 
         Display.getDefault().syncExec(new Runnable() {
             @Override
@@ -193,7 +193,7 @@ public class TimeSlider
 
     private void refreshSliderControl()
     {
-        final long advanceSec = (long) currentTime.durationFrom(startTime);
+        final long advanceSec = Math.round(currentTime.durationFrom(startTime));
 
         slider.removeListener(SWT.Selection, sliderListener);
         Display.getDefault().syncExec(new Runnable() {
