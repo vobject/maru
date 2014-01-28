@@ -1,7 +1,10 @@
 package maru.core.model;
 
+import java.util.List;
+
 import maru.core.utils.EclipseState;
 
+import org.orekit.bodies.GeodeticPoint;
 import org.orekit.errors.OrekitException;
 
 
@@ -31,4 +34,6 @@ public interface ISpacecraft extends IScenarioElement, IVisibleElement, ITimeLis
      * visual contact ({@link #hasAccessTo(IGroundstation)}.
      */
     double getDistanceTo(IGroundstation groundstation) throws OrekitException;
+
+    List<GeodeticPoint> getVisibilityCircle(int points) throws OrekitException;
 }

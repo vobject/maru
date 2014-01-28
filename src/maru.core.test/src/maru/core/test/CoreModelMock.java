@@ -94,7 +94,7 @@ public class CoreModelMock
 
         public DummyGroundstation(GeodeticPoint point, ICentralBody centralBody)
         {
-            super("DummyGroundstation", point, centralBody);
+            super("DummyGroundstation", point, 0.0, centralBody);
         }
     }
 

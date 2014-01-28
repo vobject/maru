@@ -3,6 +3,7 @@ package maru.core.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import maru.MaruRuntimeException;
@@ -11,8 +12,12 @@ import maru.core.utils.EclipseUtils;
 import maru.core.utils.VisibilityUtils;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.orekit.bodies.BodyShape;
+import org.orekit.bodies.GeodeticPoint;
+import org.orekit.bodies.OneAxisEllipsoid;
 import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
+import org.orekit.frames.TopocentricFrame;
 import org.orekit.time.AbsoluteDate;
 
 class NullPropagator implements IPropagator
@@ -207,6 +212,29 @@ public abstract class AbstractSpacecraft extends AbstractVisibleElement implemen
     public EclipseState getEclipseState() throws OrekitException
     {
         return EclipseUtils.getEclipseState(getCentralBody(), getCurrentCoordinate());
+    }
+
+    @Override
+    public List<GeodeticPoint> getVisibilityCircle(int points) throws OrekitException
+    {
+        // based on orekit 6.1 VisibilityCircle example.
+
+        GeodeticPoint geodeticPoint = getCentralBody().getIntersection(getCurrentCoordinate());
+
+        BodyShape parentShape = new OneAxisEllipsoid(getCentralBody().getEquatorialRadius(),
+                getCentralBody().getFlattening(),
+                getCentralBody().getFrame());
+        TopocentricFrame frame = new TopocentricFrame(parentShape, geodeticPoint, getElementName());
+
+        double radius = getCurrentCoordinate().getPosition().distance(Vector3D.ZERO);
+
+        List<GeodeticPoint> circle = new ArrayList<>();
+        for (int i = 0; i < points; i++)
+        {
+            double azimuth = i * (2.0 * Math.PI / points);
+            circle.add(frame.computeLimitVisibilityPoint(radius, azimuth, 0.0));
+        }
+        return circle;
     }
 
     @Override

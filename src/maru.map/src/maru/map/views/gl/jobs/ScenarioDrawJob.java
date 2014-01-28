@@ -1,6 +1,8 @@
 package maru.map.views.gl.jobs;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -24,6 +26,7 @@ import maru.map.views.GroundtrackRange;
 import maru.map.views.MapViewParameters;
 import maru.map.views.MapViewSettings;
 import maru.map.views.gl.GLUtils;
+import maru.ui.model.UiVisible;
 
 import org.eclipse.swt.graphics.RGB;
 import org.orekit.bodies.GeodeticPoint;
@@ -52,6 +55,8 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
         getProjector().setCentralBody(scenario.getCentralBody());
         getProjector().setMapSize(area.mapWidth, area.mapHeight);
+
+        drawVisibilityCircles(scenario.getGroundstations());
 
         for (IGroundstation element : scenario.getGroundstations())
         {
@@ -85,7 +90,9 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
             drawGroundtrack(element, currentGtBarrier, defaultColor, nightColor);
             drawElement(element, mapPos, currentColor);
-            drawVisibilityIndicators(scenario, element);
+            drawVisibilityCircle(scenario, element);
+            drawSatToGsVisibility(scenario, element);
+            drawSatToSatVisibility(scenario, element);
         }
     }
 
@@ -153,61 +160,70 @@ public class ScenarioDrawJob extends GLProjectDrawJob
                          true);
     }
 
-    private void drawVisibilityIndicators(IScenarioProject scenario, ISpacecraft element)
+    private void drawSatToGsVisibility(IScenarioProject scenario, ISpacecraft element)
     {
         MapViewSettings settings = getSettings();
+        if (!settings.getShowAccessSpacecraftToGroundstation()) {
+            return;
+        }
+
         ICentralBody centralBody = element.getCentralBody();
         ICoordinate coordinate = element.getCurrentCoordinate();
 
         try
         {
-            if (settings.getShowAccessSpacecraftToSpacecraft())
+            for (IGroundstation gs : scenario.getGroundstations())
             {
-                for (ISpacecraft sc : scenario.getSpacecrafts())
-                {
-                    if (sc == element) {
-                        continue;
-                    }
-
-                    if (!element.hasAccessTo(sc.getCurrentCoordinate())) {
-                        continue;
-                    }
-
-                    double distToSc = element.getDistanceTo(sc.getCurrentCoordinate());
-                    EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
-                    EquirectangularCoordinate sat2Pos = getMapPosition(centralBody.getIntersection(sc.getCurrentCoordinate()));
-
-                    drawAccessLine(satPos, sat2Pos, distToSc, true);
+                if (!element.hasAccessTo(gs)) {
+                    continue;
                 }
-            }
 
-            if (settings.getShowAccessSpacecraftToGroundstation())
-            {
-                for (IGroundstation gs : scenario.getGroundstations())
-                {
-                    if (!element.hasAccessTo(gs)) {
-                        continue;
-                    }
+                double distToGs = element.getDistanceTo(gs);
+                EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
+                EquirectangularCoordinate gsPos = getMapPosition(gs.getGeodeticPosition());
 
-                    double distToGs = element.getDistanceTo(gs);
-                    EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
-                    EquirectangularCoordinate gsPos = getMapPosition(gs.getGeodeticPosition());
-
-                    drawAccessLine(satPos, gsPos, distToGs, true);
-                }
+                drawAccessLine(satPos, gsPos, distToGs, true);
             }
         }
         catch (OrekitException e)
         {
             e.printStackTrace();
         }
+    }
 
-//            GeodeticPoint p = element.getCentralBody().getIntersectionPoint(new Vector3D(currentCoordinate.getPosition().getX() + x, currentCoordinate.getPosition().getY() + x, currentCoordinate.getPosition().getZ() + x), currentCoordinate.getFrame(), currentCoordinate.getDate());
-//            EquirectangularCoordinate mp2 = getMapPosition(p);
-//            IconSize i = new IconSize();
-//            i.x = 8;
-//            i.y = 8;
-//            drawElementFallback(mp2, i);
+    private void drawSatToSatVisibility(IScenarioProject scenario, ISpacecraft element)
+    {
+        MapViewSettings settings = getSettings();
+        if (!settings.getShowAccessSpacecraftToSpacecraft()) {
+            return;
+        }
+
+        ICentralBody centralBody = element.getCentralBody();
+        ICoordinate coordinate = element.getCurrentCoordinate();
+
+        try
+        {
+            for (ISpacecraft sc : scenario.getSpacecrafts())
+            {
+                if (sc == element) {
+                    continue;
+                }
+
+                if (!element.hasAccessTo(sc.getCurrentCoordinate())) {
+                    continue;
+                }
+
+                double distToSc = element.getDistanceTo(sc.getCurrentCoordinate());
+                EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
+                EquirectangularCoordinate sat2Pos = getMapPosition(centralBody.getIntersection(sc.getCurrentCoordinate()));
+
+                drawAccessLine(satPos, sat2Pos, distToSc, true);
+            }
+        }
+        catch (OrekitException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void drawAccessLine(EquirectangularCoordinate pos1,
@@ -217,6 +233,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         GL2 gl = getGL();
         MapViewParameters area = getParameters();
 
+        gl.glColor3f(1.0f, 1.0f, 1.0f);
         gl.glLineWidth(1.0f);
         gl.glBegin(GL2.GL_LINES);
         gl.glVertex2d(area.mapX + pos1.X, area.mapHeight - (pos1.Y - area.mapY));
@@ -234,6 +251,83 @@ public class ScenarioDrawJob extends GLProjectDrawJob
                 area.mapHeight - (((Math.max(pos1.Y, pos2.Y) + Math.min(pos1.Y, pos2.Y)) / 2) - area.mapY),
                 NumberUtils.formatNoDecimalPoint(dist / 1000.0) + " km",
                 true);
+    }
+
+    private void drawVisibilityCircles(Collection<IGroundstation> groundstaions)
+    {
+        UiVisible selectedElement = getSelectedElement();
+        if (selectedElement == null) {
+            return;
+        }
+
+        IVisibleElement selectedUnderlying = selectedElement.getUnderlyingElement();
+        if (!(selectedUnderlying instanceof ISpacecraft)) {
+            return;
+        }
+
+        MapViewParameters area = getParameters();
+        GL2 gl = getGL();
+        gl.glPushAttrib(GL2.GL_LINE_BIT);
+        gl.glDisable(GL2.GL_LINE_SMOOTH);
+        gl.glLineWidth(1.5f);
+        gl.glLineStipple(1, (short) 0x4444);
+        gl.glEnable(GL2.GL_LINE_STIPPLE);
+
+        // draw the ground station visibility circle for the selected spacecraft
+        ISpacecraft selectedSpacecraft = (ISpacecraft) selectedUnderlying;
+        RGB color = selectedSpacecraft.getElementColor();
+
+        for (IGroundstation gs : groundstaions)
+        {
+            try
+            {
+                List<GeodeticPoint> points = gs.getVisibilityCircle(selectedSpacecraft, 64);
+
+                gl.glColor4ub((byte) color.red, (byte) color.green, (byte) color.blue, (byte) 192);
+                gl.glBegin(GL2.GL_LINE_STRIP);
+                for (GeodeticPoint point : points)
+                {
+                    EquirectangularCoordinate mapPos = getMapPosition(point);
+                    gl.glVertex2d(area.mapX + mapPos.X, area.mapHeight - (mapPos.Y - area.mapY));
+                }
+                EquirectangularCoordinate mapPos = getMapPosition(points.get(0));
+                gl.glVertex2d(area.mapX + mapPos.X, area.mapHeight - (mapPos.Y - area.mapY));
+                gl.glEnd();
+            }
+            catch (OrekitException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        gl.glPopAttrib();
+    }
+
+    private void drawVisibilityCircle(IScenarioProject scenario, ISpacecraft spacecraft)
+    {
+        RGB color = spacecraft.getElementColor();
+        MapViewParameters area = getParameters();
+        GL2 gl = getGL();
+        gl.glLineWidth(1.5f);
+        gl.glColor4ub((byte) color.red, (byte) color.green, (byte) color.blue, (byte) 38);
+
+        try
+        {
+            List<GeodeticPoint> points = spacecraft.getVisibilityCircle(64);
+
+            gl.glBegin(GL2.GL_POLYGON);
+            for (GeodeticPoint point : points)
+            {
+                EquirectangularCoordinate mapPos = getMapPosition(point);
+                gl.glVertex2d(area.mapX + mapPos.X, area.mapHeight - (mapPos.Y - area.mapY));
+            }
+//            EquirectangularCoordinate mapPos = getMapPosition(points.get(0));
+//            gl.glVertex2d(area.mapX + mapPos.X, area.mapHeight - (mapPos.Y - area.mapY));
+            gl.glEnd();
+        }
+        catch (OrekitException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private EquirectangularCoordinate getMapPosition(GeodeticPoint point)

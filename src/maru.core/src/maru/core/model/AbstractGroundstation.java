@@ -1,5 +1,7 @@
 package maru.core.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import maru.MaruRuntimeException;
@@ -8,6 +10,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.orekit.bodies.BodyShape;
 import org.orekit.bodies.GeodeticPoint;
 import org.orekit.bodies.OneAxisEllipsoid;
+import org.orekit.errors.OrekitException;
 import org.orekit.frames.TopocentricFrame;
 import org.orekit.time.AbsoluteDate;
 
@@ -107,12 +110,33 @@ public abstract class AbstractGroundstation extends AbstractVisibleElement imple
         return elevationAngle;
     }
 
+    @Override
+    public List<GeodeticPoint> getVisibilityCircle(ISpacecraft spacecraft, int points) throws OrekitException
+    {
+        // based on orekit 6.1 VisibilityCircle example.
+
+        double radius = spacecraft.getCurrentCoordinate().getPosition().distance(Vector3D.ZERO);
+
+        List<GeodeticPoint> circle = new ArrayList<>();
+        for (int i = 0; i < points; i++)
+        {
+            double azimuth = i * (2.0 * Math.PI / points);
+            circle.add(frame.computeLimitVisibilityPoint(radius, azimuth, elevationAngle));
+        }
+        return circle;
+    }
+
     public void setGeodeticPosition(GeodeticPoint position)
     {
         this.geodeticPoint = new GeodeticPoint(position.getLatitude(),
                                                position.getLongitude(),
                                                position.getAltitude());
         this.cartesianPoint = getCentralBody().getCartesianPoint(geodeticPoint);
+
+        BodyShape parentShape = new OneAxisEllipsoid(getCentralBody().getEquatorialRadius(),
+                                                     getCentralBody().getFlattening(),
+                                                     getCentralBody().getFrame());
+        this.frame = new TopocentricFrame(parentShape, geodeticPoint, getElementName());
     }
 
     public void setElevationAngle(double elevation)
