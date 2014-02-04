@@ -114,14 +114,6 @@
          <menu
                label="&amp;Help">
             <command
-                  commandId="org.eclipse.ui.help.quickStartAction"
-                  style="push">
-            </command>
-            <separator
-                  name="maru.separator1"
-                  visible="true">
-            </separator>
-            <command
                   commandId="org.eclipse.ui.help.aboutAction"
                   label="&amp;About Maru"
                   style="push">
