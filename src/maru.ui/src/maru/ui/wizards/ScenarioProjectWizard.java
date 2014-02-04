@@ -80,8 +80,8 @@ public class ScenarioProjectWizard extends Wizard implements INewWizard, IExecut
                     project,
                     mainPage.getComment(),
                     centralBodyPage.createCentralBody(),
-                    periodPage.getBegin(),
-                    periodPage.getEnd()
+                    periodPage.getStart(),
+                    periodPage.getStop()
                 );
             return scenarioProject.getProject();
         }

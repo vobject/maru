@@ -6,8 +6,7 @@ Bundle-Version: 6.1.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.osgi,
  org.eclipse.core.runtime,
- org.apache.commons.math3;bundle-version="3.2.0",
- maru.core
+ org.apache.commons.math3;bundle-version="3.2.0"
 Bundle-Activator: org.orekit.OrekitPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: CS Systèmes d'Information

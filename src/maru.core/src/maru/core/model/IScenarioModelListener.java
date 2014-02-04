@@ -29,14 +29,16 @@ public interface IScenarioModelListener
     void elementRenamed(IScenarioElement element);
     void elementCommented(IScenarioElement element);
 
-    void elementColorChanged(IPropagatable element);
-    void elementImageChanged(IPropagatable element);
-    void elementInitialCoordinateChanged(IPropagatable element);
+    void elementColorChanged(IVisibleElement element);
+    void elementImageChanged(IVisibleElement element);
 
     void centralbodyImageChanged(ICentralBody element);
     void centralbodyGmChanged(ICentralBody element);
     void centralbodyEquatorialRadiusChanged(ICentralBody element);
     void centralbodyFlatteningChanged(ICentralBody element);
+
+    void elementInitialCoordinateChanged(IGroundstation element);
+    void elementInitialCoordinateChanged(ISpacecraft element);
 
     void propagatablesTimeChanged(IScenarioProject element);
 

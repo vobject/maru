@@ -4,15 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
-import maru.core.utils.PathUtil;
+import maru.core.utils.PathUtils;
 import maru.spacecraft.MaruSpacecraftPlugin;
 import maru.spacecraft.preferences.PreferenceConstants;
 import maru.spacecraft.preferences.TleSourceEditor;
-import maru.spacecraft.tlesatellite.InitialTleCoordinate;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.orekit.errors.OrekitException;
@@ -44,13 +45,13 @@ public final class TleUtils
         return elements.toArray(new String[elements.size()]);
     }
 
-    public static List<InitialTleCoordinate> parseTleSource(String source)
+    public static List<Map.Entry<String, TLE>> parseTleSource(String source)
     {
-        List<InitialTleCoordinate> tleList = new ArrayList<>();
+        List<Map.Entry<String, TLE>> tleList = new ArrayList<>();
 
         try
         {
-            URL url = PathUtil.getUrlFromPath(source);
+            URL url = PathUtils.getUrlFromPath(source);
             InputStreamReader stream = new InputStreamReader(url.openStream());
             BufferedReader reader = new BufferedReader(stream);
 
@@ -62,7 +63,7 @@ public final class TleUtils
                 String line2 = reader.readLine();
 
                 TLE tle = new TLE(line1, line2);
-                tleList.add(new InitialTleCoordinate(name, tle));
+                tleList.add(new AbstractMap.SimpleEntry<String, TLE>(name, tle));
             }
             reader.close();
         }

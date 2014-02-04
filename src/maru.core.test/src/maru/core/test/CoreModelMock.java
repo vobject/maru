@@ -2,18 +2,24 @@ package maru.core.test;
 
 import java.util.Collection;
 
+import maru.core.model.AbstractCentralBody;
+import maru.core.model.AbstractGroundstation;
+import maru.core.model.AbstractPropagator;
+import maru.core.model.AbstractSpacecraft;
+import maru.core.model.ICentralBody;
 import maru.core.model.ICoordinate;
-import maru.core.model.IPropagatable;
-import maru.core.model.template.CentralBody;
-import maru.core.model.template.Groundstation;
-import maru.core.model.template.Propagator;
-import maru.core.model.template.Spacecraft;
-import maru.core.units.Frame;
-import maru.core.units.Position;
+import maru.core.model.ISpacecraft;
+
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.orekit.bodies.BodyShape;
+import org.orekit.bodies.GeodeticPoint;
+import org.orekit.errors.OrekitException;
+import org.orekit.frames.Frame;
+import org.orekit.time.AbsoluteDate;
 
 public class CoreModelMock
 {
-    public static class DummyCentralBody extends CentralBody
+    public static class DummyCentralBody extends AbstractCentralBody
     {
         private static final long serialVersionUID = 1L;
 
@@ -47,29 +53,41 @@ public class CoreModelMock
         }
 
         @Override
-        public Position getPosition(long time, Frame frame)
+        public Vector3D getPosition(Frame frame, AbsoluteDate date) throws OrekitException
+        {
+            return null;
+        }
+
+        @Override
+        public GeodeticPoint getIntersection(ICoordinate from) throws OrekitException
+        {
+            return null;
+        }
+
+        @Override
+        public GeodeticPoint getIntersection(ICoordinate from, ICoordinate to) throws OrekitException
+        {
+            return null;
+        }
+
+        @Override
+        public BodyShape getBodyShape()
         {
             return null;
         }
     }
 
-    public static class DummyGroundstation extends Groundstation
+    public static class DummyGroundstation extends AbstractGroundstation
     {
         private static final long serialVersionUID = 1L;
 
-        public DummyGroundstation()
+        public DummyGroundstation(GeodeticPoint point, ICentralBody centralBody)
         {
-            super("DummyGroundstation");
-        }
-
-        @Override
-        public void centralbodyChanged()
-        {
-
+            super("DummyGroundstation", point, 0.0, centralBody);
         }
     }
 
-    public static class DummySatellite extends Spacecraft
+    public static class DummySatellite extends AbstractSpacecraft
     {
         private static final long serialVersionUID = 1L;
 
@@ -79,25 +97,13 @@ public class CoreModelMock
         }
 
         @Override
-        public boolean inUmbra(ICoordinate coordinate)
-        {
-            return false;
-        }
-
-        @Override
-        public boolean inUmbraOrPenumbra(ICoordinate coordinate)
-        {
-            return false;
-        }
-
-        @Override
         public void centralbodyChanged()
         {
 
         }
     }
 
-    public static class DummyPropagator extends Propagator
+    public static class DummyPropagator extends AbstractPropagator
     {
         private static final long serialVersionUID = 1L;
 
@@ -108,13 +114,13 @@ public class CoreModelMock
         }
 
         @Override
-        public ICoordinate getCoordinate(IPropagatable element, long time)
+        public ICoordinate getCoordinate(ISpacecraft element, AbsoluteDate date)
         {
             return null;
         }
 
         @Override
-        public Collection<ICoordinate> getCoordinates(IPropagatable element, long start, long stop, long stepSize)
+        public Collection<ICoordinate> getCoordinates(ISpacecraft element, AbsoluteDate start, AbsoluteDate stop, long stepSize)
         {
             return null;
         }

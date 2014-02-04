@@ -5,10 +5,12 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import maru.core.model.CoreModel;
-import maru.core.model.IPropagatable;
+import maru.core.model.IGroundstation;
 import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioProject;
+import maru.core.model.ISpacecraft;
 import maru.core.model.ITimepoint;
+import maru.core.model.IVisibleElement;
 import maru.core.model.ScenarioModelAdapter;
 import maru.ui.internal.model.UiProjectModelManager;
 import maru.ui.model.IUiProjectSelectionListener;
@@ -133,19 +135,25 @@ public class ContentProvider extends BaseWorkbenchContentProvider
         }
 
         @Override
-        public void elementColorChanged(IPropagatable element)
+        public void elementColorChanged(IVisibleElement element)
         {
             refreshViewer(element.getScenarioProject(), false);
         }
 
         @Override
-        public void elementImageChanged(IPropagatable element)
+        public void elementImageChanged(IVisibleElement element)
         {
             refreshViewer(element.getScenarioProject(), false);
         }
 
         @Override
-        public void elementInitialCoordinateChanged(IPropagatable element)
+        public void elementInitialCoordinateChanged(IGroundstation element)
+        {
+            refreshViewer(element.getScenarioProject(), false);
+        }
+
+        @Override
+        public void elementInitialCoordinateChanged(ISpacecraft element)
         {
             refreshViewer(element.getScenarioProject(), false);
         }

@@ -29,3 +29,6 @@ local.properties
 .pmd
 
 workspace/
+
+*.bat
+*.cmd

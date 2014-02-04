@@ -1,0 +1,42 @@
+Low-level coding notes:
+
+--> Architecture/Protocol
+- rename ICoreModelListener.propagatablesChanged() or get rid of CoreModel.changeScenarioElementsTime() altogether by proagating (elem.currentTimeChanged()) all scenario element whenever the scenarios current time changes automatically inside ScenarioModelManager ----> we cannot get rid of changeScenarioElementsTime() easily because it is used for Real-time mode!
+- add notifyXZYchanged() functions to CoreModel to indicate changes to a property of a scenario element that could not be expressed through standard CoreModel interfaces (e.g. implementation details were changed by the owning plugin) but CoreModelListeners should be notified nevertheless.
+- migrate protocol to a command-pattern-based approach
+- make the scenario timeframe less of a central property and more of a second class citizen (like in STK)
+- move getEclipseState() to the ICoordinate interface -> sensible? would take care of the caching of the ground track eclipse state that is currently executed way too often -> by that logic, the hasAccessTo() getDistanceTo() would also have to be moved into ICoordinate.
+- move the coordinates (GeodeticPoint and elevation) into its own ICoordinate implementation -> sensible?
+
+--> User Interface
+- change stepSize type to double
+- image-combobox
+- Date-Selction Control: a SWT Text control with a popup dialog that enables the user to select a date (via calender) and time -> can be used in timeline, scenario-propertypage, scenario-creation-wizard
+- report plugin preferences: add font/size selection
+- split up satellite-creation-wizard into: name/comment/color/image -> orbit -> propagator
+- modal Waiting-Dialogs for long-lasting operations like in eclipse
+- disallow TLE satellites for central bodies other than Earth
+- Develop an OpenGL map-drawing layer that takes care of the current placement of the map on the canvas and can make outside-of-map-drawings appear on the other side of it
+
+--> Per-Scenario settings
+- UiProject should have its own PreferenceStore that other plugins can query
+- create scenario project specific settings. then, move Image/Color/Texture out of the coremodel and into the new ui-settings-model.
+- Activate/Deactivate scenario elements via property pages (ui or map?)
+
+--> Branding
+- Get rid of Welcome-Page or make it resemble the github README/Wiki
+- Add author name and copyright to the About-Page
+- maru.ini that limits the amount of memory to e.g. 1024MiB sensible?
+
+--> Bugs
+- delete StartTimepoint, currenttime will not be updated.
+
+--> Misc
+- clear propagator cache after report creation sensible?
+- fix JOGL redraw issue for Linux/Mac
+
+
+Goals for Maru v1.3:
+- Project-specific preferences/properties
+- Integrate more Propagators from Orekit and their options
+- Fix Linux and OSX issues

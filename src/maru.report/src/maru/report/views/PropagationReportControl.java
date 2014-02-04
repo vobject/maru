@@ -1,11 +1,13 @@
 package maru.report.views;
 
 import maru.core.model.ICoordinate;
-import maru.core.model.IPropagatable;
 import maru.core.model.IPropagator;
-import maru.core.utils.TimeUtil;
+import maru.core.model.ISpacecraft;
+import maru.core.utils.TimeUtils;
 
 import org.eclipse.swt.widgets.Composite;
+import org.orekit.errors.OrekitException;
+import org.orekit.time.AbsoluteDate;
 
 public class PropagationReportControl extends AbstractPropagationReportControl
 {
@@ -30,21 +32,26 @@ public class PropagationReportControl extends AbstractPropagationReportControl
         appendln("");
         appendln("");
 
-        createReportBody();
+        try {
+            createReportBody();
+        } catch (OrekitException e) {
+            appendln("ERROR: Exception thrown!");
+            append(e.toString());
+        }
     }
 
-    private void createReportBody()
+    private void createReportBody() throws OrekitException
     {
-        IPropagatable element = getSelectedElement();
+        ISpacecraft element = getSelectedElement();
         IPropagator propagator = element.getPropagator();
 
-        long startTime = getCurrentProject().getStartTime();
-        long stopTime = getCurrentProject().getStopTime();
+        AbsoluteDate start = getCurrentProject().getStartTime();
+        AbsoluteDate stop = getCurrentProject().getStopTime();
         long stepSize = getSelectedStepSize();
 
-        for (ICoordinate coordinate : propagator.getCoordinates(element, startTime, stopTime, stepSize))
+        for (ICoordinate coordinate : propagator.getCoordinates(element, start, stop, stepSize))
         {
-            append(TimeUtil.asISO8601(coordinate.getTime()));
+            append(TimeUtils.asISO8601(coordinate.getDate()));
             append("\t");
 
             append(toKm(coordinate.getPosition().getX()));

@@ -83,7 +83,7 @@ public class ScenarioNature implements IProjectNature
     public static void removeNature(IProjectDescription description)
     {
         String[] oldNatures = description.getNatureIds();
-        Collection<String> newNatures = new ArrayList<String>(Arrays.asList(oldNatures));
+        Collection<String> newNatures = new ArrayList<>(Arrays.asList(oldNatures));
         newNatures.remove(ScenarioNature.NATURE_ID);
         description.setNatureIds(newNatures.toArray(new String[newNatures.size()]));
     }

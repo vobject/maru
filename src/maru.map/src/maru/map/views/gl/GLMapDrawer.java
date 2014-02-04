@@ -16,7 +16,7 @@ import maru.map.jobs.gl.TextureCache;
 import maru.map.views.AbstractMapDrawer;
 import maru.map.views.gl.jobs.DayNightDrawJob;
 import maru.map.views.gl.jobs.LatLonDrawJob;
-import maru.map.views.gl.jobs.MapDrawJob;
+import maru.map.views.gl.jobs.MapTextureDrawJob;
 import maru.map.views.gl.jobs.ScenarioDrawJob;
 import maru.ui.model.UiProject;
 
@@ -47,7 +47,7 @@ public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
         projectDrawJobs = new ArrayList<>();
         postAnimationJobs = new ArrayList<>();
 
-        addProjectDrawJob(new MapDrawJob());
+        addProjectDrawJob(new MapTextureDrawJob());
         addProjectDrawJob(new LatLonDrawJob());
         addProjectDrawJob(new DayNightDrawJob());
         addProjectDrawJob(new ScenarioDrawJob());
@@ -114,6 +114,17 @@ public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glColor3f(1.0f, 1.0f, 1.0f);
 
+        updateJobs();
+    }
+
+    @Override
+    protected void updateContext(Object context, UiProject project)
+    {
+        updateContext(context);
+    }
+
+    private void updateJobs()
+    {
         for (GLProjectDrawJob job : projectDrawJobs) {
             job.setMapAreaSettings(getParameters());
             job.setMapDrawSettings(getSettings());

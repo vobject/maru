@@ -2,26 +2,26 @@ package maru.core.model;
 
 import java.io.Serializable;
 
-import maru.core.units.Frame;
-import maru.core.units.Position;
-import maru.core.units.Velocity;
+import maru.core.utils.EclipseState;
+
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.orekit.frames.Frame;
+import org.orekit.time.AbsoluteDate;
 
 public interface ICoordinate extends Serializable
 {
+    ICentralBody getCentralBody();
+
     /** Get the position vector of the coordinate. */
-    Position getPosition();
+    Vector3D getPosition();
 
     /** Get the velocity vector of the coordinate. */
-    Velocity getVelocity();
-
-    /**
-     * Get the number of seconds passed since the standard base time
-     * known as "the epoch", namely January 1, 1970, 00:00:00 GMT.
-     *
-     * @see maru.core.model.ITimepoint#getTime()
-     */
-    long getTime();
+    Vector3D getVelocity();
 
     /** Get the frame of the coordinate. */
     Frame getFrame();
+
+    AbsoluteDate getDate();
+
+    EclipseState getEclipseState();
 }

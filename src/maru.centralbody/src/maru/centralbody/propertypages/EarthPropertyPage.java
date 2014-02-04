@@ -2,7 +2,7 @@ package maru.centralbody.propertypages;
 
 import maru.IMaruResource;
 import maru.centralbody.MaruCentralBodyResources;
-import maru.centralbody.earth.Earth;
+import maru.centralbody.bodies.OrekitCentralBody;
 import maru.centralbody.preferences.MapImagesEditor;
 import maru.centralbody.wizards.CentralBodyFactory;
 import maru.core.model.CoreModel;
@@ -37,9 +37,9 @@ public class EarthPropertyPage extends UiPropertyPage
     }
 
     @Override
-    public Earth getScenarioElement()
+    public OrekitCentralBody getScenarioElement()
     {
-        return (Earth) getUiElement().getUnderlyingElement();
+        return (OrekitCentralBody) getUiElement().getUnderlyingElement();
     }
 
     @Override
@@ -117,7 +117,7 @@ public class EarthPropertyPage extends UiPropertyPage
 
     private void initDefaults()
     {
-        Earth element = getScenarioElement();
+        OrekitCentralBody element = getScenarioElement();
         if (element == null) {
             return;
         }
@@ -132,7 +132,7 @@ public class EarthPropertyPage extends UiPropertyPage
 
     private void initControls()
     {
-        Earth element = getScenarioElement();
+        OrekitCentralBody element = getScenarioElement();
         if (element == null) {
             return;
         }

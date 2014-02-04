@@ -1,28 +1,34 @@
 package maru.map.views.gl.jobs;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import javax.media.opengl.GL2;
 
 import maru.IMaruResource;
-import maru.MaruException;
 import maru.centralbody.projection.EquirectangularCoordinate;
-import maru.centralbody.projection.ICoordinateProjector;
+import maru.core.model.ICentralBody;
 import maru.core.model.ICoordinate;
-import maru.core.model.IPropagatable;
+import maru.core.model.IGroundstation;
 import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
+import maru.core.model.IVisibleElement;
+import maru.core.utils.EclipseState;
+import maru.core.utils.FormatUtils;
 import maru.map.jobs.gl.GLProjectDrawJob;
-import maru.map.views.GroundtrackBarrier;
 import maru.map.views.GroundtrackPoint;
+import maru.map.views.GroundtrackRange;
 import maru.map.views.MapViewParameters;
 import maru.map.views.MapViewSettings;
 import maru.map.views.gl.GLUtils;
+import maru.ui.model.UiVisible;
 
 import org.eclipse.swt.graphics.RGB;
+import org.orekit.bodies.GeodeticPoint;
+import org.orekit.errors.OrekitException;
 
 import com.jogamp.opengl.util.texture.Texture;
 
@@ -30,7 +36,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 {
     private class IconSize { int x; int y; };
 
-    private final Map<IPropagatable, GroundtrackBarrier> gtBarriers;
+    private final Map<ISpacecraft, GroundtrackRange> gtBarriers;
 
     public ScenarioDrawJob()
     {
@@ -43,30 +49,61 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         MapViewParameters area = getParameters();
         MapViewSettings drawing = getSettings();
 
-        IScenarioProject scenarioProject = getProject().getUnderlyingElement();
+        IScenarioProject scenario = getProject().getUnderlyingElement();
 
-        getProjector().setCentralBody(scenarioProject.getCentralBody());
+        getProjector().setCentralBody(scenario.getCentralBody());
         getProjector().setMapSize(area.mapWidth, area.mapHeight);
 
-        for (IPropagatable element : scenarioProject.getPropagatables())
+        for (IGroundstation element : scenario.getGroundstations())
         {
-            ICoordinate currentCoordinate = element.getCurrentCoordinate();
+            try
+            {
+                GeodeticPoint position = element.getGeodeticPosition();
+                EquirectangularCoordinate mapPos = getMapPosition(position);
+                RGB defaultColor = element.getElementColor();
 
-            GroundtrackBarrier currentGtBarrier;
-            if (!gtBarriers.containsKey(element)) {
-                currentGtBarrier = new GroundtrackBarrier(currentCoordinate.getTime(), drawing.getGroundtrackLength());
-                gtBarriers.put(element, currentGtBarrier);
-            } else {
-                currentGtBarrier = gtBarriers.get(element);
-                currentGtBarrier.update(currentCoordinate.getTime(), drawing.getGroundtrackLength());
+                drawElement(element, mapPos, defaultColor);
+                drawVisibilityCircle(element);
             }
+            catch (OrekitException e)
+            {
+                e.printStackTrace();
+            }
+        }
 
-            RGB defaultColor = element.getElementColor();
-            RGB nightColor = toNightRGB(element.getElementColor());
-            RGB currentColor = selectColor(element, currentCoordinate, defaultColor, nightColor);
+        for (ISpacecraft element : scenario.getSpacecrafts())
+        {
+            try
+            {
+                ICoordinate currentCoordinate = element.getCurrentCoordinate();
+                EquirectangularCoordinate mapPos = getMapPosition(currentCoordinate);
+                if (mapPos == null) {
+                    return;
+                }
 
-            drawGroundtrack(element, currentGtBarrier, defaultColor, nightColor);
-            drawElement(element, currentCoordinate, currentColor);
+                GroundtrackRange currentGtBarrier;
+                if (!gtBarriers.containsKey(element)) {
+                    currentGtBarrier = new GroundtrackRange(currentCoordinate.getDate(), drawing.getGroundtrackLength());
+                    gtBarriers.put(element, currentGtBarrier);
+                } else {
+                    currentGtBarrier = gtBarriers.get(element);
+                    currentGtBarrier.update(currentCoordinate.getDate(), drawing.getGroundtrackLength());
+                }
+
+                RGB defaultColor = element.getElementColor();
+                RGB nightColor = toNightRGB(element.getElementColor());
+                RGB currentColor = selectColor(currentCoordinate, defaultColor, nightColor);
+
+                drawGroundtrack(element, currentGtBarrier, defaultColor, nightColor);
+                drawElement(element, mapPos, currentColor);
+                drawVisibilityCircle(element, mapPos);
+                drawSatToGsVisibility(scenario, element);
+                drawSatToSatVisibility(scenario, element);
+            }
+            catch (OrekitException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -76,60 +113,38 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         // this job does not own any resources
     }
 
-    private void drawGroundtrack(IPropagatable element, GroundtrackBarrier barrier, RGB day, RGB night)
+    private void drawGroundtrack(ISpacecraft element, GroundtrackRange barrier, RGB day, RGB night) throws OrekitException
     {
-        GL2 gl = getGL();
-        MapViewParameters area = getParameters();
+        MapPrimitives painter = new MapPrimitives(getGL(), getParameters());
 
-        gl.glLineWidth(2.0f);
-
-        for (ArrayList<GroundtrackPoint> lineStrips : getGroundtrack(element, barrier))
+        for (List<GroundtrackPoint> lineStrips : getGroundtrack(element, barrier))
         {
-            gl.glBegin(GL2.GL_LINE_STRIP);
-
+            painter.beginLine(2.0, false);
             for (GroundtrackPoint lineStrip : lineStrips)
             {
-                if (lineStrip.day) {
-                    gl.glColor3ub((byte) day.red, (byte) day.green, (byte) day.blue);
-                } else {
-                    gl.glColor3ub((byte) night.red, (byte) night.green, (byte) night.blue);
-                }
-
-                gl.glVertex2d(area.mapX + lineStrip.X, area.mapHeight - (lineStrip.Y - area.mapY));
+                RGB color = lineStrip.day ? day : night;
+                painter.addLineVertex(lineStrip.X, lineStrip.Y, color, 1.0);
             }
-
-            gl.glEnd();
+            painter.endLine();
         }
     }
 
-    private void drawElement(IPropagatable element, ICoordinate coordinate, RGB color)
+    private void drawElement(IVisibleElement element, EquirectangularCoordinate mapPos, RGB color)
     {
-        EquirectangularCoordinate mapPos;
-        try {
-            mapPos = getProjector().project(coordinate);
-        } catch (MaruException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        GL2 gl = getGL();
         MapViewParameters area = getParameters();
-
-        gl.glColor3ub((byte) color.red, (byte) color.green, (byte) color.blue);
-
         IconSize iconSize = getElementIconSize(element);
         IMaruResource resource = element.getElementImage();
 
         if ((resource != null ) && !resource.getPath().isEmpty())
         {
-            drawElementTexture(resource.getPath(), mapPos, iconSize);
+            drawElementTexture(resource.getPath(), mapPos, color, iconSize);
         }
         else
         {
             // fallback for when we cannot load an image for the element
             iconSize.x /= 2;
             iconSize.y /= 2;
-            drawElementFallback(mapPos, iconSize);
+            drawElementFallback(mapPos, color, iconSize);
         }
 
         // draw the element name no matter if we are in fallback mode or not
@@ -142,31 +157,192 @@ public class ScenarioDrawJob extends GLProjectDrawJob
                          true);
     }
 
-    private ArrayList<ArrayList<GroundtrackPoint>> getGroundtrack(IPropagatable element, GroundtrackBarrier barrier)
+    private void drawSatToGsVisibility(IScenarioProject scenario, ISpacecraft element) throws OrekitException
     {
-        MapViewParameters area = getParameters();
-        MapViewSettings drawing = getSettings();
-        ICoordinateProjector projector = getProjector();
+        MapViewSettings settings = getSettings();
+        if (!settings.getShowVisibilitySpacecraftToGroundstation()) {
+            return;
+        }
 
-        ArrayList<ArrayList<GroundtrackPoint>> elementLineStrips = new ArrayList<>();
+        ICentralBody centralBody = element.getCentralBody();
+        ICoordinate coordinate = element.getCurrentCoordinate();
 
-        IPropagator propagator = element.getPropagator();
-        EquirectangularCoordinate lastMapPos = null;
-        ArrayList<GroundtrackPoint> lineStrip = new ArrayList<>();
-
-        for (ICoordinate coordinate : propagator.getCoordinates(element, barrier.getStart(), barrier.getStop(), drawing.getGroundtrackStepSize()))
+        for (IGroundstation gs : scenario.getGroundstations())
         {
-            EquirectangularCoordinate mapPos;
-            try {
-                mapPos = projector.project(coordinate);
-            } catch (MaruException e) {
-                e.printStackTrace();
+            if (!element.hasAccessTo(gs)) {
                 continue;
             }
 
+            double distToGs = element.getDistanceTo(gs);
+            EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
+            EquirectangularCoordinate gsPos = getMapPosition(gs.getGeodeticPosition());
+
+            drawAccessLine(satPos, gsPos, distToGs, true);
+        }
+    }
+
+    private void drawSatToSatVisibility(IScenarioProject scenario, ISpacecraft element) throws OrekitException
+    {
+        MapViewSettings settings = getSettings();
+        if (!settings.getShowVisibilitySpacecraftToSpacecraft()) {
+            return;
+        }
+
+        ICentralBody centralBody = element.getCentralBody();
+        ICoordinate coordinate = element.getCurrentCoordinate();
+
+        for (ISpacecraft sc : scenario.getSpacecrafts())
+        {
+            if (sc == element) {
+                continue;
+            }
+
+            if (!element.hasAccessTo(sc.getCurrentCoordinate())) {
+                continue;
+            }
+
+            double distToSc = element.getDistanceTo(sc.getCurrentCoordinate());
+            EquirectangularCoordinate satPos = getMapPosition(centralBody.getIntersection(coordinate));
+            EquirectangularCoordinate sat2Pos = getMapPosition(centralBody.getIntersection(sc.getCurrentCoordinate()));
+
+            drawAccessLine(satPos, sat2Pos, distToSc, true);
+        }
+    }
+
+    private void drawAccessLine(EquirectangularCoordinate pos1,
+                                EquirectangularCoordinate pos2,
+                                double dist, boolean showDist)
+    {
+        MapPrimitives painter = new MapPrimitives(getGL(), getParameters());
+        painter.drawLine(pos1.X, pos1.Y, pos2.X, pos2.Y, 1.0, new RGB(255, 255, 255), 1.0);
+
+        if (!showDist) {
+            return;
+        }
+
+        MapViewParameters area = getParameters();
+        GLUtils.drawText(getTextRenderer(),
+                         area.clientAreaWidth,
+                         area.clientAreaHeight,
+                         area.mapX + ((Math.max(pos1.X, pos2.X) + Math.min(pos1.X, pos2.X)) / 2),
+                         area.mapHeight - (((Math.max(pos1.Y, pos2.Y) + Math.min(pos1.Y, pos2.Y)) / 2) - area.mapY),
+                         FormatUtils.formatNoDecimalPoint(dist / 1000.0) + " km",
+                         true);
+    }
+
+    private void drawVisibilityCircle(IGroundstation groundstaion) throws OrekitException
+    {
+        MapViewSettings settings = getSettings();
+        if (!settings.getShowVisibilityCircles()) {
+            return;
+        }
+
+        UiVisible selectedElement = getSelectedElement();
+        if (selectedElement == null) {
+            return;
+        }
+
+        IVisibleElement selectedUnderlying = selectedElement.getUnderlyingElement();
+        if (!(selectedUnderlying instanceof ISpacecraft)) {
+            return;
+        }
+
+        // draw the ground station visibility circle for the selected spacecraft
+        ISpacecraft selectedSpacecraft = (ISpacecraft) selectedUnderlying;
+        RGB color = selectedSpacecraft.getElementColor();
+        List<GeodeticPoint> points = groundstaion.getVisibilityCircle(selectedSpacecraft.getCurrentCoordinate(), 48);
+        MapPrimitives painter = new MapPrimitives(getGL(), getParameters());
+
+        painter.beginPolygon();
+        for (GeodeticPoint point : points) {
+            EquirectangularCoordinate projectedPoint = getMapPosition(point);
+            painter.addPolygonVertex(projectedPoint.X, projectedPoint.Y, color, 0.05);
+        }
+        painter.endPolygon();
+
+        painter.beginLine(2.0, 0x4444, true);
+        for (GeodeticPoint point : points) {
+            EquirectangularCoordinate projectedPoint = getMapPosition(point);
+            painter.addLineVertex(projectedPoint.X, projectedPoint.Y, color, 1.0);
+        }
+        painter.endLine();
+    }
+
+    private void drawVisibilityCircle(ISpacecraft spacecraft, EquirectangularCoordinate scPos) throws OrekitException
+    {
+        MapViewSettings settings = getSettings();
+        if (!settings.getShowVisibilityCircles()) {
+            return;
+        }
+
+        RGB color = spacecraft.getElementColor();
+        List<GeodeticPoint> points = spacecraft.getVisibilityCircle(48);
+        MapPrimitives painter = new MapPrimitives(getGL(), getParameters());
+
+        painter.beginPolygon();
+        for (GeodeticPoint point : points) {
+            EquirectangularCoordinate projectedPoint = getMapPosition(point);
+            painter.addPolygonVertex(projectedPoint.X, projectedPoint.Y, color, 0.2);
+        }
+        painter.endPolygon();
+
+        painter.beginLine(1.5, true);
+        for (GeodeticPoint point : points) {
+            EquirectangularCoordinate projectedPoint = getMapPosition(point);
+            painter.addPolygonVertex(projectedPoint.X, projectedPoint.Y, color, 0.6);
+        }
+        painter.endPolygon();
+
+//        for (GeodeticPoint point : points) {
+//            EquirectangularCoordinate projectedPoint = getMapPosition(point);
+//            painter.drawLine(scPos.X, scPos.Y, projectedPoint.X, projectedPoint.Y, 4.0, spacecraft.getElementColor(), 0.75);
+//        }
+
+//        for (List<EquirectangularCoordinate> lineStrips : getVisibilityCircle(points, true))
+//        {
+//            int i = 0;
+//            for (EquirectangularCoordinate lineStrip : lineStrips)
+//            {
+//                GLUtils.drawText(getTextRenderer(),
+//                        area.clientAreaWidth,
+//                        area.clientAreaHeight,
+//                        area.mapX + lineStrip.X,
+//                        area.mapHeight - (lineStrip.Y - area.mapY),
+//                        i++ + " (" + lineStrip.toString() + ")",
+//                        true);
+//            }
+//        }
+    }
+
+    private EquirectangularCoordinate getMapPosition(GeodeticPoint point)
+    {
+        return getProjector().project(point);
+    }
+
+    private EquirectangularCoordinate getMapPosition(ICoordinate coordinate) throws OrekitException
+    {
+        return getProjector().project(coordinate);
+    }
+
+    private List<List<GroundtrackPoint>> getGroundtrack(ISpacecraft element, GroundtrackRange barrier) throws OrekitException
+    {
+        MapViewParameters area = getParameters();
+        MapViewSettings drawing = getSettings();
+
+        List<List<GroundtrackPoint>> elementLineStrips = new ArrayList<>();
+
+        IPropagator propagator = element.getPropagator();
+        EquirectangularCoordinate lastMapPos = null;
+        List<GroundtrackPoint> lineStrip = new ArrayList<>();
+
+        for (ICoordinate coordinate : propagator.getCoordinates(element, barrier.getStart(), barrier.getStop(), drawing.getGroundtrackStepSize()))
+        {
+            EquirectangularCoordinate mapPos = getMapPosition(coordinate);
+            boolean inDaylight = !drawing.getShowShadowTimes() ? true : !inShadow(coordinate);
+
             if (lastMapPos == null)
             {
-                lineStrip.add(new GroundtrackPoint(mapPos.X, mapPos.Y, !drawing.getShowShadowTimes() ? true : !inShadow(element, coordinate)));
+                lineStrip.add(new GroundtrackPoint(mapPos.X, mapPos.Y, inDaylight));
 
                 lastMapPos = mapPos;
                 continue;
@@ -174,16 +350,18 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
             if (Math.abs(mapPos.X - lastMapPos.X) > (area.mapWidth / 2))
             {
+                //lineStrip.add(new GroundtrackPoint(area.mapWidth, mapPos.Y, inDaylight));
                 elementLineStrips.add(lineStrip);
 
                 lineStrip = new ArrayList<>();
-                lineStrip.add(new GroundtrackPoint(mapPos.X, mapPos.Y, !drawing.getShowShadowTimes() ? true : !inShadow(element, coordinate)));
+                //lineStrip.add(new GroundtrackPoint(0, lastMapPos.Y, inDaylight));
+                lineStrip.add(new GroundtrackPoint(mapPos.X, mapPos.Y, inDaylight));
 
                 lastMapPos = mapPos;
                 continue;
             }
 
-            lineStrip.add(new GroundtrackPoint(mapPos.X, mapPos.Y, !drawing.getShowShadowTimes() ? true : !inShadow(element, coordinate)));
+            lineStrip.add(new GroundtrackPoint(mapPos.X, mapPos.Y, inDaylight));
             lastMapPos = mapPos;
         }
         elementLineStrips.add(lineStrip);
@@ -191,7 +369,12 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         return elementLineStrips;
     }
 
-    private IconSize getElementIconSize(IPropagatable element)
+    private boolean inShadow(ICoordinate coordinate)
+    {
+        return coordinate.getEclipseState() != EclipseState.None;
+    }
+
+    private IconSize getElementIconSize(IVisibleElement element)
     {
         MapViewParameters area = getParameters();
         IconSize size = new IconSize();
@@ -210,43 +393,29 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         }
     }
 
-    private boolean inShadow(IPropagatable element, ICoordinate coordinate)
-    {
-        if (element instanceof ISpacecraft) {
-            return ((ISpacecraft) element).inUmbraOrPenumbra(coordinate);
-        } else {
-            // there is currently nothing in the groundstation interface that
-            // allows to ask if it is day or night.
-            return false;
-        }
-    }
-
-    private void drawElementTexture(String imagePath, EquirectangularCoordinate mapPos, IconSize iconSize)
+    private void drawElementTexture(String imagePath, EquirectangularCoordinate mapPos, RGB color, IconSize iconSize)
     {
         GL2 gl = getGL();
         MapViewParameters area = getParameters();
         Texture texture = getTextureCache().get(imagePath);
 
+        gl.glColor3ub((byte) color.red, (byte) color.green, (byte) color.blue);
+
         GLUtils.drawTexture(gl, texture,
-            area.mapX + mapPos.X - (iconSize.x / 2),
-            area.mapHeight - (mapPos.Y - area.mapY) - (iconSize.y / 2),
-            iconSize.x, iconSize.y);
+                            area.mapX + mapPos.X - (iconSize.x / 2),
+                            area.mapHeight - (mapPos.Y - area.mapY) - (iconSize.y / 2),
+                            iconSize.x, iconSize.y);
     }
 
-    private void drawElementFallback(EquirectangularCoordinate mapPos, IconSize iconSize)
+    private void drawElementFallback(EquirectangularCoordinate mapPos, RGB color, IconSize iconSize)
     {
-        GL2 gl = getGL();
-        MapViewParameters area = getParameters();
-
-        gl.glPointSize(Math.max(iconSize.x, iconSize.y));
-        gl.glBegin(GL2.GL_POINTS);
-            gl.glVertex2d(area.mapX + mapPos.X, area.mapHeight - (mapPos.Y - area.mapY));
-        gl.glEnd();
+        MapPrimitives painter = new MapPrimitives(getGL(), getParameters());
+        painter.drawPoint(mapPos.X, mapPos.Y, Math.max(iconSize.x, iconSize.y), color, 1.0);
     }
 
-    private RGB selectColor(IPropagatable element, ICoordinate coordinate, RGB day, RGB night)
+    private RGB selectColor(ICoordinate coordinate, RGB day, RGB night)
     {
-        return inShadow(element, coordinate) ? night : day;
+        return inShadow(coordinate) ? night : day;
     }
 
     private RGB toNightRGB(RGB color)

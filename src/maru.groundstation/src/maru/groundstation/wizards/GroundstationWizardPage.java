@@ -2,6 +2,7 @@ package maru.groundstation.wizards;
 
 import maru.core.model.IScenarioProject;
 import maru.groundstation.MaruGroundstationResources;
+import maru.groundstation.controls.GroundstationControls;
 import maru.ui.wizards.ScenarioElementWizard;
 import maru.ui.wizards.ScenarioElementWizardNamingPage;
 
@@ -9,8 +10,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
+import org.orekit.bodies.GeodeticPoint;
 
 public class GroundstationWizardPage extends ScenarioElementWizardNamingPage
 {
@@ -18,10 +18,8 @@ public class GroundstationWizardPage extends ScenarioElementWizardNamingPage
     private static final String PAGE_TITLE = "Geodedic Groundstation";
     private static final String PAGE_DESCRIPTION = "Create a new geodedic grundstation.";
 
-    private Text latitude;
-    private Text longitude;
-    private Text altitude;
-    private Text elevation;
+    private Composite gsControlContainer;
+    private GroundstationControls gsControls;
 
     public GroundstationWizardPage(IScenarioProject project)
     {
@@ -41,32 +39,21 @@ public class GroundstationWizardPage extends ScenarioElementWizardNamingPage
         // default entries so dummy elements can be created quicker
         getNameControl().setText("New Groundstation");
 
-        new Label(container, SWT.NONE).setText("Latitude (deg):");
-        latitude = new Text(container, SWT.BORDER | SWT.SINGLE);
-        latitude.setText("49.78186646");
-        latitude.addKeyListener(inputValidation);
-        latitude.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-        new Label(container, SWT.NONE).setText("Longitude (deg):");
-        longitude = new Text(container, SWT.BORDER | SWT.SINGLE);
-        longitude.setText("9.97290914");
-        longitude.addKeyListener(inputValidation);
-        longitude.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-        new Label(container, SWT.NONE).setText("Altitude (m):");
-        altitude = new Text(container, SWT.BORDER | SWT.SINGLE);
-        altitude.setText("274.68");
-        altitude.addKeyListener(inputValidation);
-        altitude.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-        new Label(container, SWT.NONE).setText("Elevation (deg):");
-        elevation = new Text(container, SWT.BORDER | SWT.SINGLE);
-        elevation.setText("5.0");
-        elevation.addKeyListener(inputValidation);
-        elevation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        gsControlContainer = createControls(container);
+        gsControls = createGroundstationControls(gsControlContainer, getProject());
 
         setControl(container);
         setPageComplete(isInputValid());
+    }
+
+    public GeodeticPoint getGeodeticPoint()
+    {
+        return gsControls.getGeodeticPoint();
+    }
+
+    public double getElevationAngle()
+    {
+        return gsControls.getElevationAngle();
     }
 
     @Override
@@ -95,16 +82,11 @@ public class GroundstationWizardPage extends ScenarioElementWizardNamingPage
             return false;
         }
 
-        try
-        {
-            Double.parseDouble(latitude.getText());
-            Double.parseDouble(longitude.getText());
-            Double.parseDouble(altitude.getText());
-            Double.parseDouble(elevation.getText());
-        }
-        catch (NumberFormatException e)
-        {
-            setErrorMessage("Invalid coordinates.");
+        // FIXME: is not called because it is only triggered when
+        // a control of this page changes, but not one that is located
+        // inside the GroundstationControls object.
+        if (!gsControls.isValid()) {
+            setErrorMessage(gsControls.getErrorMessage());
             return false;
         }
 
@@ -112,23 +94,28 @@ public class GroundstationWizardPage extends ScenarioElementWizardNamingPage
         return true;
     }
 
-    public double getLatitude()
+    private Composite createControls(Composite parent)
     {
-        return Math.toRadians(Double.parseDouble(latitude.getText()));
+        GridLayout layout = new GridLayout(2, false);
+        layout.marginWidth = 0;
+        layout.marginHeight = 0;
+
+        GridData data = new GridData();
+        data.verticalAlignment = SWT.FILL;
+        data.horizontalAlignment = SWT.FILL;
+        data.grabExcessVerticalSpace = true;
+        data.grabExcessHorizontalSpace = true;
+        data.horizontalSpan = 2;
+
+        Composite container = new Composite(parent, SWT.NONE);
+        container.setLayout(layout);
+        container.setLayoutData(data);
+
+        return container;
     }
 
-    public double getLongitude()
+    private GroundstationControls createGroundstationControls(Composite container, IScenarioProject scenario)
     {
-        return Math.toRadians(Double.parseDouble(longitude.getText()));
-    }
-
-    public double getAltitude()
-    {
-        return Double.parseDouble(altitude.getText());
-    }
-
-    public double getElevation()
-    {
-        return Math.toRadians(Double.parseDouble(elevation.getText()));
+        return new GroundstationControls(container, scenario);
     }
 }

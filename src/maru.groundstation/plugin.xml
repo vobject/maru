@@ -34,9 +34,9 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            class="maru.groundstation.propertypages.GeodeticGroundstationPropertyPage"
-            id="maru.groundstation.propertypages.geodeticgroundstation.3000"
-            name="Geodetic Groundstation">
+            class="maru.groundstation.propertypages.GroundstationPropertyPage"
+            id="maru.groundstation.propertypages.groundstation.3000"
+            name="Groundstation">
          <enabledWhen>
             <instanceof
                   value="maru.ui.model.UiGroundstation">
@@ -44,7 +44,7 @@
          </enabledWhen>
          <filter
                name="instanceof.underlying"
-               value="maru.groundstation.earth.GeodeticGroundstation">
+               value="maru.groundstation.Groundstation">
          </filter>
       </page>
    </extension>

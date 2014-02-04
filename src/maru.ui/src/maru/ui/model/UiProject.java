@@ -2,18 +2,19 @@ package maru.ui.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 
 import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
 import maru.core.model.ICoordinate;
 import maru.core.model.IGroundstation;
-import maru.core.model.IPropagatable;
 import maru.core.model.IPropagationListener;
 import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.core.model.ITimepoint;
+import maru.core.utils.TimeUtils;
+
+import org.orekit.time.AbsoluteDate;
 
 public class UiProject extends UiParent implements IPropagationListener,
                                                    IUiTimelineSettingsListener
@@ -123,10 +124,6 @@ public class UiProject extends UiParent implements IPropagationListener,
             IGroundstation groundstation = (IGroundstation) element;
             uiGroundstationContainer.addUiElement(groundstation);
 
-            // the element is probably interested in the current time.
-            // and we are interested in the elements position.
-            CoreModel.getDefault().addPropagationListener(groundstation, this);
-
             groundstation.currentTimeChanged(getCurrentTime());
         }
         else if (element instanceof ISpacecraft)
@@ -174,8 +171,8 @@ public class UiProject extends UiParent implements IPropagationListener,
             if (timepoint == getUnderlyingElement().getCurrentTime())
             {
                 IScenarioProject project = getUnderlyingElement();
-                long time = timepoint.getTime();
-                CoreModel.getDefault().changePropagatablesTime(project, time, true);
+                AbsoluteDate date = timepoint.getTime();
+                CoreModel.getDefault().changeScenarioElementsTime(project, date, true);
             }
         }
     }
@@ -190,9 +187,6 @@ public class UiProject extends UiParent implements IPropagationListener,
         else if (element instanceof IGroundstation)
         {
             IGroundstation groundstation = (IGroundstation) element;
-
-            // remove all links from and to the element.
-            CoreModel.getDefault().removePropagationListener(groundstation, this);
 
             uiGroundstationContainer.removeUiElement(groundstation);
         }
@@ -226,7 +220,7 @@ public class UiProject extends UiParent implements IPropagationListener,
     }
 
     @Override
-    public void propagationChanged(IPropagatable element, ICoordinate position)
+    public void propagationChanged(ISpacecraft element, ICoordinate position)
     {
         for (IPropagationListener listener : propagationListeners) {
             listener.propagationChanged(element, position);
@@ -254,62 +248,62 @@ public class UiProject extends UiParent implements IPropagationListener,
         return uiTimepointContrainer;
     }
 
-    public long getStartTime()
+    public AbsoluteDate getStartTime()
     {
         return getUnderlyingElement().getStartTime().getTime();
     }
 
-    public void setStartTime(long time)
+    public void setStartTime(AbsoluteDate date)
     {
         ITimepoint tp = getUnderlyingElement().getStartTime();
-        CoreModel.getDefault().changeTimepoint(tp, time, true);
+        CoreModel.getDefault().changeTimepoint(tp, date, true);
     }
 
-    public long getStopTime()
+    public AbsoluteDate getStopTime()
     {
         return getUnderlyingElement().getStopTime().getTime();
     }
 
-    public void setStopTime(long time)
+    public void setStopTime(AbsoluteDate date)
     {
         ITimepoint tp = getUnderlyingElement().getStopTime();
-        CoreModel.getDefault().changeTimepoint(tp, time, true);
+        CoreModel.getDefault().changeTimepoint(tp, date, true);
     }
 
-    public long getCurrentTime()
+    public AbsoluteDate getCurrentTime()
     {
         if (realtimeMode) {
-            return new Date().getTime() / 1000;
+            return TimeUtils.now();
         }
         return getUnderlyingElement().getCurrentTime().getTime();
     }
 
-    public void setCurrentTime(long time)
+    public void setCurrentTime(AbsoluteDate date)
     {
         ITimepoint tp = getUnderlyingElement().getCurrentTime();
-        CoreModel.getDefault().changeTimepoint(tp, time, true);
+        CoreModel.getDefault().changeTimepoint(tp, date, true);
     }
 
-    public void setPropagatablesTime(long time)
+    public void setPropagatablesTime(AbsoluteDate date)
     {
-        CoreModel.getDefault().changePropagatablesTime(getUnderlyingElement(), time, true);
+        CoreModel.getDefault().changeScenarioElementsTime(getUnderlyingElement(), date, true);
     }
 
     public void saveCurrentTimepoint()
     {
-        long time = getCurrentTime();
+        AbsoluteDate time = getCurrentTime();
         CoreModel.getDefault().addTimepoint(getUnderlyingElement(), time, true);
     }
 
     public ITimepoint getPreviousTimepoint()
     {
-        long time = getCurrentTime();
+        AbsoluteDate time = getCurrentTime();
         return uiTimepointContrainer.getPreviousTimepoint(time);
     }
 
     public ITimepoint getNextTimepoint()
     {
-        long time = getCurrentTime();
+        AbsoluteDate time = getCurrentTime();
         return uiTimepointContrainer.getNextTimepoint(time);
     }
 

@@ -2,9 +2,10 @@ package maru.spacecraft.wizards;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Map;
 
 import maru.core.model.IScenarioProject;
-import maru.spacecraft.tlesatellite.InitialTleCoordinate;
+import maru.spacecraft.tle.InitialTLECoordinate;
 import maru.spacecraft.utils.TleUtils;
 import maru.ui.wizards.ScenarioElementWizardPage;
 
@@ -29,7 +30,8 @@ public class ExternalTleSatelliteWizardSelectionPage extends ScenarioElementWiza
     private List tleSources;
     private List sourceSatellites;
 
-    private InitialTleCoordinate selectedPosition;
+    private String selectedName;
+    private TLE selectedPosition;
 
     public ExternalTleSatelliteWizardSelectionPage(IScenarioProject project)
     {
@@ -58,19 +60,19 @@ public class ExternalTleSatelliteWizardSelectionPage extends ScenarioElementWiza
 
                 int selection = tleSources.getSelectionIndex();
                 String source = tleSources.getItem(selection);
-                java.util.List<InitialTleCoordinate> positions = TleUtils.parseTleSource(source);
+                java.util.List<Map.Entry<String, TLE>> positions = TleUtils.parseTleSource(source);
 
-                Collections.sort(positions, new Comparator<InitialTleCoordinate>() {
+                Collections.sort(positions, new Comparator<Map.Entry<String, TLE>>() {
                     @Override
-                    public int compare(InitialTleCoordinate o1, InitialTleCoordinate o2)
+                    public int compare(Map.Entry<String, TLE> o1, Map.Entry<String, TLE> o2)
                     {
-                        return o1.getName().compareTo(o2.getName());
+                        return o1.getKey().compareTo(o2.getKey());
                     }
                 });
 
-                for (InitialTleCoordinate position : positions) {
-                    sourceSatellites.add(position.getName());
-                    sourceSatellites.setData(position.getName(), position);
+                for (Map.Entry<String, TLE> position : positions) {
+                    sourceSatellites.add(position.getKey());
+                    sourceSatellites.setData(position.getKey(), position.getValue());
                 }
             }
         });
@@ -97,8 +99,9 @@ public class ExternalTleSatelliteWizardSelectionPage extends ScenarioElementWiza
                     return;
                 }
 
-                selectedPosition = (InitialTleCoordinate) sourceSatellites.getData(satelliteName);
-                namingPage.setTleData(selectedPosition.getName(), tleToString(selectedPosition.getTle()));
+                selectedName = satelliteName;
+                selectedPosition = (TLE) sourceSatellites.getData(satelliteName);
+                namingPage.setTleData(selectedName, tleToString(selectedPosition));
                 namingPage.setPageComplete(true);
                 setErrorMessage(null);
                 setPageComplete(true);
@@ -114,9 +117,19 @@ public class ExternalTleSatelliteWizardSelectionPage extends ScenarioElementWiza
         this.namingPage = namingPage;
     }
 
-    public InitialTleCoordinate getInitialTlePosition()
+    public InitialTLECoordinate getInitialTlePosition()
     {
-        return selectedPosition;
+        try
+        {
+            return new InitialTLECoordinate(getProject().getCentralBody(),
+                                            selectedName,
+                                            selectedPosition);
+        }
+        catch (OrekitException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private String tleToString(TLE tle)

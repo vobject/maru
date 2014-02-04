@@ -1,9 +1,9 @@
 package maru.ui.views.timeline;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import maru.core.utils.TimeUtils;
 import maru.ui.MaruUIPlugin;
 
 import org.eclipse.swt.SWT;
@@ -389,7 +389,7 @@ class TimePlayer
             } else if (currentState == PlaybackState.FORWARD) {
                 listener.playForward((int) currentStepSize);
             } else if (currentState == PlaybackState.REALTIME) {
-                listener.playRealtime(new Date().getTime() / 1000);
+                listener.playRealtime(TimeUtils.now());
             }
         }
     }

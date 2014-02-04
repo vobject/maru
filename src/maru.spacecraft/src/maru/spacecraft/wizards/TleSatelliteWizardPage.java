@@ -18,7 +18,6 @@ public class TleSatelliteWizardPage extends ScenarioElementWizardNamingPage
     private static final String PAGE_TITLE = "Satellite";
     private static final String PAGE_DESCRIPTION = "Create a new Satellite.";
 
-    private static final int LINE0_LENGTH = 24;
     private static final int LINE1_LENGTH = 69;
     private static final int LINE2_LENGTH = 69;
 
@@ -41,10 +40,6 @@ public class TleSatelliteWizardPage extends ScenarioElementWizardNamingPage
 
         // default entries so dummy entries can be created quicker
         getNameControl().setText("New Satellite");
-
-        // no need to set the name explicitly because the TLE data
-        // will be used to name this satellite.
-        getNameControl().setEnabled(false);
 
         new Label(container, SWT.NONE).setText("TLE:");
         tleData = new Text(container, SWT.BORDER | SWT.MULTI);
@@ -74,20 +69,18 @@ public class TleSatelliteWizardPage extends ScenarioElementWizardNamingPage
     @Override
     protected boolean isInputValid()
     {
-        if (getProject() == null) {
-            setErrorMessage("No scenario selected in the workspace.");
+        // let the parent class check its input first
+        if (!super.isInputValid()) {
             return false;
         }
 
-        if ((getTleLines().length < 3)
-            || (getLine0().length() != LINE0_LENGTH)
-            || (getLine1().length() != LINE1_LENGTH)
-            || (getLine2().length() != LINE2_LENGTH))
+        if ((getTleLines().length != 2) ||
+            (getLine1().length() != LINE1_LENGTH) ||
+            (getLine2().length() != LINE2_LENGTH))
         {
             setErrorMessage("Invalid TLE.");
             return false;
         }
-        getNameControl().setText(getLine0());
 
         // check if another satellite with the same name already exits!
         if (getProject().getSpacecraftContainer().hasChild(getElementName())) {
@@ -99,19 +92,14 @@ public class TleSatelliteWizardPage extends ScenarioElementWizardNamingPage
         return true;
     }
 
-    public String getLine0()
+    public String getLine1()
     {
         return getTleLines()[0];
     }
 
-    public String getLine1()
-    {
-        return getTleLines()[1];
-    }
-
     public String getLine2()
     {
-        return getTleLines()[2];
+        return getTleLines()[1];
     }
 
     private String[] getTleLines()
@@ -128,7 +116,4 @@ public class TleSatelliteWizardPage extends ScenarioElementWizardNamingPage
         }
         return lines;
     }
-
-    // TODO: make this class abstract and create wizards for concrete
-    // satellite types! then add additionally needed getter to the subclasses.
 }

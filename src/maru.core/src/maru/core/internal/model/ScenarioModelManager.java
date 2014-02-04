@@ -6,10 +6,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import maru.IMaruResource;
+import maru.core.model.AbstractCentralBody;
+import maru.core.model.AbstractGroundstation;
+import maru.core.model.AbstractPropagator;
+import maru.core.model.AbstractScenarioElement;
+import maru.core.model.AbstractSpacecraft;
+import maru.core.model.AbstractVisibleElement;
 import maru.core.model.ICentralBody;
 import maru.core.model.ICoordinate;
 import maru.core.model.IGroundstation;
-import maru.core.model.IPropagatable;
 import maru.core.model.IPropagationListener;
 import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioModelListener;
@@ -17,10 +22,7 @@ import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.core.model.ITimeProvider;
 import maru.core.model.ITimepoint;
-import maru.core.model.template.CentralBody;
-import maru.core.model.template.Propagatable;
-import maru.core.model.template.Propagator;
-import maru.core.model.template.ScenarioElement;
+import maru.core.model.IVisibleElement;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -29,6 +31,9 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.swt.graphics.RGB;
+import org.orekit.bodies.GeodeticPoint;
+import org.orekit.errors.OrekitException;
+import org.orekit.time.AbsoluteDate;
 
 final public class ScenarioModelManager implements IResourceChangeListener
 {
@@ -219,7 +224,7 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void changeElementName(final IScenarioElement element, String name, boolean update)
     {
-        ((ScenarioElement) element).setElementName(name);
+        ((AbstractScenarioElement) element).setElementName(name);
 
         if (!update) {
             return;
@@ -235,7 +240,7 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void changeElementComment(final IScenarioElement element, String comment, boolean update)
     {
-        ((ScenarioElement) element).setElementComment(comment);
+        ((AbstractScenarioElement) element).setElementComment(comment);
 
         if (!update) {
             return;
@@ -249,9 +254,9 @@ final public class ScenarioModelManager implements IResourceChangeListener
         }, element, true);
     }
 
-    public void addTimepoint(IScenarioProject scenario, long time, boolean update)
+    public void addTimepoint(IScenarioProject scenario, AbsoluteDate date, boolean update)
     {
-        final Timepoint tp = new Timepoint(time);
+        final Timepoint tp = new Timepoint(date);
 
         ((ScenarioProject) scenario).addTimepoint(tp);
 
@@ -259,6 +264,8 @@ final public class ScenarioModelManager implements IResourceChangeListener
             return;
         }
 
+        // did the new timepoint become the start/stop timepoint after it
+        // has been added to the scenario?
         boolean startChanged = scenario.getStartTime() == tp;
         boolean stopChanged = scenario.getStopTime() == tp;
 
@@ -334,17 +341,19 @@ final public class ScenarioModelManager implements IResourceChangeListener
         }
     }
 
-    public void changeTimepoint(ITimepoint timepoint, long time, boolean update)
+    public void changeTimepoint(ITimepoint timepoint, AbsoluteDate date, boolean update)
     {
         ScenarioProject scenario = (ScenarioProject) timepoint.getScenarioProject();
         final Timepoint tp = (Timepoint) timepoint;
 
-        scenario.changeTimepoint(tp, time);
+        scenario.changeTimepoint(tp, date);
 
         if (!update) {
             return;
         }
 
+        // did the changed timepoint become the start/stop/current timepoint
+        // after the scenario has been changed?
         boolean startChanged = scenario.getStartTime() == tp;
         boolean stopChanged = scenario.getStopTime() == tp;
         boolean currentChanged = scenario.getCurrentTime() == tp;
@@ -387,10 +396,14 @@ final public class ScenarioModelManager implements IResourceChangeListener
         }
     }
 
-    public void changePropagatablesTime(final IScenarioProject scenario, long time, boolean update)
+    public void changeScenarioElementsTime(final IScenarioProject scenario, AbsoluteDate date, boolean update)
     {
-        for (IPropagatable element : scenario.getPropagatables()) {
-            element.currentTimeChanged(time);
+        for (ISpacecraft element : scenario.getSpacecrafts()) {
+            element.currentTimeChanged(date);
+        }
+
+        for (IGroundstation element : scenario.getGroundstations()) {
+            element.currentTimeChanged(date);
         }
 
         if (!update) {
@@ -437,9 +450,9 @@ final public class ScenarioModelManager implements IResourceChangeListener
         }, spacecraft, true);
     }
 
-    public void changeElementColor(final IPropagatable element, RGB color, boolean update)
+    public void changeElementColor(final IVisibleElement element, RGB color, boolean update)
     {
-        ((Propagatable) element).setElementColor(color);
+        ((AbstractVisibleElement) element).setElementColor(color);
 
         if (!update) {
             return;
@@ -453,9 +466,9 @@ final public class ScenarioModelManager implements IResourceChangeListener
         }, element, true);
     }
 
-    public void changeElementImage(final IPropagatable element, IMaruResource image, boolean update)
+    public void changeElementImage(final IVisibleElement element, IMaruResource image, boolean update)
     {
-        ((Propagatable) element).setElementImage(image);
+        ((AbstractVisibleElement) element).setElementImage(image);
 
         if (!update) {
             return;
@@ -469,9 +482,30 @@ final public class ScenarioModelManager implements IResourceChangeListener
         }, element, true);
     }
 
-    public void changeInitialCoordinate(final IPropagatable element, ICoordinate coordinate, boolean update)
+    public void changeInitialCoordinate(final IGroundstation element, GeodeticPoint position, double elevation, boolean update)
     {
-        ((Propagatable) element).setInitialCoordinate(coordinate);
+        ((AbstractGroundstation) element).setGeodeticPosition(position);
+        ((AbstractGroundstation) element).setElevationAngle(elevation);
+
+        if (!update) {
+            return;
+        }
+
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementInitialCoordinateChanged(element);
+            }
+        }, element, true);
+    }
+
+    public void changeInitialCoordinate(final ISpacecraft element, ICoordinate coordinate, boolean update)
+    {
+        try {
+            ((AbstractSpacecraft) element).setInitialCoordinate(coordinate);
+        } catch (OrekitException e) {
+            throw new RuntimeException("Failed to set initial coorinate.", e);
+        }
 
         if (!update) {
             return;
@@ -487,7 +521,7 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void changeCentralBodyImage(final ICentralBody element, IMaruResource image, boolean update)
     {
-        ((CentralBody) element).setTexture(image);
+        ((AbstractCentralBody) element).setTexture(image);
 
         if (!update) {
             return;
@@ -503,12 +537,19 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void changeCentralBodyGM(final ICentralBody element, double gm, boolean update)
     {
-        ((CentralBody) element).setGM(gm);
+        ((AbstractCentralBody) element).setProperties(element.getEquatorialRadius(),
+                                                      element.getFlattening(),
+                                                      gm);
 
         // make all propagatables adapt to the new central body
         IScenarioProject scenario = element.getScenarioProject();
-        for (IPropagatable propagatable : scenario.getPropagatables()) {
-            propagatable.centralbodyChanged();
+
+        for (IGroundstation gs : scenario.getGroundstations()) {
+            gs.centralbodyChanged();
+        }
+
+        for (ISpacecraft sat : scenario.getSpacecrafts()) {
+            sat.centralbodyChanged();
         }
 
         if (!update) {
@@ -525,12 +566,19 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void changeCentralBodyEquatorialRadius(final ICentralBody element, double radius, boolean update)
     {
-        ((CentralBody) element).setEquatorialRadius(radius);
+        ((AbstractCentralBody) element).setProperties(radius,
+                                                      element.getFlattening(),
+                                                      element.getGM());
 
         // make all propagatables adapt to the new central body
         IScenarioProject scenario = element.getScenarioProject();
-        for (IPropagatable propagatable : scenario.getPropagatables()) {
-            propagatable.centralbodyChanged();
+
+        for (IGroundstation gs : scenario.getGroundstations()) {
+            gs.centralbodyChanged();
+        }
+
+        for (ISpacecraft sat : scenario.getSpacecrafts()) {
+            sat.centralbodyChanged();
         }
 
         if (!update) {
@@ -547,12 +595,19 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void changeCentralBodyFlattening(final ICentralBody element, double flattening, boolean update)
     {
-        ((CentralBody) element).setFlattening(flattening);
+        ((AbstractCentralBody) element).setProperties(element.getEquatorialRadius(),
+                                                      flattening,
+                                                      element.getGM());
 
         // make all propagatables adapt to the new central body
         IScenarioProject scenario = element.getScenarioProject();
-        for (IPropagatable propagatable : scenario.getPropagatables()) {
-            propagatable.centralbodyChanged();
+
+        for (IGroundstation gs : scenario.getGroundstations()) {
+            gs.centralbodyChanged();
+        }
+
+        for (ISpacecraft sat : scenario.getSpacecrafts()) {
+            sat.centralbodyChanged();
         }
 
         if (!update) {
@@ -569,55 +624,77 @@ final public class ScenarioModelManager implements IResourceChangeListener
 
     public void addTimeProvider(IScenarioProject scenario, ITimeProvider provider)
     {
-        for (IPropagatable element : ((ScenarioProject) scenario).getPropagatables()) {
-            ((Propagatable) element).addTimeProvider(provider);
+        for (IGroundstation element : scenario.getGroundstations()) {
+            ((AbstractGroundstation) element).addTimeProvider(provider);
+        }
+
+        for (ISpacecraft element : scenario.getSpacecrafts()) {
+            ((AbstractSpacecraft) element).addTimeProvider(provider);
         }
     }
 
     public void removeTimeProvider(IScenarioProject scenario, ITimeProvider provider)
     {
-        for (IPropagatable element : ((ScenarioProject) scenario).getPropagatables()) {
-            ((Propagatable) element).removeTimeProvider(provider);
+        for (IGroundstation element : scenario.getGroundstations()) {
+            ((AbstractGroundstation) element).removeTimeProvider(provider);
+        }
+
+        for (ISpacecraft element : scenario.getSpacecrafts()) {
+            ((AbstractSpacecraft) element).removeTimeProvider(provider);
         }
     }
 
-    public void addTimeProvider(IPropagatable element, ITimeProvider provider)
+    public void addTimeProvider(IGroundstation element, ITimeProvider provider)
     {
-        ((Propagatable) element).addTimeProvider(provider);
+        ((AbstractGroundstation) element).addTimeProvider(provider);
     }
 
-    public void removeTimeProvider(IPropagatable element, ITimeProvider provider)
+    public void removeTimeProvider(IGroundstation element, ITimeProvider provider)
     {
-        ((Propagatable) element).removeTimeProvider(provider);
+        ((AbstractGroundstation) element).removeTimeProvider(provider);
+    }
+
+    public void addTimeProvider(ISpacecraft element, ITimeProvider provider)
+    {
+        ((AbstractSpacecraft) element).addTimeProvider(provider);
+    }
+
+    public void removeTimeProvider(ISpacecraft element, ITimeProvider provider)
+    {
+        ((AbstractSpacecraft) element).removeTimeProvider(provider);
     }
 
     public void addPropagationListener(IScenarioProject scenario, IPropagationListener listener)
     {
-        for (IPropagatable element : ((ScenarioProject) scenario).getPropagatables()) {
-            ((Propagatable) element).addPropagationListener(listener);
+        for (ISpacecraft element : scenario.getSpacecrafts()) {
+            ((AbstractSpacecraft) element).addPropagationListener(listener);
         }
     }
 
     public void removePropagationListener(IScenarioProject scenario, IPropagationListener listener)
     {
-        for (IPropagatable element : ((ScenarioProject) scenario).getPropagatables()) {
-            ((Propagatable) element).removePropagationListener(listener);
+        for (ISpacecraft element : scenario.getSpacecrafts()) {
+            ((AbstractSpacecraft) element).removePropagationListener(listener);
         }
     }
 
-    public void addPropagationListener(IPropagatable element, IPropagationListener listener)
+    public void addPropagationListener(ISpacecraft element, IPropagationListener listener)
     {
-        ((Propagatable) element).addPropagationListener(listener);
+        ((AbstractSpacecraft) element).addPropagationListener(listener);
     }
 
-    public void removePropagationListener(IPropagatable element, IPropagationListener listener)
+    public void removePropagationListener(ISpacecraft element, IPropagationListener listener)
     {
-        ((Propagatable) element).removePropagationListener(listener);
+        ((AbstractSpacecraft) element).removePropagationListener(listener);
     }
 
-    public void changePropagator(IPropagatable element, Propagator propagator)
+    public void changePropagator(ISpacecraft element, AbstractPropagator propagator)
     {
-        ((Propagatable) element).setPropagator(propagator);
+        try {
+            ((AbstractSpacecraft) element).setPropagator(propagator);
+        } catch (OrekitException e) {
+            throw new RuntimeException("Failed to set propagator.", e);
+        }
     }
 
     @Override

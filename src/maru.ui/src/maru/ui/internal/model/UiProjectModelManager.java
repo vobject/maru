@@ -5,10 +5,12 @@ import java.util.Collection;
 
 import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
-import maru.core.model.IPropagatable;
+import maru.core.model.IGroundstation;
 import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioProject;
+import maru.core.model.ISpacecraft;
 import maru.core.model.ITimepoint;
+import maru.core.model.IVisibleElement;
 import maru.core.model.ScenarioModelAdapter;
 import maru.ui.model.IUiProjectModelListener;
 import maru.ui.model.IUiProjectModelProvider;
@@ -216,19 +218,13 @@ public class UiProjectModelManager extends ScenarioModelAdapter
     }
 
     @Override
-    public void elementColorChanged(IPropagatable element)
+    public void elementColorChanged(IVisibleElement element)
     {
         uiProjectChanged(element);
     }
 
     @Override
-    public void elementImageChanged(IPropagatable element)
-    {
-        uiProjectChanged(element);
-    }
-
-    @Override
-    public void elementInitialCoordinateChanged(IPropagatable element)
+    public void elementImageChanged(IVisibleElement element)
     {
         uiProjectChanged(element);
     }
@@ -253,6 +249,18 @@ public class UiProjectModelManager extends ScenarioModelAdapter
 
     @Override
     public void centralbodyFlatteningChanged(ICentralBody element)
+    {
+        uiProjectChanged(element);
+    }
+
+    @Override
+    public void elementInitialCoordinateChanged(IGroundstation element)
+    {
+        uiProjectChanged(element);
+    }
+
+    @Override
+    public void elementInitialCoordinateChanged(ISpacecraft element)
     {
         uiProjectChanged(element);
     }

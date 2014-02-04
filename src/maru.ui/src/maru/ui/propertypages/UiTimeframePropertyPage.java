@@ -1,10 +1,8 @@
 package maru.ui.propertypages;
 
-import java.util.Calendar;
-
 import maru.core.model.CoreModel;
 import maru.core.model.IScenarioProject;
-import maru.core.utils.TimeUtil;
+import maru.core.utils.TimeUtils;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiModel;
 import maru.ui.model.UiProject;
@@ -18,6 +16,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Label;
+import org.orekit.time.AbsoluteDate;
 
 public class UiTimeframePropertyPage extends UiElementPropertyPage
 {
@@ -26,14 +25,14 @@ public class UiTimeframePropertyPage extends UiElementPropertyPage
     private DateTime timeStart;
     private DateTime timeStop;
 
-    private long initialStart;
-    private long initialStop;
+    private AbsoluteDate initialStart;
+    private AbsoluteDate initialStop;
 
     private final SelectionAdapter pageCompleteValidation = new SelectionAdapter()
     {
         @Override
         public void widgetSelected(SelectionEvent event) {
-            if (getStop() > getStart()) {
+            if (getStop().compareTo(getStart()) > 0) {
                 setValid(true);
                 setErrorMessage(null);
             } else {
@@ -64,28 +63,14 @@ public class UiTimeframePropertyPage extends UiElementPropertyPage
         return (IProject) getElement();
     }
 
-    public long getStart()
+    public AbsoluteDate getStart()
     {
-        Calendar calender = TimeUtil.getCalendar();
-        calender.set(Calendar.YEAR, calendarStart.getYear());
-        calender.set(Calendar.MONTH, calendarStart.getMonth());
-        calender.set(Calendar.DAY_OF_MONTH, calendarStart.getDay());
-        calender.set(Calendar.HOUR_OF_DAY, timeStart.getHours());
-        calender.set(Calendar.MINUTE, timeStart.getMinutes());
-        calender.set(Calendar.SECOND, timeStart.getSeconds());
-        return calender.getTimeInMillis() / 1000;
+        return TimeUtils.getAbsoluteDate(calendarStart, timeStart);
     }
 
-    public long getStop()
+    public AbsoluteDate getStop()
     {
-        Calendar calender = TimeUtil.getCalendar();
-        calender.set(Calendar.YEAR, calendarStop.getYear());
-        calender.set(Calendar.MONTH, calendarStop.getMonth());
-        calender.set(Calendar.DAY_OF_MONTH, calendarStop.getDay());
-        calender.set(Calendar.HOUR_OF_DAY, timeStop.getHours());
-        calender.set(Calendar.MINUTE, timeStop.getMinutes());
-        calender.set(Calendar.SECOND, timeStop.getSeconds());
-        return calender.getTimeInMillis() / 1000;
+        return TimeUtils.getAbsoluteDate(calendarStop, timeStop);
     }
 
     @Override
@@ -93,13 +78,13 @@ public class UiTimeframePropertyPage extends UiElementPropertyPage
     {
         IScenarioProject scenario = getScenario();
 
-        long newStart = getStart();
-        if (newStart != initialStart) {
+        AbsoluteDate newStart = getStart();
+        if (newStart.compareTo(initialStart) != 0) {
             CoreModel.getDefault().changeTimepoint(scenario.getStartTime(), newStart, true);
         }
 
-        long newStop = getStop();
-        if (newStop != initialStop) {
+        AbsoluteDate newStop = getStop();
+        if (newStop.compareTo(initialStop) != 0) {
             CoreModel.getDefault().changeTimepoint(scenario.getStopTime(), newStop, true);
         }
 
@@ -168,20 +153,7 @@ public class UiTimeframePropertyPage extends UiElementPropertyPage
             return;
         }
 
-        Calendar startCalendar = TimeUtil.getCalendar(initialStart);
-        calendarStart.setDate(startCalendar.get(Calendar.YEAR),
-                              startCalendar.get(Calendar.MONTH),
-                              startCalendar.get(Calendar.DAY_OF_MONTH));
-        timeStart.setTime(startCalendar.get(Calendar.HOUR_OF_DAY),
-                          startCalendar.get(Calendar.MINUTE),
-                          startCalendar.get(Calendar.SECOND));
-
-        Calendar stopCalendar = TimeUtil.getCalendar(initialStop);
-        calendarStop.setDate(stopCalendar.get(Calendar.YEAR),
-                             stopCalendar.get(Calendar.MONTH),
-                             stopCalendar.get(Calendar.DAY_OF_MONTH));
-        timeStop.setTime(stopCalendar.get(Calendar.HOUR_OF_DAY),
-                         stopCalendar.get(Calendar.MINUTE),
-                         stopCalendar.get(Calendar.SECOND));
+        TimeUtils.populateControls(calendarStart, timeStart, initialStart);
+        TimeUtils.populateControls(calendarStop, timeStop, initialStop);
     }
 }

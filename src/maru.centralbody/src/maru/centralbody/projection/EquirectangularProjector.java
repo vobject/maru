@@ -3,21 +3,19 @@ package maru.centralbody.projection;
 import java.util.HashMap;
 import java.util.Map;
 
-import maru.MaruException;
 import maru.core.model.ICentralBody;
 import maru.core.model.ICoordinate;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.orekit.OrekitUtils;
 import org.orekit.bodies.GeodeticPoint;
-import org.orekit.bodies.OneAxisEllipsoid;
-import org.orekit.time.AbsoluteDate;
+import org.orekit.errors.OrekitException;
 
 public class EquirectangularProjector implements ICoordinateProjector
 {
     private ICentralBody centralBody;
     private int mapWidth;
     private int mapHeight;
+    private double mapWidthCoeff;
+    private double mapHeightCoeff;
 
     private int cacheSize;
     private Map<ICoordinate, EquirectangularCoordinate> cache;
@@ -36,6 +34,8 @@ public class EquirectangularProjector implements ICoordinateProjector
         }
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
+        this.mapWidthCoeff = mapWidth / 360.0;
+        this.mapHeightCoeff = mapHeight / 180.0;
         cache.clear();
     }
 
@@ -47,7 +47,7 @@ public class EquirectangularProjector implements ICoordinateProjector
     }
 
     @Override
-    public EquirectangularCoordinate project(ICoordinate coordinate) throws MaruException
+    public EquirectangularCoordinate project(ICoordinate coordinate) throws OrekitException
     {
         if (cache.size() >= cacheSize) {
             cache.clear();
@@ -58,29 +58,25 @@ public class EquirectangularProjector implements ICoordinateProjector
             return cachedProjection;
         }
 
-        OneAxisEllipsoid ellipsoid =
-            new OneAxisEllipsoid(centralBody.getEquatorialRadius(),
-                                 centralBody.getFlattening(),
-                                 OrekitUtils.toOrekitFrame(centralBody.getFrame()));
+        GeodeticPoint point = centralBody.getIntersection(coordinate);
+        EquirectangularCoordinate projected = project(point);
 
-        Vector3D position = new Vector3D(coordinate.getPosition().getX(),
-                                         coordinate.getPosition().getY(),
-                                         coordinate.getPosition().getZ());
-        AbsoluteDate date = OrekitUtils.toAbsoluteDate(coordinate.getTime());
-        org.orekit.frames.Frame frame = OrekitUtils.toOrekitFrame(coordinate.getFrame());
-        GeodeticPoint point;
-
-        try {
-            point = ellipsoid.transform(position, frame, date);
-        } catch (Exception e) {
-            throw new MaruException(e);
-        }
-
-        int x = (int) ((Math.toDegrees(point.getLongitude()) + 180.0) * (mapWidth / 360.0));
-        int y = (int) (((-1.0 * Math.toDegrees(point.getLatitude())) + 90.0) * (mapHeight / 180.0));
-
-        EquirectangularCoordinate projected = new EquirectangularCoordinate(x, y);
         cache.put(coordinate, projected);
         return projected;
+    }
+
+    @Override
+    public EquirectangularCoordinate project(GeodeticPoint point)
+    {
+        return project(point.getLatitude(), point.getLongitude());
+    }
+
+    @Override
+    public EquirectangularCoordinate project(double latitude, double longitude)
+    {
+        int x = (int) ((Math.toDegrees(longitude) + 180.0) * mapWidthCoeff);
+        int y = (int) (((-1.0 * Math.toDegrees(latitude)) + 90.0) * mapHeightCoeff);
+
+        return new EquirectangularCoordinate(x, y);
     }
 }

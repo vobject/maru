@@ -19,7 +19,7 @@
       <commonWizard
             menuGroupId="maru.spacecraft.wizards.new.object"
             type="new"
-            wizardId="maru.spacecraft.wizards.new.ckesatellite">
+            wizardId="maru.spacecraft.wizards.new.custom">
          <enablement></enablement>
       </commonWizard>
       <commonWizard
@@ -37,10 +37,10 @@
       </category>
       <wizard
             category="maru.spacecraft.category.wizards"
-            class="maru.spacecraft.wizards.KeplerSatelliteWizard"
+            class="maru.spacecraft.wizards.CustomSatelliteWizard"
             icon="icons/Satellite_16.png"
-            id="maru.spacecraft.wizards.new.ckesatellite"
-            name="CKE Satellite">
+            id="maru.spacecraft.wizards.new.custom"
+            name="Custom Satellite">
       </wizard>
       <wizard
             category="maru.spacecraft.category.wizards"
@@ -83,7 +83,7 @@
       <page
             class="maru.spacecraft.propertypages.OrekitSpacecraftPropertyPage"
             id="maru.spacecraft.propertypages.orekitspacecraft.3000"
-            name="Orekit Spacecraft">
+            name="Spacecraft">
          <enabledWhen>
             <instanceof
                   value="maru.ui.model.UiSpacecraft">
@@ -91,9 +91,9 @@
          </enabledWhen>
       </page>
       <page
-            class="maru.spacecraft.propertypages.KeplerSatellitePropertyPage"
+            class="maru.spacecraft.propertypages.CustomSatellitePropertyPage"
             id="maru.spacecraft.propertypages.keplersatellite.4000"
-            name="Kepler Satellite">
+            name="Orbit">
          <enabledWhen>
             <instanceof
                   value="maru.ui.model.UiSpacecraft">
@@ -101,13 +101,13 @@
          </enabledWhen>
          <filter
                name="instanceof.underlying"
-               value="maru.spacecraft.ckesatellite.KeplerSatellite">
+               value="maru.spacecraft.custom.CustomSatellite">
          </filter>
       </page>
       <page
             class="maru.spacecraft.propertypages.TleSatellitePropertyPage"
             id="maru.spacecraft.propertypages.tlesatellite.4000"
-            name="TLE Satellite">
+            name="TLE">
          <enabledWhen>
             <instanceof
                   value="maru.ui.model.UiSpacecraft">
@@ -115,7 +115,7 @@
          </enabledWhen>
          <filter
                name="instanceof.underlying"
-               value="maru.spacecraft.tlesatellite.TleSatellite">
+               value="maru.spacecraft.tle.TLESatellite">
          </filter>
       </page>
    </extension>

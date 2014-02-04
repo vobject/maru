@@ -3,6 +3,8 @@ package maru.ui.views.timeline;
 import java.util.ArrayList;
 import java.util.List;
 
+import maru.core.utils.TimeUtils;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -11,6 +13,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Slider;
+import org.orekit.time.AbsoluteDate;
 
 public class TimeSlider
 {
@@ -27,9 +30,9 @@ public class TimeSlider
     private Slider slider;
     private TimeSliderListener sliderListener;
 
-    private long startTime;
-    private long stopTime;
-    private long currentTime;
+    private AbsoluteDate startTime;
+    private AbsoluteDate stopTime;
+    private AbsoluteDate currentTime;
 
     private final List<ISliderChangedListener> sliderChangeListeners = new ArrayList<>();
 
@@ -87,12 +90,12 @@ public class TimeSlider
         });
     }
 
-    public void changeRange(long startTime, long stopTime)
+    public void changeRange(AbsoluteDate start, AbsoluteDate stop)
     {
-        this.startTime = startTime;
-        this.stopTime = stopTime;
+        this.startTime = TimeUtils.copy(start);
+        this.stopTime = TimeUtils.copy(stop);
 
-        final long periodSec = stopTime - startTime;
+        final long periodSec = Math.round(stopTime.durationFrom(startTime));
 
         Display.getDefault().syncExec(new Runnable() {
             @Override
@@ -104,19 +107,19 @@ public class TimeSlider
         });
     }
 
-    public void changeCurrentTime(long currentTime)
+    public void changeCurrentTime(AbsoluteDate current)
     {
-        this.currentTime = currentTime;
+        this.currentTime = TimeUtils.copy(current);
         refreshSliderControl();
     }
 
     public void shiftCurrentTime(long step)
     {
-        long newCurrentTime = currentTime + step;
+        AbsoluteDate newCurrentTime = TimeUtils.create(currentTime, step);
 
-        if (newCurrentTime < startTime) {
+        if (newCurrentTime.compareTo(startTime) < 0) {
             currentTime = startTime;
-        } else if (newCurrentTime > stopTime) {
+        } else if (newCurrentTime.compareTo(stopTime) > 0) {
             currentTime = stopTime;
         } else {
             currentTime = newCurrentTime;
@@ -124,17 +127,17 @@ public class TimeSlider
         refreshSliderControl();
     }
 
-    public long getStartTime()
+    public AbsoluteDate getStartTime()
     {
         return startTime;
     }
 
-    public long getStopTime()
+    public AbsoluteDate getStopTime()
     {
         return stopTime;
     }
 
-    public long getCurrentTime()
+    public AbsoluteDate getCurrentTime()
     {
         return currentTime;
     }
@@ -185,12 +188,12 @@ public class TimeSlider
 
     private void refreshCurrentTime()
     {
-        currentTime = startTime + slider.getSelection();
+        currentTime = TimeUtils.create(startTime, slider.getSelection());
     }
 
     private void refreshSliderControl()
     {
-        final long advanceSec = currentTime - startTime;
+        final long advanceSec = Math.round(currentTime.durationFrom(startTime));
 
         slider.removeListener(SWT.Selection, sliderListener);
         Display.getDefault().syncExec(new Runnable() {

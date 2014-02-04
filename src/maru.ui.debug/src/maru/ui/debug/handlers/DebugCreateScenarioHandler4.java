@@ -5,6 +5,7 @@ import maru.core.model.IScenarioProject;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.orekit.errors.OrekitException;
 
 public class DebugCreateScenarioHandler4 extends AbstractHandler
 {
@@ -13,7 +14,14 @@ public class DebugCreateScenarioHandler4 extends AbstractHandler
     {
         IScenarioProject scenarioProject = CreateScenarioHelper.createEmpty();
         CreateScenarioHelper.createGroundstation(scenarioProject);
-        CreateScenarioHelper.createKeplerSatellite(scenarioProject);
+        try
+        {
+            CreateScenarioHelper.createKeplerSatellite(scenarioProject);
+        }
+        catch (OrekitException e)
+        {
+            e.printStackTrace();
+        }
         return null;
     }
 }

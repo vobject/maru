@@ -2,7 +2,7 @@ package maru.map.views;
 
 import maru.centralbody.projection.ICoordinateProjector;
 import maru.ui.model.UiProject;
-import maru.ui.model.UiPropagatable;
+import maru.ui.model.UiVisible;
 
 public interface IMapDrawer
 {
@@ -15,8 +15,8 @@ public interface IMapDrawer
     ICoordinateProjector getMapProjector();
     void setMapProjector(ICoordinateProjector projector);
 
-    UiPropagatable getSelectedElement();
-    void setSelectedElement(UiPropagatable element);
+    UiVisible getSelectedElement();
+    void setSelectedElement(UiVisible element);
 
     void draw(Object context);
     void draw(Object context, UiProject project);

@@ -2,5 +2,5 @@ package maru.core.model;
 
 public interface IPropagationListener
 {
-    void propagationChanged(IPropagatable element, ICoordinate coordinate);
+    void propagationChanged(ISpacecraft element, ICoordinate coordinate);
 }

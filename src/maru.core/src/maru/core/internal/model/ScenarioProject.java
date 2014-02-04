@@ -5,17 +5,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import maru.core.model.AbstractScenarioElement;
 import maru.core.model.ICentralBody;
 import maru.core.model.IGroundstation;
-import maru.core.model.IPropagatable;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.core.model.ITimepoint;
-import maru.core.model.template.ScenarioElement;
 
 import org.eclipse.core.resources.IProject;
+import org.orekit.time.AbsoluteDate;
 
-public class ScenarioProject extends ScenarioElement implements IScenarioProject
+public class ScenarioProject extends AbstractScenarioElement implements IScenarioProject
 {
     private static final long serialVersionUID = 1L;
 
@@ -87,15 +87,6 @@ public class ScenarioProject extends ScenarioElement implements IScenarioProject
     }
 
     @Override
-    public Collection<IPropagatable> getPropagatables()
-    {
-        Collection<IPropagatable> propagatables = new ArrayList<>();
-        propagatables.addAll(groundstationContainer.getGroundstations());
-        propagatables.addAll(spacecraftContainer.getSpacecrafts());
-        return propagatables;
-    }
-
-    @Override
     public Timepoint getStartTime()
     {
         return timepoints.get(0);
@@ -125,7 +116,7 @@ public class ScenarioProject extends ScenarioElement implements IScenarioProject
         Timepoint previous = null;
         for (Timepoint element : timepoints)
         {
-            if (!(timepoint.getTime() > element.getTime())) {
+            if (!(timepoint.compareTo(element) > 0)) {
                 break;
             }
             previous = element;
@@ -145,7 +136,7 @@ public class ScenarioProject extends ScenarioElement implements IScenarioProject
     {
         for (Timepoint element : timepoints)
         {
-            if (timepoint.getTime() < element.getTime()) {
+            if (timepoint.compareTo(element) < 0) {
                 return element;
             }
         }
@@ -159,7 +150,7 @@ public class ScenarioProject extends ScenarioElement implements IScenarioProject
 
     public void setCentralBody(ICentralBody centralBody)
     {
-        ((ScenarioElement) centralBody).setParent(this);
+        ((AbstractScenarioElement) centralBody).setParent(this);
         this.centralBody = centralBody;
     }
 
@@ -186,7 +177,7 @@ public class ScenarioProject extends ScenarioElement implements IScenarioProject
         sortTimepoints();
     }
 
-    public void changeTimepoint(Timepoint timepoint, long time)
+    public void changeTimepoint(Timepoint timepoint, AbsoluteDate time)
     {
         timepoint.setTime(time);
         sortTimepoints();
@@ -205,9 +196,9 @@ public class ScenarioProject extends ScenarioElement implements IScenarioProject
 
         // fix the current time point if it turned up beyond the time frame
         // of this scenario
-        if (currentTimepoint.getTime() < startTimepoint.getTime()) {
+        if (currentTimepoint.compareTo(startTimepoint) < 0) {
             currentTimepoint = new Timepoint(startTimepoint);
-        } else if (currentTimepoint.getTime() > stopTimepoint.getTime()) {
+        } else if (currentTimepoint.compareTo(stopTimepoint) > 0) {
             currentTimepoint = new Timepoint(stopTimepoint);
         }
     }

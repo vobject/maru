@@ -2,9 +2,9 @@ package maru.core.internal.model;
 
 import java.util.Collection;
 
+import maru.core.model.AbstractScenarioElement;
 import maru.core.model.ISpacecraft;
 import maru.core.model.ISpacecraftContainer;
-import maru.core.model.template.ScenarioElement;
 
 public class SpacecraftContainer extends Parent implements ISpacecraftContainer
 {
@@ -23,7 +23,7 @@ public class SpacecraftContainer extends Parent implements ISpacecraftContainer
 
     public void addSpacecraft(ISpacecraft sc)
     {
-        ((ScenarioElement) sc).setParent(this);
+        ((AbstractScenarioElement) sc).setParent(this);
 
         sc.startTimeChanged(getScenarioProject().getStartTime().getTime());
         sc.stopTimeChanged(getScenarioProject().getStopTime().getTime());

@@ -3,9 +3,10 @@ package maru.ui.views.properties;
 import java.util.Map;
 
 import maru.core.model.ICentralBody;
-import maru.core.model.IPropagatable;
+import maru.core.model.IGroundstation;
 import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioProject;
+import maru.core.model.ISpacecraft;
 import maru.core.model.ITimepoint;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiModel;
@@ -112,7 +113,15 @@ public class Properties extends ScenarioModelViewPart
     }
 
     @Override
-    public void elementInitialCoordinateChanged(IPropagatable element)
+    public void elementInitialCoordinateChanged(IGroundstation element)
+    {
+        if (element == currentElement) {
+            refreshTableContent();
+        }
+    }
+
+    @Override
+    public void elementInitialCoordinateChanged(ISpacecraft element)
     {
         if (element == currentElement) {
             refreshTableContent();

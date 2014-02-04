@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Maru World Wind Map
 Bundle-SymbolicName: maru.map.worldwind;singleton:=true
-Bundle-Version: 0.1.0.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: maru.map.worldwind.WorldWindPlugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  maru,
  maru.core,
  maru.ui,
- gov.nasa.worldwind;bundle-version="1.5.0",
- org.jogamp.jogl;bundle-version="1.1.1"
+ gov.nasa.worldwind,
+ org.jogamp.jogl
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

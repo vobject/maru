@@ -1,31 +1,28 @@
 package maru.report.views;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
-import maru.core.model.IGroundstation;
-import maru.core.model.IPropagatable;
 import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
-import maru.core.utils.TimeUtil;
+import maru.core.utils.FormatUtils;
+import maru.core.utils.TimeUtils;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiProject;
-import maru.ui.model.UiPropagatable;
+import maru.ui.model.UiSpacecraft;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
+import org.orekit.time.AbsoluteDate;
 
 public abstract class AbstractPropagationReportControl extends ReportTypeControl
 {
@@ -40,9 +37,6 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
     private Combo reportElement;
     private Spinner reportStepSize;
 
-    private static final String DEFAULT_DOUBLE_FORMAT = "###0.000000";
-    private final DecimalFormat doubleFormat;
-
     private final StringBuffer outputBuffer = new StringBuffer();
 
     public AbstractPropagationReportControl(Composite parentControl)
@@ -53,10 +47,6 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
     public AbstractPropagationReportControl(String name, Composite parentControl)
     {
         super(name, parentControl);
-
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.US);
-        otherSymbols.setDecimalSeparator('.');
-        doubleFormat = new DecimalFormat(DEFAULT_DOUBLE_FORMAT, otherSymbols);
     }
 
     @Override
@@ -68,15 +58,25 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
     @Override
     public void enable()
     {
-        reportElement.setEnabled(true);
-        reportStepSize.setEnabled(true);
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                reportElement.setEnabled(true);
+                reportStepSize.setEnabled(true);
+            }
+        });
     }
 
     @Override
     public void disable()
     {
-        reportElement.setEnabled(false);
-        reportStepSize.setEnabled(false);
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                reportElement.setEnabled(false);
+                reportStepSize.setEnabled(false);
+            }
+        });
     }
 
     @Override
@@ -98,7 +98,7 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
     @Override
     public void createReport(Text output)
     {
-        IPropagatable element = getSelectedElement();
+        ISpacecraft element = getSelectedElement();
         if (element == null) {
             return;
         }
@@ -143,14 +143,14 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
         outputBuffer.append("\n");
     }
 
-    protected IPropagatable getSelectedElement()
+    protected ISpacecraft getSelectedElement()
     {
         String selectedName = reportElement.getText();
         if (selectedName.isEmpty()) {
             return null;
         }
         UiElement uiElement = getCurrentProject().getChild(selectedName);
-        UiPropagatable uiPropagatable = (UiPropagatable) uiElement;
+        UiSpacecraft uiPropagatable = (UiSpacecraft) uiElement;
         return uiPropagatable.getUnderlyingElement();
     }
 
@@ -161,20 +161,20 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
 
     protected void createDefaultReportHeader()
     {
-        IPropagatable element = getSelectedElement();
+        ISpacecraft element = getSelectedElement();
         IPropagator propagator = element.getPropagator();
-        long startTime = getCurrentProject().getStartTime();
-        long stopTime = getCurrentProject().getStopTime();
-        long duration = stopTime - startTime;
+        AbsoluteDate start = getCurrentProject().getStartTime();
+        AbsoluteDate stop = getCurrentProject().getStopTime();
+        long duration = (long) stop.durationFrom(start);
         long stepSize = getSelectedStepSize();
 
         appendln(getReportName());
-        appendln("Date: " + TimeUtil.asISO8601(new Date()));
+        appendln("Date: " + TimeUtils.asISO8601(TimeUtils.now()));
         appendln("Element: " + element.getElementName());
         appendln("Frame: " + element.getInitialCoordinate().getFrame().toString());
         appendln("Propagator: " + propagator.getName());
-        appendln("Propagation Start: " + TimeUtil.asISO8601(startTime));
-        appendln("Propagation Stop: " + TimeUtil.asISO8601(stopTime));
+        appendln("Propagation Start: " + TimeUtils.asISO8601(start));
+        appendln("Propagation Stop: " + TimeUtils.asISO8601(stop));
         appendln("Propagation Duration: " + duration + "sec");
         appendln("Step size: " + stepSize + "sec");
     }
@@ -209,26 +209,19 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
         // do not use scenario.getPropagatables() because we want the spacecrafts
         // to appear in the list before the groundstations.
         Collection<ISpacecraft> spacecrafts = scenario.getSpacecrafts();
-        Collection<IGroundstation> groundstations = scenario.getGroundstations();
+        List<String> items = new ArrayList<>(spacecrafts.size());
 
-        int itemCount = spacecrafts.size() + groundstations.size();
-        List<String> items = new ArrayList<>(itemCount);
-
-        for (IPropagatable element : spacecrafts) {
+        for (ISpacecraft element : spacecrafts) {
             items.add(element.getElementName());
         }
 
-        for (IPropagatable element : groundstations) {
-            items.add(element.getElementName());
-        }
-
-        return items.toArray(new String[itemCount]);
+        return items.toArray(new String[0]);
     }
 
     protected abstract void createReportText();
 
     protected String doubleToString(double d)
     {
-        return doubleFormat.format(d);
+        return FormatUtils.format(d);
     }
 }

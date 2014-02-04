@@ -5,11 +5,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import maru.core.model.AbstractScenarioElement;
 import maru.core.model.IParent;
 import maru.core.model.IScenarioElement;
-import maru.core.model.template.ScenarioElement;
 
-public abstract class Parent extends ScenarioElement implements IParent
+public abstract class Parent extends AbstractScenarioElement implements IParent
 {
     private static final long serialVersionUID = 1L;
 

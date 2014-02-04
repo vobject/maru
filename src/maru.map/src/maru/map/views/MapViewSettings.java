@@ -1,6 +1,6 @@
 package maru.map.views;
 
-import maru.core.units.DaylengthDefinition;
+import maru.core.utils.DaylengthDefinition;
 import maru.map.MaruMapPlugin;
 import maru.map.preferences.PreferenceConstants;
 
@@ -36,6 +36,15 @@ public class MapViewSettings
 
     /** The length of the ground track in seconds. */
     private long groundtrackLength;
+
+    /** Whether or not to show visibility circles. */
+    private boolean enableVisibilityCircles;
+
+    /** Whether or not to show visibility lines between spacecrafts. */
+    private boolean enableVisibilityLineScToSc;
+
+    /** Whether or not to show visibility lines between spacecrafts and ground stations. */
+    private boolean enableVisibilityLineScToGs;
 
     /** Whether or not to show the sun terminator. */
     private boolean enableNight;
@@ -109,6 +118,24 @@ public class MapViewSettings
         return groundtrackLength;
     }
 
+    /** {@link #enableVisibilityCircles} */
+    public boolean getShowVisibilityCircles()
+    {
+        return enableVisibilityCircles;
+    }
+
+    /** {@link #enableVisibilityLineScToSc} */
+    public boolean getShowVisibilitySpacecraftToSpacecraft()
+    {
+        return enableVisibilityLineScToSc;
+    }
+
+    /** {@link #enableVisibilityLineScToGs} */
+    public boolean getShowVisibilitySpacecraftToGroundstation()
+    {
+        return enableVisibilityLineScToGs;
+    }
+
     /** {@link #enableNight} */
     public boolean getShowNight()
     {
@@ -135,6 +162,9 @@ public class MapViewSettings
         umbraOrPenumbra = preferenceStore.getBoolean(PreferenceConstants.P_MAP_SHOW_UMBRA);
         groundtrackStepSize = preferenceStore.getLong(PreferenceConstants.P_MAP_GROUNDTRACK_STEP_SIZE);
         groundtrackLength = preferenceStore.getLong(PreferenceConstants.P_MAP_GROUNDTRACK_LENGTH) * 60 * 60;
+        enableVisibilityCircles = preferenceStore.getBoolean(PreferenceConstants.P_MAP_SHOW_VISIBILITY_CIRCLES);
+        enableVisibilityLineScToSc = preferenceStore.getBoolean(PreferenceConstants.P_MAP_SHOW_VISIBILITY_SC_TO_SC);
+        enableVisibilityLineScToGs = preferenceStore.getBoolean(PreferenceConstants.P_MAP_SHOW_VISIBILITY_SC_TO_GS);
         enableNight = preferenceStore.getBoolean(PreferenceConstants.P_MAP_NIGHT);
         nightStepSize = preferenceStore.getInt(PreferenceConstants.P_MAP_NIGHT_STEPSIZE);
         latlonStepSize = preferenceStore.getDouble(PreferenceConstants.P_MAP_LAT_LON_LINE_STEPSIZE);
@@ -164,6 +194,12 @@ public class MapViewSettings
                 } else if (changedProperty.equals(PreferenceConstants.P_MAP_GROUNDTRACK_LENGTH)) {
                     // preferences are saved in hours, but we are working with seconds
                     groundtrackLength = (int) event.getNewValue() * 60 * 60;
+                } else if (changedProperty.equals(PreferenceConstants.P_MAP_SHOW_VISIBILITY_CIRCLES)) {
+                    enableVisibilityCircles = (boolean) event.getNewValue();
+                } else if (changedProperty.equals(PreferenceConstants.P_MAP_SHOW_VISIBILITY_SC_TO_SC)) {
+                    enableVisibilityLineScToSc = (boolean) event.getNewValue();
+                } else if (changedProperty.equals(PreferenceConstants.P_MAP_SHOW_VISIBILITY_SC_TO_GS)) {
+                    enableVisibilityLineScToGs = (boolean) event.getNewValue();
                 } else if (changedProperty.equals(PreferenceConstants.P_MAP_NIGHT)) {
                     enableNight = (boolean) event.getNewValue();
                 } else if (changedProperty.equals(PreferenceConstants.P_MAP_NIGHT_STEPSIZE)) {

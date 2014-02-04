@@ -3,11 +3,11 @@ package maru.map.views;
 import maru.centralbody.projection.EquirectangularProjector;
 import maru.centralbody.projection.ICoordinateProjector;
 import maru.ui.model.UiProject;
-import maru.ui.model.UiPropagatable;
+import maru.ui.model.UiVisible;
 
 public abstract class AbstractMapDrawer implements IMapDrawer
 {
-    public static final int DEFAULT_PROJECTOR_CACHE_SIZE = 1024 * 64;
+    public static final int DEFAULT_PROJECTOR_CACHE_SIZE = 1024 * 32;
 
     private final AbstractMapView parent;
 
@@ -18,7 +18,7 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     private ICoordinateProjector mapProjector;
 
     // the element currently selected in the scenario explorer (or null)
-    private UiPropagatable selectedElement;
+    private UiVisible selectedElement;
 
     public AbstractMapDrawer(AbstractMapView parent)
     {
@@ -82,13 +82,13 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     }
 
     @Override
-    public UiPropagatable getSelectedElement()
+    public UiVisible getSelectedElement()
     {
         return selectedElement;
     }
 
     @Override
-    public void setSelectedElement(UiPropagatable element)
+    public void setSelectedElement(UiVisible element)
     {
         this.selectedElement = element;
     }
@@ -102,7 +102,7 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     @Override
     public void draw(Object context, UiProject project)
     {
-        updateContext(context);
+        updateContext(context, project);
 
         if (params.getSettingsChanged()) {
             updateMapParameters(project);
@@ -123,6 +123,8 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     }
 
     protected abstract void updateContext(Object context);
+    protected abstract void updateContext(Object context, UiProject project);
+
     protected abstract void updateMapParameters(UiProject project);
     protected abstract void updateMapSettings(UiProject project);
 

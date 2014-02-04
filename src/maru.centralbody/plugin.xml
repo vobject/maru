@@ -35,7 +35,7 @@
          </enabledWhen>
          <filter
                name="instanceof.underlying"
-               value="maru.centralbody.earth.Earth">
+               value="maru.centralbody.bodies.Earth">
          </filter>
       </page>
    </extension>

@@ -8,7 +8,7 @@
             class="maru.map.views.gl.GLMapView"
             icon="icons/Categories-applications-internet-icon.png"
             id="maru.map.views.GLMapView"
-            name="GL Map">
+            name="Map">
       </view>
       <view
             category="maru.ui.category.views"

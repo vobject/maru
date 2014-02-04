@@ -10,7 +10,10 @@ public enum MaruCentralBodyResources implements IMaruPluginResource
     MAP_EARTH_3("images/dnb_land_ocean_ice.2012.2048.jpg", "Night Lights 2012", "http://visibleearth.nasa.gov/view.php?id=79765", ""),
     MAP_EARTH_4("images/world.topo.200407_2048.jpg", "Blue Marple 2004 (July, topography)", "http://visibleearth.nasa.gov/view.php?id=74393", ""),
     MAP_EARTH_5("images/world.topo.bathy.200407_2048.jpg", "Blue Marple 2004 (July, topography, bathymetry)", "http://visibleearth.nasa.gov/view.php?id=73751", ""),
-    MAP_EARTH_6("images/gebco_bathy_2048.jpg", "Blue Marple 2005 (July, raw bathymetry)", "http://visibleearth.nasa.gov/view.php?id=73963", ""),
+    MAP_EARTH_6("images/NE2_modis3.jpg", "Natural Earth II (blended ocean depth tints and shading)", "http://www.shadedrelief.com/natural2/index.html", ""),
+    MAP_EARTH_7("images/NE2_modis3_adjusted.jpg", "Natural Earth II with colors adjusted", "http://www.shadedrelief.com/natural2/index.html", ""),
+
+//    MAP_MOON_1("images/moonmap2k.jpg", "James Hastings-Trew's Moon", "http://planetpixelemporium.com/earth.html", ""),
 
     ; // enum constants end
 

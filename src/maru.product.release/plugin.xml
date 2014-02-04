@@ -21,7 +21,7 @@
          </property>
          <property
                name="aboutText"
-               value="Maru&#x0A;&#x0A;Version 1.1.0&#x0A;License: Apache License, Version 2.0&#x0A;Visit: https://github.com/vobject/maru&#x0A;&#x0A;This product includes software and media&#x0A;developed by the following third parties:&#x0A;- Orekit: https://www.orekit.org&#x0A;- Apache Commons Math: http://commons.apache.org/proper/commons-math&#x0A;- JOGL: https://jogamp.org/jogl&#x0A;- NASA World Wind: http://worldwind.arc.nasa.gov&#x0A;- Oxygen Team: http://www.oxygen-icons.org&#x0A;- Unrestrictedstock.com: http://unrestrictedstock.com">
+               value="Maru&#x0A;&#x0A;Version 1.2.0&#x0A;License: Apache License, Version 2.0&#x0A;Visit: https://github.com/vobject/maru&#x0A;&#x0A;This product includes software and media&#x0A;developed by the following third parties:&#x0A;- Orekit: https://www.orekit.org&#x0A;- Apache Commons Math: http://commons.apache.org/proper/commons-math&#x0A;- JOGL: https://jogamp.org/jogl&#x0A;- NASA World Wind: http://worldwind.arc.nasa.gov&#x0A;- Oxygen Team: http://www.oxygen-icons.org&#x0A;- Unrestrictedstock.com: http://unrestrictedstock.com">
          </property>
          <property
                name="windowImages"

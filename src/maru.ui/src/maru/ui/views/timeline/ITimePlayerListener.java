@@ -1,5 +1,7 @@
 package maru.ui.views.timeline;
 
+import org.orekit.time.AbsoluteDate;
+
 interface ITimePlayerListener
 {
     void saveCurrentTimepoint();
@@ -7,5 +9,5 @@ interface ITimePlayerListener
     void selectNextTimepoint();
     void playBackward(int stepSize);
     void playForward(int stepSize);
-    void playRealtime(long time);
+    void playRealtime(AbsoluteDate date);
 }

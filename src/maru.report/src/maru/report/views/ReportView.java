@@ -33,7 +33,7 @@ public class ReportView extends ViewPart implements IUiProjectSelectionListener,
     // from all available report controls.
     private static final String[] REPORT_TYPES = new String[] {
         "Propagation",
-        "Access",
+        "Visibility",
         "Eclipse"
     };
 
@@ -149,9 +149,9 @@ public class ReportView extends ViewPart implements IUiProjectSelectionListener,
                 if (selection.equals("Propagation")) {
                     currentReportType.dispose();
                     currentReportType = new PropagationReportControl(container);
-                } else if (selection.equals("Access")) {
+                } else if (selection.equals("Visibility")) {
                     currentReportType.dispose();
-                    currentReportType = new AccessReportControl(container);
+                    currentReportType = new VisibilityReportControl(container);
                 } else if (selection.equals("Eclipse")) {
                     currentReportType.dispose();
                     currentReportType = new EclipseReportControl(container);

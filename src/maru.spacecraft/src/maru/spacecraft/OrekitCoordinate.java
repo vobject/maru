@@ -1,11 +1,13 @@
 package maru.spacecraft;
 
+import maru.core.model.ICentralBody;
 import maru.core.model.ICoordinate;
-import maru.core.units.Frame;
-import maru.core.units.Position;
-import maru.core.units.Velocity;
+import maru.core.utils.EclipseState;
+import maru.core.utils.EclipseUtils;
 
-import org.orekit.OrekitUtils;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.orekit.errors.OrekitException;
+import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.PVCoordinates;
 
@@ -13,43 +15,70 @@ public class OrekitCoordinate implements ICoordinate
 {
     private static final long serialVersionUID = 1L;
 
+    private final ICentralBody centralBody;
     private final PVCoordinates pvCoordinates;
-    private final AbsoluteDate absoluteDate;
-
-    private final Position position;
-    private final Velocity velocity;
-    private final long time;
+    private final AbsoluteDate date;
     private final Frame frame;
+    private final EclipseState eclipseState;
 
-    public OrekitCoordinate(PVCoordinates coordinates,
+    public OrekitCoordinate(ICentralBody centralBody,
+                            PVCoordinates coordinates,
                             AbsoluteDate date,
-                            org.orekit.frames.Frame frame)
+                            Frame frame) throws OrekitException
     {
+        this.centralBody = centralBody;
         this.pvCoordinates = coordinates;
-        this.absoluteDate = date;
-
-        this.position = OrekitUtils.toPosition(pvCoordinates.getPosition());
-        this.velocity = OrekitUtils.toVelocity(pvCoordinates.getVelocity());
-        this.time = OrekitUtils.toSeconds(absoluteDate);
-        this.frame = OrekitUtils.toFrame(frame);
+        this.date = date;
+        this.frame = frame;
+        this.eclipseState = EclipseUtils.getEclipseState(centralBody, this);
     }
 
     @Override
-    public Position getPosition()
+    public boolean equals(Object obj)
     {
-        return position;
+        if (super.equals(obj)) {
+            return true;
+        }
+
+        if (!(obj instanceof OrekitCoordinate)) {
+            return false;
+        }
+        OrekitCoordinate other = (OrekitCoordinate) obj;
+
+        Vector3D myPos = pvCoordinates.getPosition();
+        Vector3D otherPos = other.pvCoordinates.getPosition();
+
+        if ((myPos.getX() != otherPos.getX()) ||
+            (myPos.getY() != otherPos.getY()) ||
+            (myPos.getZ() != otherPos.getZ()))
+        {
+            return false;
+        }
+
+        if ((this.centralBody != other.centralBody) ||
+            (this.date.compareTo(other.date) != 0) ||
+            (!this.frame.equals(other.frame))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
-    public Velocity getVelocity()
+    public ICentralBody getCentralBody()
     {
-        return velocity;
+        return centralBody;
     }
 
     @Override
-    public long getTime()
+    public Vector3D getPosition()
     {
-        return time;
+        return pvCoordinates.getPosition();
+    }
+
+    @Override
+    public Vector3D getVelocity()
+    {
+        return pvCoordinates.getVelocity();
     }
 
     @Override
@@ -58,13 +87,20 @@ public class OrekitCoordinate implements ICoordinate
         return frame;
     }
 
+    @Override
+    public AbsoluteDate getDate()
+    {
+        return date;
+    }
+
+    @Override
+    public EclipseState getEclipseState()
+    {
+        return eclipseState;
+    }
+
     public PVCoordinates getPvCoordinates()
     {
         return pvCoordinates;
-    }
-
-    public AbsoluteDate getAbsoluteDate()
-    {
-        return absoluteDate;
     }
 }
