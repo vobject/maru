@@ -15,6 +15,7 @@ Low-level coding notes:
 - split up satellite-creation-wizard into: name/comment/color/image -> orbit -> propagator
 - modal Waiting-Dialogs for long-lasting operations like in eclipse
 - disallow TLE satellites for central bodies other than Earth
+- Replace Internals-View with output of the selected element on the map view -> sensible?
 
 --> Per-Scenario settings
 - UiProject should have its own PreferenceStore that other plugins can query
