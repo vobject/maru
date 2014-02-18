@@ -6,9 +6,10 @@
       <perspectiveExtension
             targetID="maru.perspectives.Planning">
          <view
+               closeable="false"
                id="maru.report.views.Report"
                relationship="stack"
-               relative="maru.map.views.GLMapView">
+               relative="maru.map.views.MapGLView">
          </view>
       </perspectiveExtension>
    </extension>

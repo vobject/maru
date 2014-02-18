@@ -26,7 +26,7 @@
          <view
                id="maru.map.worldwind.views.FlatMap"
                relationship="stack"
-               relative="maru.map.views.MapView">
+               relative="maru.map.views.MapGLView">
          </view>
          <view
                id="maru.map.worldwind.views.GlobeMap"

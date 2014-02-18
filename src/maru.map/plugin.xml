@@ -5,17 +5,10 @@
          point="org.eclipse.ui.views">
       <view
             category="maru.ui.category.views"
-            class="maru.map.views.gl.GLMapView"
+            class="maru.map.views.gl.MapGLView"
             icon="icons/Categories-applications-internet-icon.png"
-            id="maru.map.views.GLMapView"
+            id="maru.map.views.MapGLView"
             name="Map">
-      </view>
-      <view
-            category="maru.ui.category.views"
-            class="maru.map.views.swt.SWTMapView"
-            icon="icons/Categories-applications-internet-icon.png"
-            id="maru.map.views.MapView"
-            name="SWT Map">
       </view>
    </extension>
    <extension
@@ -23,7 +16,8 @@
       <perspectiveExtension
             targetID="maru.perspectives.Planning">
          <view
-               id="maru.map.views.GLMapView"
+               closeable="false"
+               id="maru.map.views.MapGLView"
                ratio=".20f"
                relationship="right"
                relative="org.eclipse.ui.editorss">
@@ -33,7 +27,7 @@
             targetID="maru.perspectives.Presentation">
          <view
                closeable="false"
-               id="maru.map.views.GLMapView"
+               id="maru.map.views.MapGLView"
                minimized="false"
                ratio=".91f"
                relationship="top"

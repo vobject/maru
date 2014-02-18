@@ -123,7 +123,7 @@
                minimized="false"
                ratio=".91f"
                relationship="bottom"
-               relative="maru.map.views.GLMapView"
+               relative="maru.map.views.MapGLView"
                showTitle="false"
                standalone="true">
          </view>
