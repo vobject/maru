@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Display;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.texture.Texture;
 
-public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
+public class MapGLDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
 {
     private static final int DEFAULT_ANIMATION_SPEED = 1000 / 30; // 30 fps
 
@@ -36,13 +36,13 @@ public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
     private final List<GLProjectDrawJob> projectDrawJobs;
     private final List<GLProjectAnimationJob> postAnimationJobs;
 
-    public GLMapDrawer(GLMapView parent)
+    public MapGLDrawer(MapGLView parent, GLContext context)
     {
         super(parent);
 
         // render with the operating systems default font at 12pt.
         text = new TextRenderer(new java.awt.Font(Display.getDefault().getSystemFont().getFontData()[0].getName(), java.awt.Font.PLAIN, 12), true, false);
-        textureCache = new TextureCache(parent.getGlContext().getGL().getGL2());
+        textureCache = new TextureCache(context.getGL().getGL2());
 
         projectDrawJobs = new ArrayList<>();
         postAnimationJobs = new ArrayList<>();
@@ -106,10 +106,15 @@ public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
     }
 
     @Override
-    protected void updateContext(Object context)
+    public void mouseEvent(int btn, int mask, int count, int x, int y)
     {
-        GLContext glContext = (GLContext) context;
-        gl = glContext.getGL().getGL2();
+        // TODO: Select a scenario element from the map or set a marking
+    }
+
+    @Override
+    protected void updateContext(GLContext context)
+    {
+        gl = context.getGL().getGL2();
 
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glColor3f(1.0f, 1.0f, 1.0f);
@@ -118,7 +123,7 @@ public class GLMapDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
     }
 
     @Override
-    protected void updateContext(Object context, UiProject project)
+    protected void updateContext(GLContext context, UiProject project)
     {
         updateContext(context);
     }

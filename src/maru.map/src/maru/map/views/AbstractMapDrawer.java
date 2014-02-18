@@ -1,15 +1,18 @@
 package maru.map.views;
 
+import javax.media.opengl.GLContext;
+
 import maru.centralbody.projection.EquirectangularProjector;
 import maru.centralbody.projection.ICoordinateProjector;
 import maru.ui.model.UiProject;
 import maru.ui.model.UiVisible;
 
+
 public abstract class AbstractMapDrawer implements IMapDrawer
 {
     public static final int DEFAULT_PROJECTOR_CACHE_SIZE = 1024 * 32;
 
-    private final AbstractMapView parent;
+    private final AbstractGLView parent;
 
     private MapViewParameters params;
     private MapViewSettings settings;
@@ -20,7 +23,7 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     // the element currently selected in the scenario explorer (or null)
     private UiVisible selectedElement;
 
-    public AbstractMapDrawer(AbstractMapView parent)
+    public AbstractMapDrawer(AbstractGLView parent)
     {
         this.parent = parent;
         this.params = new MapViewParameters();
@@ -29,14 +32,14 @@ public abstract class AbstractMapDrawer implements IMapDrawer
         this.mapProjector.setCacheSize(DEFAULT_PROJECTOR_CACHE_SIZE);
     }
 
-    public AbstractMapView getParent()
+    public AbstractGLView getView()
     {
         return parent;
     }
 
     public void redraw()
     {
-        getParent().redraw();
+        getView().redraw();
     }
 
     @Override
@@ -94,13 +97,13 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     }
 
     @Override
-    public void draw(Object context)
+    public void draw(GLContext context)
     {
         updateContext(context);
     }
 
     @Override
-    public void draw(Object context, UiProject project)
+    public void draw(GLContext context, UiProject project)
     {
         updateContext(context, project);
 
@@ -122,8 +125,8 @@ public abstract class AbstractMapDrawer implements IMapDrawer
 
     }
 
-    protected abstract void updateContext(Object context);
-    protected abstract void updateContext(Object context, UiProject project);
+    protected abstract void updateContext(GLContext context);
+    protected abstract void updateContext(GLContext context, UiProject project);
 
     protected abstract void updateMapParameters(UiProject project);
     protected abstract void updateMapSettings(UiProject project);
