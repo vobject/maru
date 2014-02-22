@@ -25,7 +25,7 @@ Its features include:
 - User defined Earth textures
 
 # Screenshots
-[![alttext][010]][010]
+[![alttext][060]][060]
 [![alttext][030]][030]
 [![alttext][040]][040]
 
@@ -34,6 +34,7 @@ Its features include:
 [030]: https://github.com/vobject/maru/wiki/images/20140110_realtime_scenario_pres.jpg (Presentation perspective)
 [040]: https://github.com/vobject/maru/wiki/images/20140110_propagation_report.jpg (Propagation report)
 [050]: https://github.com/vobject/maru/wiki/images/20140110_eclipse_report.jpg (Eclipse report)
+[060]: https://github.com/vobject/maru/wiki/images/20140222_scenario_planning.jpg (Scenario planning)
 
 # Download
 Check out the project's [releases](https://github.com/vobject/maru/releases) for ready-to-use packages.
