@@ -44,11 +44,27 @@ Check out the project's [releases](https://github.com/vobject/maru/releases) for
 [Architecture - TODO](https://github.com/vobject/maru/wiki/Architecture)  
 
 # Future
-TODO: Plans for the next release.  
-TODO: Long term plans.
+Plans for the next release:
+- Project-specific preferences/properties
+- Integrate more Propagators provided by Orekit
+- Fix OpenGL issues under Linux (done)
+- JUnit tests
 
-## Resources
-TODO: 3rd party resources
+Long term plans:
+- NASA WorldWind integration
+- Other central bodies besides Earth
+- Port to Eclipse 4.x RCP
+
+# Resources
+This program includes software and media developed by the following third parties:
+- Orekit: https://www.orekit.org
+- Apache Commons Math: http://commons.apache.org/proper/commons-math
+- JOGL: https://jogamp.org/jogl
+- NASA World Wind: http://worldwind.arc.nasa.gov
+- Oxygen Team: http://www.oxygen-icons.org
+- Unrestrictedstock.com: http://unrestrictedstock.com
+- JHT's Planetary Pixel Emporium: http://planetpixelemporium.com
+- Natural Earth II: http://www.shadedrelief.com/natural2
 
 # License
 Maru is licensed under the terms of the [Apache License 2.0](http://apache.org/licenses/LICENSE-2.0.txt).
