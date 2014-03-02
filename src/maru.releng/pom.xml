@@ -68,12 +68,12 @@
         <module>../maru.core</module>
 <!--        <module>../maru.core.test</module> -->
         <module>../maru.feature.debug</module>
-<!--        <module>../maru.feature.release</module> -->
+        <module>../maru.feature.release</module>
         <module>../maru.groundstation</module>
         <module>../maru.map</module>
         <module>../maru.map.worldwind</module>
         <module>../maru.product.debug</module>
-<!--        <module>../maru.product.release</module> -->
+        <module>../maru.product.release</module>
         <module>../maru.report</module>
         <module>../maru.spacecraft</module>
         <module>../maru.target</module>

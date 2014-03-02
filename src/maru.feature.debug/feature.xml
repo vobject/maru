@@ -135,7 +135,8 @@
          id="org.apache.commons.math3"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="maru"
@@ -204,7 +205,8 @@
          id="org.jogamp.jogl"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.jogamp.jogl-natives-linux-amd64"

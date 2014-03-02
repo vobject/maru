@@ -39,11 +39,10 @@ developed by the following third parties:
       location="maru"
       startupProgressRect="5,270,445,15"
       startupMessageRect="7,245,445,20"
-      startupForegroundColor="FFFF00" />
-      
+      startupForegroundColor="FFFFFF" />
    <launcher name="maru">
-      <solaris/>
       <linux icon="icons/maru_64.xpm"/>
+      <solaris/>
       <win useIco="false">
          <bmp
             winSmallHigh="icons/maru_16.bmp"
@@ -56,8 +55,10 @@ developed by the following third parties:
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
    </plugins>

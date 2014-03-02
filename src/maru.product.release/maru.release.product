@@ -4,7 +4,7 @@
 <product name="Maru" uid="maru.release" id="maru.product.release.product" application="maru.application" version="1.3.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="about.gif"/>
+      <image path="/maru/about.gif"/>
       <text>
          Maru
 
@@ -33,25 +33,25 @@ developed by the following third parties:
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="icons/maru_16.png" i32="icons/maru_32.png" i48="icons/maru_48.png" i64="icons/maru_64.png" i128="icons/maru_128.png"/>
+   <windowImages i16="/maru/icons/maru_16.png" i32="/maru/icons/maru_32.png" i48="/maru/icons/maru_48.png" i64="/maru/icons/maru_64.png" i128="/maru/icons/maru_128.png"/>
 
    <splash
-      location="maru.product.release"
+      location="maru"
       startupProgressRect="5,240,445,15"
       startupMessageRect="7,215,445,20"
       startupForegroundColor="FFFFFF" />
    <launcher name="maru">
-      <linux icon="/maru.product.release/icons/maru_64.xpm"/>
+      <linux icon="icons/maru_64.xpm"/>
       <solaris/>
       <win useIco="false">
          <bmp
-            winSmallHigh="/maru.product.release/icons/maru_16.bmp"
-            winSmallLow="/maru.product.release/icons/maru_16_8bit.bmp"
-            winMediumHigh="/maru.product.release/icons/maru_32.bmp"
-            winMediumLow="/maru.product.release/icons/maru_32_8bit.bmp"
-            winLargeHigh="/maru.product.release/icons/maru_48.bmp"
-            winLargeLow="/maru.product.release/icons/maru_48_8bit.bmp"
-            winExtraLargeHigh="/maru.product.release/icons/maru_256.bmp"/>
+            winSmallHigh="icons/maru_16.bmp"
+            winSmallLow="icons/maru_16_8bit.bmp"
+            winMediumHigh="icons/maru_32.bmp"
+            winMediumLow="icons/maru_32_8bit.bmp"
+            winLargeHigh="icons/maru_48.bmp"
+            winLargeLow="icons/maru_48_8bit.bmp"
+            winExtraLargeHigh="icons/maru_256.bmp"/>
       </win>
    </launcher>
 
@@ -59,49 +59,21 @@ developed by the following third parties:
    </vm>
 
    <plugins>
-      <plugin id="com.ibm.icu"/>
-      <plugin id="maru"/>
-      <plugin id="org.eclipse.core.commands"/>
-      <plugin id="org.eclipse.core.contenttype"/>
-      <plugin id="org.eclipse.core.databinding"/>
-      <plugin id="org.eclipse.core.databinding.observable"/>
-      <plugin id="org.eclipse.core.databinding.property"/>
-      <plugin id="org.eclipse.core.expressions"/>
-      <plugin id="org.eclipse.core.filesystem"/>
-      <plugin id="org.eclipse.core.filesystem.win32.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.core.jobs"/>
-      <plugin id="org.eclipse.core.resources"/>
-      <plugin id="org.eclipse.core.runtime"/>
-      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
-      <plugin id="org.eclipse.equinox.app"/>
-      <plugin id="org.eclipse.equinox.common"/>
-      <plugin id="org.eclipse.equinox.p2.core"/>
-      <plugin id="org.eclipse.equinox.p2.engine"/>
-      <plugin id="org.eclipse.equinox.p2.metadata"/>
-      <plugin id="org.eclipse.equinox.p2.metadata.repository"/>
-      <plugin id="org.eclipse.equinox.p2.repository"/>
-      <plugin id="org.eclipse.equinox.preferences"/>
-      <plugin id="org.eclipse.equinox.registry"/>
-      <plugin id="org.eclipse.equinox.security"/>
-      <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.help"/>
-      <plugin id="org.eclipse.jface"/>
-      <plugin id="org.eclipse.jface.databinding"/>
-      <plugin id="org.eclipse.jface.text"/>
-      <plugin id="org.eclipse.osgi"/>
-      <plugin id="org.eclipse.swt"/>
-      <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.text"/>
-      <plugin id="org.eclipse.ui"/>
-      <plugin id="org.eclipse.ui.ide"/>
-      <plugin id="org.eclipse.ui.win32" fragment="true"/>
-      <plugin id="org.eclipse.ui.workbench"/>
    </plugins>
 
    <features>
       <feature id="org.eclipse.rcp" version="3.8.2.v20130118-180157-96BuGOZFxwOAeG8Ofmqicz0tPK"/>
       <feature id="maru.feature.release"/>
    </features>
+
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="3" />
+   </configurations>
 
 
 </product>
