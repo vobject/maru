@@ -1,16 +1,15 @@
 package maru.report.views;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import maru.core.model.ICoordinate;
 import maru.core.model.IPropagator;
 import maru.core.model.ISpacecraft;
-import maru.core.utils.EclipseState;
-import maru.core.utils.EclipseUtils;
-import maru.core.utils.FormatUtils;
-import maru.core.utils.TimeUtils;
+import maru.core.model.utils.EclipseState;
+import maru.core.model.utils.EclipseUtils;
+import maru.core.model.utils.FormatUtils;
+import maru.core.model.utils.TimeUtils;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -131,7 +130,7 @@ public class EclipseReportControl extends AbstractPropagationReportControl
     @Override
     protected String[] getPropagatableItems()
     {
-        Collection<ISpacecraft> elements = getCurrentProject().getUnderlyingElement().getSpacecrafts();
+        List<ISpacecraft> elements = getCurrentProject().getUnderlyingElement().getSpacecrafts();
         List<String> items = new ArrayList<>();
 
         for (ISpacecraft element : elements) {
@@ -158,7 +157,7 @@ public class EclipseReportControl extends AbstractPropagationReportControl
         double sunDuration = 0.0;
         int count = 0;
 
-        for (ICoordinate coordinate : propagator.getCoordinates(element, start, stop, stepSize))
+        for (ICoordinate coordinate : propagator.getCoordinates(start, stop, stepSize, element))
         {
             EclipseState state = EclipseUtils.getEclipseState(element.getCentralBody(), coordinate);
 

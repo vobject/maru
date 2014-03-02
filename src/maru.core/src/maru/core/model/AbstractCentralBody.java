@@ -2,7 +2,7 @@ package maru.core.model;
 
 import java.util.Map;
 
-import maru.IMaruResource;
+import maru.core.model.resource.IMaruResource;
 
 public abstract class AbstractCentralBody extends AbstractScenarioElement implements ICentralBody
 {

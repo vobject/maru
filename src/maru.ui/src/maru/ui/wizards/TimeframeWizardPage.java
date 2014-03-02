@@ -1,6 +1,6 @@
 package maru.ui.wizards;
 
-import maru.core.utils.TimeUtils;
+import maru.ui.utils.SWTUtils;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -78,11 +78,11 @@ public class TimeframeWizardPage extends WizardPage
 
     public AbsoluteDate getStart()
     {
-        return TimeUtils.getAbsoluteDate(calendarStart, timeStart);
+        return SWTUtils.getAbsoluteDate(calendarStart, timeStart);
     }
 
     public AbsoluteDate getStop()
     {
-        return TimeUtils.getAbsoluteDate(calendarStop, timeStop);
+        return SWTUtils.getAbsoluteDate(calendarStop, timeStop);
     }
 }

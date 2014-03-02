@@ -2,8 +2,8 @@ package maru.map.views;
 
 import javax.media.opengl.GLContext;
 
-import maru.centralbody.projection.EquirectangularProjector;
-import maru.centralbody.projection.ICoordinateProjector;
+import maru.centralbody.model.projection.EquirectangularProjector;
+import maru.centralbody.model.projection.ICoordinateProjector;
 import maru.ui.model.UiProject;
 import maru.ui.model.UiVisible;
 

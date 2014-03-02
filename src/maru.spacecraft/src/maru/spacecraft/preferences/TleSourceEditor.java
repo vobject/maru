@@ -1,7 +1,7 @@
 package maru.spacecraft.preferences;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import maru.spacecraft.utils.TleUtils;
@@ -50,11 +50,11 @@ public class TleSourceEditor extends ListEditor
     @Override
     protected String[] parseString(String stringList)
     {
-        Collection<String> elements = parsePreferenceString(stringList);
+        List<String> elements = parsePreferenceString(stringList);
         return elements.toArray(new String[elements.size()]);
     }
 
-    public static Collection<String> parsePreferenceString(String stringList)
+    public static List<String> parsePreferenceString(String stringList)
     {
         StringTokenizer tokenizer = new StringTokenizer(stringList, TleUtils.TLE_SOURCE_SEPERATOR);
         ArrayList<String> elements = new ArrayList<>();

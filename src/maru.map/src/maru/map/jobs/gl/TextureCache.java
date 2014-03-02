@@ -8,8 +8,8 @@ import java.util.Map;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLException;
 
-import maru.IMaruResource;
-import maru.core.utils.PathUtils;
+import maru.core.model.resource.IMaruResource;
+import maru.core.model.utils.PathUtils;
 import maru.map.MaruMapResources;
 
 import com.jogamp.opengl.util.texture.Texture;

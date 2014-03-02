@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Maru (Debug)" id="maru.product.debug.product" application="maru.application" version="1.2.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Maru (Debug)" id="maru.product.debug.product" application="maru.application" version="1.3.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="about.gif"/>
       <text>
          Maru (Debug)
 
-Version 1.2.0
+Version 1.3.0
 Author: Volker Schneider &lt;volker.schneider@gmail.com&gt;
 License: Apache License, Version 2.0
 Repository: https://github.com/vobject/maru
@@ -55,7 +55,6 @@ developed by the following third parties:
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
@@ -100,8 +99,8 @@ developed by the following third parties:
    </plugins>
 
    <features>
-      <feature id="org.eclipse.rcp" version="3.7.2.v20120120-1424-9DB5FmnFq5JCf1UA38R-kz0S0272"/>
-      <feature id="org.eclipse.equinox.p2.core.feature" version="1.0.1.v20110906-1605-8290FZ9FVKHVRKtmx3fpNuo02129"/>
+      <feature id="org.eclipse.rcp" version="3.8.2.v20130118-180157-96BuGOZFxwOAeG8Ofmqicz0tPK"/>
+      <feature id="org.eclipse.equinox.p2.core.feature" version="1.1.0.v20121211-153934-8297FndFWmE7h7Bpz-vcqkxyKz0"/>
       <feature id="maru.feature.debug"/>
    </features>
 

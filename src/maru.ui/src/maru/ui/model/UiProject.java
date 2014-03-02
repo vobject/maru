@@ -1,7 +1,7 @@
 package maru.ui.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
@@ -12,7 +12,7 @@ import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.core.model.ITimepoint;
-import maru.core.utils.TimeUtils;
+import maru.core.model.utils.TimeUtils;
 
 import org.orekit.time.AbsoluteDate;
 
@@ -24,7 +24,7 @@ public class UiProject extends UiParent implements IPropagationListener,
     private final UiSpacecraftContrainer uiSatelliteContainer;
     private final UiTimepointContrainer uiTimepointContrainer;
 
-    private final Collection<IPropagationListener> propagationListeners;
+    private final List<IPropagationListener> propagationListeners;
 
     // the currently configured step size of the timeline control
     private long stepSize = 20;
@@ -101,9 +101,9 @@ public class UiProject extends UiParent implements IPropagationListener,
     }
 
     @Override
-    public Collection<UiElement> getChildren()
+    public List<UiElement> getChildren()
     {
-        Collection<UiElement> children = new ArrayList<>();
+        List<UiElement> children = new ArrayList<>();
         children.add(uiCentralBody);
         children.add(uiGroundstationContainer);
         children.add(uiSatelliteContainer);

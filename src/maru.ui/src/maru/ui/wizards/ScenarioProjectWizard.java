@@ -1,7 +1,7 @@
 package maru.ui.wizards;
 
-import maru.core.model.CoreModel;
 import maru.core.model.IScenarioProject;
+import maru.core.workspace.WorkspaceModel;
 import maru.ui.MaruUIPlugin;
 
 import org.eclipse.core.resources.IProject;
@@ -73,17 +73,17 @@ public class ScenarioProjectWizard extends Wizard implements INewWizard, IExecut
 
         try
         {
-            CoreModel coreModel = CoreModel.getDefault();
+            WorkspaceModel workspaceModel = WorkspaceModel.getDefault();
 
             IScenarioProject scenarioProject =
-                coreModel.createScenarioProject(
+                workspaceModel.createProject(
                     project,
                     mainPage.getComment(),
                     centralBodyPage.createCentralBody(),
                     periodPage.getStart(),
                     periodPage.getStop()
                 );
-            return scenarioProject.getProject();
+            return WorkspaceModel.getDefault().getProject(scenarioProject);
         }
         catch (CoreException e)
         {

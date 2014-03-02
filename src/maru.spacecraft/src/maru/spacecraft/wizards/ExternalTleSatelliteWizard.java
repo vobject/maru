@@ -1,15 +1,15 @@
 package maru.spacecraft.wizards;
 
-import maru.IMaruResource;
 import maru.core.model.CoreModel;
 import maru.core.model.IScenarioProject;
-import maru.spacecraft.MaruSpacecraftResources;
-import maru.spacecraft.tle.InitialTLECoordinate;
-import maru.spacecraft.tle.SGP4Propagator;
-import maru.spacecraft.tle.TLESatellite;
+import maru.core.model.VisibleElementColor;
+import maru.core.model.resource.IMaruResource;
+import maru.spacecraft.model.SpacecraftResources;
+import maru.spacecraft.model.tle.InitialTLECoordinate;
+import maru.spacecraft.model.tle.SGP4Propagator;
+import maru.spacecraft.model.tle.TLESatellite;
 import maru.ui.wizards.ScenarioElementWizard;
 
-import org.eclipse.swt.graphics.RGB;
 import org.orekit.errors.OrekitException;
 
 public class ExternalTleSatelliteWizard extends ScenarioElementWizard
@@ -45,11 +45,11 @@ public class ExternalTleSatelliteWizard extends ScenarioElementWizard
             IScenarioProject scenario = getScenarioProjectFromSelection();
 
             String comment = satelliteNamingPage.getElementComment();
-            RGB color = satelliteNamingPage.getElementColor();
+            VisibleElementColor color = satelliteNamingPage.getElementColor();
             String imageName = satelliteNamingPage.getElementImage();
             IMaruResource image = null;
             if ((imageName != null) && !imageName.isEmpty()) {
-                image = MaruSpacecraftResources.fromName(imageName);
+                image = SpacecraftResources.fromName(imageName);
             }
             InitialTLECoordinate initialCoordinate = tleSelectionPage.getInitialTlePosition();
             SGP4Propagator propagator = new SGP4Propagator();

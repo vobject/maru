@@ -1,14 +1,14 @@
 package maru.ui.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import maru.core.model.IScenarioElement;
 
 public abstract class UiElementContrainer extends UiParent
 {
-    protected final Collection<UiElement> uiElements;
+    protected final List<UiElement> uiElements;
 
     public UiElementContrainer(UiParent parent, IScenarioElement underlying)
     {
@@ -41,7 +41,7 @@ public abstract class UiElementContrainer extends UiParent
     }
 
     @Override
-    public Collection<UiElement> getChildren()
+    public List<UiElement> getChildren()
     {
         return uiElements;
     }

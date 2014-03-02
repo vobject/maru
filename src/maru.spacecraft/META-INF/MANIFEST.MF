@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Maru Spacecraft
 Bundle-SymbolicName: maru.spacecraft;singleton:=true
-Bundle-Version: 1.2.0.qualifier
+Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: maru.spacecraft.MaruSpacecraftPlugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
@@ -24,8 +24,9 @@ Export-Package: maru.spacecraft;
    org.osgi.framework,
    org.orekit.time,
    maru.core.units",
- maru.spacecraft.custom,
- maru.spacecraft.tle,
+ maru.spacecraft.model,
+ maru.spacecraft.model.custom,
+ maru.spacecraft.model.tle,
  maru.spacecraft.utils
 Eclipse-RegisterBuddy: maru.core,
  maru.ui

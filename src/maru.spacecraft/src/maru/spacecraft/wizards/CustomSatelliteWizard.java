@@ -1,16 +1,16 @@
 package maru.spacecraft.wizards;
 
-import maru.IMaruResource;
 import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
 import maru.core.model.IScenarioProject;
-import maru.spacecraft.MaruSpacecraftResources;
-import maru.spacecraft.custom.CustomSatellite;
-import maru.spacecraft.custom.InitialCustomCoordinate;
-import maru.spacecraft.custom.KeplerPropagator;
+import maru.core.model.VisibleElementColor;
+import maru.core.model.resource.IMaruResource;
+import maru.spacecraft.model.SpacecraftResources;
+import maru.spacecraft.model.custom.CustomSatellite;
+import maru.spacecraft.model.custom.InitialCustomCoordinate;
+import maru.spacecraft.model.custom.KeplerPropagator;
 import maru.ui.wizards.ScenarioElementWizard;
 
-import org.eclipse.swt.graphics.RGB;
 import org.orekit.errors.OrekitException;
 import org.orekit.orbits.Orbit;
 
@@ -41,11 +41,11 @@ public class CustomSatelliteWizard extends ScenarioElementWizard
 
             String name = mainPage.getElementName();
             String comment = mainPage.getElementComment();
-            RGB color = mainPage.getElementColor();
+            VisibleElementColor color = mainPage.getElementColor();
             String imageName = mainPage.getElementImage();
             IMaruResource image = null;
             if ((imageName != null) && !imageName.isEmpty()) {
-                image = MaruSpacecraftResources.fromName(imageName);
+                image = SpacecraftResources.fromName(imageName);
             }
             Orbit orbit = mainPage.getOrbit();
             InitialCustomCoordinate initialCoordinate = new InitialCustomCoordinate(centralBody, orbit);

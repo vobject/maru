@@ -1,7 +1,9 @@
 package maru.core.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
+
+import maru.core.model.internal.PropagatorCache;
 
 import org.orekit.errors.OrekitException;
 import org.orekit.time.AbsoluteDate;
@@ -10,15 +12,19 @@ public abstract class AbstractPropagator implements IPropagator
 {
     private static final long serialVersionUID = 1L;
 
+    /** Caches propagation results. */
+    private final IPropagatorCache propagatorCache;
+
     /**
      * Listeners that are notified when a new coordinate was calculated.
      *
      * A listener is usually the Spacecraft that a Propagator is associated with.
      */
-    private final Collection<IPropagationListener> propagationListeners;
+    private final List<IPropagationListener> propagationListeners;
 
     public AbstractPropagator()
     {
+        propagatorCache = new PropagatorCache();
         propagationListeners = new ArrayList<>();
     }
 
@@ -34,6 +40,12 @@ public abstract class AbstractPropagator implements IPropagator
         if (propagationListeners.contains(listener)) {
             propagationListeners.remove(listener);
         }
+    }
+
+    @Override
+    public IPropagatorCache getCache()
+    {
+        return propagatorCache;
     }
 
     @Override
@@ -53,19 +65,13 @@ public abstract class AbstractPropagator implements IPropagator
     {
         try
         {
-            ICoordinate position = getCoordinate(element, date);
+            ICoordinate position = getCoordinate(date, element);
             notifyPropagationListeners(element, position);
         }
         catch (OrekitException e)
         {
             throw new RuntimeException("Propagation failed!", e);
         }
-    }
-
-    @Override
-    public void clearCoordinateCache()
-    {
-
     }
 
     protected void notifyPropagationListeners(ISpacecraft element, ICoordinate position)

@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.Map;
 
 import maru.core.model.IScenarioProject;
-import maru.spacecraft.tle.InitialTLECoordinate;
+import maru.spacecraft.model.tle.InitialTLECoordinate;
 import maru.spacecraft.utils.TleUtils;
 import maru.ui.wizards.ScenarioElementWizardPage;
 

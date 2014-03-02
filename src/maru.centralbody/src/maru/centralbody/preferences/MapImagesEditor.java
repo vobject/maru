@@ -1,12 +1,12 @@
 package maru.centralbody.preferences;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.StringTokenizer;
 
-import maru.IMaruResource;
-import maru.MaruResource;
 import maru.centralbody.MaruCentralBodyPlugin;
+import maru.core.model.resource.IMaruResource;
+import maru.core.model.resource.MaruResource;
 
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -53,16 +53,16 @@ public class MapImagesEditor extends ListEditor
     @Override
     protected String[] parseString(String stringList)
     {
-        Collection<String> elements = parsePreferenceString(stringList);
+        List<String> elements = parsePreferenceString(stringList);
         return elements.toArray(new String[elements.size()]);
     }
 
-    public static Collection<IMaruResource> getMapImageResources()
+    public static List<IMaruResource> getMapImageResources()
     {
         IPreferenceStore store = MaruCentralBodyPlugin.getDefault().getPreferenceStore();
         String stringList = store.getString(PreferenceConstants.P_EXTERNAL_IMAGES);
 
-        Collection<IMaruResource> images = new ArrayList<>();
+        List<IMaruResource> images = new ArrayList<>();
         for (String imgPath : parsePreferenceString(stringList))
         {
             // for external image resources, name and path is the same
@@ -93,10 +93,10 @@ public class MapImagesEditor extends ListEditor
         return null;
     }
 
-    public static Collection<String> parsePreferenceString(String stringList)
+    public static List<String> parsePreferenceString(String stringList)
     {
         StringTokenizer tokenizer = new StringTokenizer(stringList, ";");
-        ArrayList<String> elements = new ArrayList<>();
+        List<String> elements = new ArrayList<>();
 
         while (tokenizer.hasMoreElements()) {
             elements.add(tokenizer.nextToken());

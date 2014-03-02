@@ -1,7 +1,7 @@
 package maru.ui.wizards;
 
-import maru.core.model.CoreModel;
 import maru.core.model.IScenarioProject;
+import maru.core.workspace.WorkspaceModel;
 import maru.ui.model.UiElement;
 
 import org.eclipse.core.resources.IProject;
@@ -45,10 +45,10 @@ public abstract class ScenarioElementWizard extends Wizard implements INewWizard
         if (selectedObject instanceof IProject) {
             parentProject = (IProject) selectedObject;
         } else if (selectedObject instanceof UiElement) {
-            parentProject = ((UiElement) selectedObject).getUiProject().getUnderlyingElement().getProject();
+            IScenarioProject scenario = ((UiElement) selectedObject).getUiProject().getUnderlyingElement();
+            parentProject = WorkspaceModel.getDefault().getProject(scenario);
         }
-        CoreModel model = CoreModel.getDefault();
-        return model.getScenarioProject(parentProject);
+        return WorkspaceModel.getDefault().getProject(parentProject);
     }
 
     public static void createLine(Composite parent, int columns)

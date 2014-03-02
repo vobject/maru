@@ -1,7 +1,7 @@
 package maru.spacecraft.controls;
 
 import maru.core.model.IScenarioProject;
-import maru.core.utils.TimeUtils;
+import maru.core.model.utils.TimeUtils;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;

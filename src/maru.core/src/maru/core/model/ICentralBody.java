@@ -1,6 +1,6 @@
 package maru.core.model;
 
-import maru.IMaruResource;
+import maru.core.model.resource.IMaruResource;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.orekit.bodies.BodyShape;

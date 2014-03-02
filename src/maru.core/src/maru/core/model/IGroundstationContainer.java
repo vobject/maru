@@ -1,8 +1,8 @@
 package maru.core.model;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface IGroundstationContainer extends IScenarioElement, IParent
 {
-    Collection<IGroundstation> getGroundstations();
+    List<IGroundstation> getGroundstations();
 }

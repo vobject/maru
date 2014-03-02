@@ -1,15 +1,15 @@
 package maru.groundstation.wizards;
 
-import maru.IMaruResource;
 import maru.core.MaruCorePlugin;
 import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
 import maru.core.model.IScenarioProject;
-import maru.groundstation.Groundstation;
-import maru.groundstation.MaruGroundstationResources;
+import maru.core.model.VisibleElementColor;
+import maru.core.model.resource.IMaruResource;
+import maru.groundstation.model.Groundstation;
+import maru.groundstation.model.GroundstationResources;
 import maru.ui.wizards.ScenarioElementWizard;
 
-import org.eclipse.swt.graphics.RGB;
 import org.orekit.bodies.GeodeticPoint;
 
 public class GroundstationWizard extends ScenarioElementWizard
@@ -40,11 +40,11 @@ public class GroundstationWizard extends ScenarioElementWizard
 
         String name = mainPage.getElementName();
         String comment = mainPage.getElementComment();
-        RGB color = mainPage.getElementColor();
+        VisibleElementColor color = mainPage.getElementColor();
         String imageName = mainPage.getElementImage();
         IMaruResource image = null;
         if ((imageName != null) && !imageName.isEmpty()) {
-            image = MaruGroundstationResources.fromName(imageName);
+            image = GroundstationResources.fromName(imageName);
         }
 
         GeodeticPoint position = mainPage.getGeodeticPoint();

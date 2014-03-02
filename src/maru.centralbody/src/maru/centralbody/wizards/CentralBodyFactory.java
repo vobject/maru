@@ -2,11 +2,11 @@ package maru.centralbody.wizards;
 
 import java.util.ArrayList;
 
-import maru.IMaruResource;
-import maru.centralbody.MaruCentralBodyResources;
-import maru.centralbody.bodies.Earth;
+import maru.centralbody.model.CentralBodyResources;
+import maru.centralbody.model.Earth;
 import maru.centralbody.preferences.MapImagesEditor;
 import maru.core.model.ICentralBody;
+import maru.core.model.resource.IMaruResource;
 
 import org.orekit.errors.OrekitException;
 
@@ -36,7 +36,7 @@ public enum CentralBodyFactory
 
                 if (res == null) {
                     // try to get a bundle resource if it is no external resource
-                    res = MaruCentralBodyResources.fromName(imageName);
+                    res = CentralBodyResources.fromName(imageName);
                 }
                 return new Earth(res);
             }
@@ -65,13 +65,13 @@ public enum CentralBodyFactory
             case Earth:
             {
                 // add predefined map images
-                images.add(MaruCentralBodyResources.MAP_EARTH_1.getName());
-                images.add(MaruCentralBodyResources.MAP_EARTH_2.getName());
-                images.add(MaruCentralBodyResources.MAP_EARTH_3.getName());
-                images.add(MaruCentralBodyResources.MAP_EARTH_4.getName());
-                images.add(MaruCentralBodyResources.MAP_EARTH_5.getName());
-                images.add(MaruCentralBodyResources.MAP_EARTH_6.getName());
-                images.add(MaruCentralBodyResources.MAP_EARTH_7.getName());
+                images.add(CentralBodyResources.MAP_EARTH_1.getName());
+                images.add(CentralBodyResources.MAP_EARTH_2.getName());
+                images.add(CentralBodyResources.MAP_EARTH_3.getName());
+                images.add(CentralBodyResources.MAP_EARTH_4.getName());
+                images.add(CentralBodyResources.MAP_EARTH_5.getName());
+                images.add(CentralBodyResources.MAP_EARTH_6.getName());
+                images.add(CentralBodyResources.MAP_EARTH_7.getName());
                 break;
             }
 

@@ -3,10 +3,10 @@ package maru.core.test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import maru.core.MaruCorePlugin;
-import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
 import maru.core.model.IScenarioProject;
-import maru.core.utils.TimeUtils;
+import maru.core.model.utils.TimeUtils;
+import maru.core.workspace.WorkspaceModel;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -15,7 +15,7 @@ import org.orekit.time.AbsoluteDate;
 
 public class ScenarioProjectTests extends TestCase
 {
-    private CoreModel coreModel;
+    private WorkspaceModel workspaceModel;
 
     public static void main(String[] args)
     {
@@ -35,7 +35,7 @@ public class ScenarioProjectTests extends TestCase
     @Override
     protected void setUp() throws Exception
     {
-        coreModel = MaruCorePlugin.getDefault().getCoreModel();
+        workspaceModel = MaruCorePlugin.getDefault().getWorkspaceModel();
     }
 
     @Override
@@ -55,14 +55,13 @@ public class ScenarioProjectTests extends TestCase
         AbsoluteDate stopTime = TimeUtils.create(startTime, 60);
 
         IScenarioProject scenarioProject =
-                coreModel.createScenarioProject(project,
+                workspaceModel.createProject(project,
                                                 comment,
                                                 centralBody,
                                                 startTime,
                                                 stopTime);
 
         assertNotNull(scenarioProject);
-        assertNotNull(scenarioProject.getProject());
         assertNotNull(scenarioProject.getScenarioProject());
         assertEquals(scenarioProject.getElementName(), projectName);
         assertEquals(scenarioProject.getElementComment(), comment);
@@ -75,8 +74,8 @@ public class ScenarioProjectTests extends TestCase
         assertNotNull(scenarioProject.getCurrentTime());
         assertEquals(scenarioProject.getTimepoints().size(), 2);
 
-        coreModel.removeProject(project, false);
+        workspaceModel.removeProject(project, false);
 
-        assertFalse(coreModel.hasProject(project));
+        assertFalse(workspaceModel.hasProject(project));
     }
 }

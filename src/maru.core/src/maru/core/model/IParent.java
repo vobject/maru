@@ -1,6 +1,6 @@
 package maru.core.model;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface IParent
 {
@@ -8,5 +8,5 @@ public interface IParent
     boolean hasChild(IScenarioElement element);
     boolean hasChild(String name);
 
-    Collection<IScenarioElement> getChildren();
+    List<IScenarioElement> getChildren();
 }

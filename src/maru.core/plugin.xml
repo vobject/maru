@@ -6,7 +6,7 @@
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="maru.core.internal.model.ScenarioNature">
+               class="maru.core.workspace.internal.ScenarioNature">
          </run>
       </runtime>
    </extension>

@@ -1,7 +1,7 @@
 package maru.ui.propertypages;
 
-import maru.core.model.CoreModel;
 import maru.core.model.IScenarioProject;
+import maru.core.workspace.WorkspaceModel;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiModel;
 import maru.ui.model.UiProject;
@@ -21,7 +21,7 @@ public class UiProjectPropertyPage extends UiElementPropertyPage
         //  4. the UiProject is a subclass of UiElement
 
         IProject project = getProject();
-        IScenarioProject scenario = CoreModel.getDefault().getScenarioProject(project);
+        IScenarioProject scenario = WorkspaceModel.getDefault().getProject(project);
         UiProject uiProject = UiModel.getDefault().getUiProject(scenario);
         return uiProject;
     }

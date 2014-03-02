@@ -2,10 +2,11 @@ package maru.ui.propertypages;
 
 import maru.core.model.CoreModel;
 import maru.core.model.IScenarioProject;
-import maru.core.utils.TimeUtils;
+import maru.core.workspace.WorkspaceModel;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiModel;
 import maru.ui.model.UiProject;
+import maru.ui.utils.SWTUtils;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.SWT;
@@ -52,7 +53,7 @@ public class UiTimeframePropertyPage extends UiElementPropertyPage
         //  4. the UiProject is a subclass of UiElement
 
         IProject project = getProject();
-        IScenarioProject scenario = CoreModel.getDefault().getScenarioProject(project);
+        IScenarioProject scenario = WorkspaceModel.getDefault().getProject(project);
         UiProject uiProject = UiModel.getDefault().getUiProject(scenario);
         return uiProject;
     }
@@ -65,12 +66,12 @@ public class UiTimeframePropertyPage extends UiElementPropertyPage
 
     public AbsoluteDate getStart()
     {
-        return TimeUtils.getAbsoluteDate(calendarStart, timeStart);
+        return SWTUtils.getAbsoluteDate(calendarStart, timeStart);
     }
 
     public AbsoluteDate getStop()
     {
-        return TimeUtils.getAbsoluteDate(calendarStop, timeStop);
+        return SWTUtils.getAbsoluteDate(calendarStop, timeStop);
     }
 
     @Override
@@ -153,7 +154,7 @@ public class UiTimeframePropertyPage extends UiElementPropertyPage
             return;
         }
 
-        TimeUtils.populateControls(calendarStart, timeStart, initialStart);
-        TimeUtils.populateControls(calendarStop, timeStop, initialStop);
+        SWTUtils.populateControls(calendarStart, timeStart, initialStart);
+        SWTUtils.populateControls(calendarStop, timeStop, initialStop);
     }
 }

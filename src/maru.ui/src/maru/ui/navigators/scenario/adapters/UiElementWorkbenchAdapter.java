@@ -1,6 +1,6 @@
 package maru.ui.navigators.scenario.adapters;
 
-import maru.core.utils.TimeUtils;
+import maru.core.model.utils.TimeUtils;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiTimepoint;
 

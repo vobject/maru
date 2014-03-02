@@ -48,6 +48,12 @@
             <command
                   commandId="maru.ui.debug.commands.centralbodyshapejob">
             </command>
+            <command
+                  commandId="maru.ui.debug.commands.startnetworkscenariomodel">
+            </command>
+            <command
+                  commandId="maru.ui.debug.commands.stopnetworkscenariomodel">
+            </command>
          </menu>
       </menuContribution>
    </extension>
@@ -97,6 +103,14 @@
             id="maru.ui.debug.commands.centralbodyshapejob"
             name="Show Central Body Shape">
       </command>
+      <command
+            id="maru.ui.debug.commands.startnetworkscenariomodel"
+            name="Start NetworkScenarioModel Server">
+      </command>
+      <command
+            id="maru.ui.debug.commands.stopnetworkscenariomodel"
+            name="Stop NetworkScenarioModel Server">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -143,6 +157,14 @@
       <handler
             class="maru.ui.debug.handlers.CentralBodyShapeHandler"
             commandId="maru.ui.debug.commands.centralbodyshapejob">
+      </handler>
+      <handler
+            class="maru.ui.debug.handlers.StartNetworkScenarioModel"
+            commandId="maru.ui.debug.commands.startnetworkscenariomodel">
+      </handler>
+      <handler
+            class="maru.ui.debug.handlers.StopNetworkScenarioModel"
+            commandId="maru.ui.debug.commands.stopnetworkscenariomodel">
       </handler>
    </extension>
 

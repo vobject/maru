@@ -1,11 +1,11 @@
 package maru.centralbody.propertypages;
 
-import maru.IMaruResource;
-import maru.centralbody.MaruCentralBodyResources;
-import maru.centralbody.bodies.OrekitCentralBody;
+import maru.centralbody.model.CentralBodyResources;
+import maru.centralbody.model.OrekitCentralBody;
 import maru.centralbody.preferences.MapImagesEditor;
 import maru.centralbody.wizards.CentralBodyFactory;
 import maru.core.model.CoreModel;
+import maru.core.model.resource.IMaruResource;
 import maru.ui.propertypages.UiPropertyPage;
 
 import org.eclipse.swt.SWT;
@@ -60,7 +60,7 @@ public class EarthPropertyPage extends UiPropertyPage
 
                 if (image == null) {
                     // try to get a bundle resource if it is no external resource
-                    image = MaruCentralBodyResources.fromName(newImage);
+                    image = CentralBodyResources.fromName(newImage);
                 }
             }
             CoreModel.getDefault().changeCentralBodyImage(getScenarioElement(), image, true);

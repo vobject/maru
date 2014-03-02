@@ -1,0 +1,42 @@
+package maru.spacecraft.model.tle;
+
+import maru.spacecraft.model.OrekitSpacecraft;
+
+public class TLESatellite extends OrekitSpacecraft
+{
+    private static final long serialVersionUID = 1L;
+
+    private final String category;
+
+    public TLESatellite(String name)
+    {
+        this(name, "Custom");
+    }
+
+    public TLESatellite(String name, String category)
+    {
+        super(name);
+        this.category = category;
+    }
+
+    public String getCategory()
+    {
+        return category;
+    }
+
+    @Override
+    public InitialTLECoordinate getInitialCoordinate()
+    {
+        return (InitialTLECoordinate) super.getInitialCoordinate();
+    }
+
+    @Override
+    public void centralbodyChanged()
+    {
+        // TleSatellite does not rely on any ICentralBody parameters, so its
+        // InitialTleCoordinate member does not have to be changed.
+
+        // make sure we get fresh coordinates based on the new central body
+        getPropagator().getCache().clearCoordinates();
+    }
+}

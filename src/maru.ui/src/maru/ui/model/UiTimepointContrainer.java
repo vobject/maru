@@ -1,12 +1,11 @@
 package maru.ui.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import maru.core.model.IScenarioProject;
 import maru.core.model.ITimepoint;
-import maru.core.utils.TimeUtils;
+import maru.core.model.utils.TimeUtils;
 import maru.ui.model.UiTimepoint.UiTimepointType;
 
 import org.orekit.time.AbsoluteDate;
@@ -33,7 +32,7 @@ public class UiTimepointContrainer extends UiElementContrainer
     }
 
     @Override
-    public Collection<UiElement> getChildren()
+    public List<UiElement> getChildren()
     {
         // create the timepoint items
         List<UiElement> timepoints = new ArrayList<UiElement>();

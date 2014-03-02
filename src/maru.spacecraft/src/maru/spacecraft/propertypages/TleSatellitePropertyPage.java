@@ -1,8 +1,8 @@
 package maru.spacecraft.propertypages;
 
 import maru.core.model.IScenarioElement;
-import maru.spacecraft.tle.InitialTLECoordinate;
-import maru.spacecraft.tle.TLESatellite;
+import maru.spacecraft.model.tle.InitialTLECoordinate;
+import maru.spacecraft.model.tle.TLESatellite;
 import maru.ui.propertypages.UiPropertyPage;
 
 import org.eclipse.swt.SWT;

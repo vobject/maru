@@ -1,13 +1,13 @@
 package maru.spacecraft.wizards;
 
-import maru.MaruRuntimeException;
 import maru.core.model.IScenarioProject;
-import maru.spacecraft.MaruSpacecraftResources;
+import maru.core.model.MaruRuntimeException;
 import maru.spacecraft.controls.CartesianOrbitControls;
 import maru.spacecraft.controls.CircularOrbitControls;
 import maru.spacecraft.controls.EquinoctialOrbitControls;
 import maru.spacecraft.controls.KeplerianOrbitControls;
 import maru.spacecraft.controls.OrbitControls;
+import maru.spacecraft.model.SpacecraftResources;
 import maru.ui.wizards.ScenarioElementWizard;
 import maru.ui.wizards.ScenarioElementWizardNamingPage;
 
@@ -66,15 +66,15 @@ public class CustomSatelliteWizardPage extends ScenarioElementWizardNamingPage
     protected String[] getElementImages()
     {
         return new String[] {
-            MaruSpacecraftResources.SPACECRAFT_DEFAULT_1.getName(),
-            MaruSpacecraftResources.SPACECRAFT_DEFAULT_2.getName(),
-            MaruSpacecraftResources.SPACECRAFT_DEFAULT_3.getName(),
-            MaruSpacecraftResources.SPACECRAFT_ISS_1.getName(),
-            MaruSpacecraftResources.SPACECRAFT_ISS_2.getName(),
-            MaruSpacecraftResources.SPACECRAFT_ASTRONAUT_1.getName(),
-            MaruSpacecraftResources.SPACECRAFT_ROCKET_1.getName(),
-            MaruSpacecraftResources.SPACECRAFT_SHUTTLE_1.getName(),
-            MaruSpacecraftResources.SPACECRAFT_SHUTTLE_2.getName(),
+            SpacecraftResources.SPACECRAFT_DEFAULT_1.getName(),
+            SpacecraftResources.SPACECRAFT_DEFAULT_2.getName(),
+            SpacecraftResources.SPACECRAFT_DEFAULT_3.getName(),
+            SpacecraftResources.SPACECRAFT_ISS_1.getName(),
+            SpacecraftResources.SPACECRAFT_ISS_2.getName(),
+            SpacecraftResources.SPACECRAFT_ASTRONAUT_1.getName(),
+            SpacecraftResources.SPACECRAFT_ROCKET_1.getName(),
+            SpacecraftResources.SPACECRAFT_SHUTTLE_1.getName(),
+            SpacecraftResources.SPACECRAFT_SHUTTLE_2.getName(),
         };
     }
 

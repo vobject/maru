@@ -36,5 +36,6 @@ Low-level coding notes:
 Goals for Maru v1.3:
 - Project-specific preferences/properties
 - Integrate more Propagators from Orekit and their options
-- Fix Linux and OSX issues -> Linux issues done, but needs testing.
+- Fix Linux and OSX issues -> Linux issues done, but needs testing
+- Maven build script that can also export the data model bindings (core, centralbody, groundstation, spacecraft)
 - UI improvements

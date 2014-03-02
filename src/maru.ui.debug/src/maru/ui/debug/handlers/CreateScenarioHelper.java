@@ -3,29 +3,30 @@ package maru.ui.debug.handlers;
 import java.util.Map;
 import java.util.Random;
 
-import maru.IMaruPluginResource;
-import maru.centralbody.MaruCentralBodyResources;
-import maru.centralbody.bodies.Earth;
+import maru.centralbody.model.CentralBodyResources;
+import maru.centralbody.model.Earth;
 import maru.core.MaruCorePlugin;
 import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
 import maru.core.model.IScenarioProject;
-import maru.core.utils.TimeUtils;
-import maru.groundstation.Groundstation;
-import maru.groundstation.MaruGroundstationResources;
-import maru.spacecraft.MaruSpacecraftResources;
-import maru.spacecraft.custom.CustomSatellite;
-import maru.spacecraft.custom.InitialCustomCoordinate;
-import maru.spacecraft.custom.KeplerPropagator;
-import maru.spacecraft.tle.InitialTLECoordinate;
-import maru.spacecraft.tle.SGP4Propagator;
-import maru.spacecraft.tle.TLESatellite;
+import maru.core.model.VisibleElementColor;
+import maru.core.model.resource.IMaruPluginResource;
+import maru.core.model.utils.TimeUtils;
+import maru.core.workspace.WorkspaceModel;
+import maru.groundstation.model.Groundstation;
+import maru.groundstation.model.GroundstationResources;
+import maru.spacecraft.model.SpacecraftResources;
+import maru.spacecraft.model.custom.CustomSatellite;
+import maru.spacecraft.model.custom.InitialCustomCoordinate;
+import maru.spacecraft.model.custom.KeplerPropagator;
+import maru.spacecraft.model.tle.InitialTLECoordinate;
+import maru.spacecraft.model.tle.SGP4Propagator;
+import maru.spacecraft.model.tle.TLESatellite;
 import maru.spacecraft.utils.TleUtils;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.graphics.RGB;
 import org.orekit.bodies.GeodeticPoint;
 import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
@@ -39,7 +40,7 @@ public final class CreateScenarioHelper
 {
     private static String DEFAULT_SCENARIO_NAME = "DebugScenario";
     private static String DEFAULT_SCENARIO_COMMENT = "DebugScenario Comment";
-    private static IMaruPluginResource DEFAULT_SCENARIO_CENTRALBODY_GRAPHIC2D = MaruCentralBodyResources.MAP_EARTH_7;
+    private static IMaruPluginResource DEFAULT_SCENARIO_CENTRALBODY_GRAPHIC2D = CentralBodyResources.MAP_EARTH_7;
     private static int DEFAULT_SCENARIO_LENGTH = 8 * 60 * 60; // 8 hours
     private static int DEFAULT_SCENARIO_TIMEPOINT_1 = 2 * 60 * 60;
     private static int DEFAULT_SCENARIO_TIMEPOINT_2 = 4 * 60 * 60;
@@ -47,20 +48,20 @@ public final class CreateScenarioHelper
 
     private static String DEFAULT_GROUNDSTATION_NAME = "DebugGroundstation";
     private static String DEFAULT_GROUNDSTATION_COMMENT = "DebugGroundstation Comment";
-    private static RGB DEFAULT_GROUNDSTATION_COLOR = new RGB(192, 192, 224);
-    private static IMaruPluginResource DEFAULT_GROUNDSTATION_GRAPHIC2D = MaruGroundstationResources.GROUNDSTATION_DEFAULT_1;
+    private static VisibleElementColor DEFAULT_GROUNDSTATION_COLOR = new VisibleElementColor(192, 192, 224);
+    private static IMaruPluginResource DEFAULT_GROUNDSTATION_GRAPHIC2D = GroundstationResources.GROUNDSTATION_DEFAULT_1;
     private static double DEFAULT_GROUNDSTATION_LATITUDE_DEG = 49.78186646; // degree
     private static double DEFAULT_GROUNDSTATION_LONGITUDE_DEG = 9.97290914; // degree
     private static double DEFAULT_GROUNDSTATION_ALTITUDE = 274.68; // meter
 
     private static String DEFAULT_KEPLER_SATELLITE_NAME = "DebugKeplerSatellite";
     private static String DEFAULT_KEPLER_SATELLITE_COMMENT = "DebugKeplerSatellite Comment";
-    private static RGB DEFAULT_KEPLER_SATELLITE_COLOR = new RGB(64, 255, 64);
-    private static IMaruPluginResource DEFAULT_KEPLER_SATELLITE_GRAPHIC2D = MaruSpacecraftResources.SPACECRAFT_DEFAULT_1;
+    private static VisibleElementColor DEFAULT_KEPLER_SATELLITE_COLOR = new VisibleElementColor(64, 255, 64);
+    private static IMaruPluginResource DEFAULT_KEPLER_SATELLITE_GRAPHIC2D = SpacecraftResources.SPACECRAFT_DEFAULT_1;
 
     private static String DEFAULT_TLE_SATELLITE_COMMENT = "DebugTleSatellite Comment";
-    private static RGB DEFAULT_TLE_SATELLITE_COLOR = new RGB(64, 96, 255);
-    private static IMaruPluginResource DEFAULT_TLE_SATELLITE_GRAPHIC2D = MaruSpacecraftResources.SPACECRAFT_ISS_1;
+    private static VisibleElementColor DEFAULT_TLE_SATELLITE_COLOR = new VisibleElementColor(64, 96, 255);
+    private static IMaruPluginResource DEFAULT_TLE_SATELLITE_GRAPHIC2D = SpacecraftResources.SPACECRAFT_ISS_1;
 
     public static IScenarioProject createEmpty()
     {
@@ -77,9 +78,10 @@ public final class CreateScenarioHelper
 
             IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(scenarioName);
 
+            WorkspaceModel workspaceModel = MaruCorePlugin.getDefault().getWorkspaceModel();
             CoreModel coreModel = MaruCorePlugin.getDefault().getCoreModel();
 
-            IScenarioProject scenarioProject = coreModel.createScenarioProject(
+            IScenarioProject scenarioProject = workspaceModel.createProject(
                 project, scenarioComment, centralBody, startTime, stopTime
             );
 
@@ -100,7 +102,7 @@ public final class CreateScenarioHelper
     {
         String name = DEFAULT_GROUNDSTATION_NAME;
         String comment = DEFAULT_GROUNDSTATION_COMMENT;
-        RGB color = DEFAULT_GROUNDSTATION_COLOR;
+        VisibleElementColor color = DEFAULT_GROUNDSTATION_COLOR;
 
         double latitude = Math.toRadians(DEFAULT_GROUNDSTATION_LATITUDE_DEG);
         double longitude = Math.toRadians(DEFAULT_GROUNDSTATION_LONGITUDE_DEG);
@@ -123,7 +125,7 @@ public final class CreateScenarioHelper
     {
         String name = DEFAULT_KEPLER_SATELLITE_NAME;
         String comment = DEFAULT_KEPLER_SATELLITE_COMMENT;
-        RGB color = DEFAULT_KEPLER_SATELLITE_COLOR;
+        VisibleElementColor color = DEFAULT_KEPLER_SATELLITE_COLOR;
 
         double a = 6878.14 * 1000.0;
         double e = 1.96956e-016;
@@ -154,7 +156,7 @@ public final class CreateScenarioHelper
     public static void createTleSatellite(IScenarioProject scenario) throws OrekitException
     {
         String comment = DEFAULT_TLE_SATELLITE_COMMENT;
-        RGB color = DEFAULT_TLE_SATELLITE_COLOR;
+        VisibleElementColor color = DEFAULT_TLE_SATELLITE_COLOR;
 
         // the fresh TLE data for the ISS
         String url = "http://www.celestrak.com/NORAD/elements/stations.txt";

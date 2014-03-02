@@ -2,8 +2,8 @@ package maru.map.views.gl.jobs;
 
 import javax.media.opengl.GL2;
 
-import maru.core.utils.DaylengthDefinition;
-import maru.core.utils.DaylengthUtils;
+import maru.core.model.utils.DaylengthDefinition;
+import maru.core.model.utils.DaylengthUtils;
 import maru.map.jobs.gl.GLProjectDrawJob;
 import maru.map.utils.MapUtils;
 import maru.map.views.DayLength;

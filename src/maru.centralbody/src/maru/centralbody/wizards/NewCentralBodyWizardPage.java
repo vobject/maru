@@ -3,7 +3,7 @@ package maru.centralbody.wizards;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import maru.centralbody.MaruCentralBodyResources;
+import maru.centralbody.model.CentralBodyResources;
 import maru.core.model.ICentralBody;
 import maru.ui.wizards.ICentralBodyWizardPage;
 
@@ -24,12 +24,12 @@ import org.orekit.errors.OrekitException;
 
 /**
  * Wizard page selecting, reviewing, and creating a central body for a
- * scenario. It supports only {@link maru.centralbody.bodies.OrekitCentralBody}.
+ * scenario. It supports only {@link maru.centralbody.model.OrekitCentralBody}.
  * <p>
  * This wizard page serves no actual purpose at the moment. It is there to
  * present the configuration of the central body that will be created, but the
  * properties cannot be changed. This would have to change as soon as new
- * central bodies can be selected in addition to {@link maru.centralbody.bodies.OrekitCentralBody}.
+ * central bodies can be selected in addition to {@link maru.centralbody.model.OrekitCentralBody}.
  */
 public class NewCentralBodyWizardPage extends WizardPage implements ICentralBodyWizardPage
 {
@@ -81,8 +81,8 @@ public class NewCentralBodyWizardPage extends WizardPage implements ICentralBody
                     throw new RuntimeException("Failed to create a central body instance.", ex);
                 }
 
-                if (initialBody.getTexture() instanceof MaruCentralBodyResources) {
-                    String url = ((MaruCentralBodyResources) initialBody.getTexture()).getUrl();
+                if (initialBody.getTexture() instanceof CentralBodyResources) {
+                    String url = ((CentralBodyResources) initialBody.getTexture()).getUrl();
                     imageUrl.setText("<a href=\"" + url + "\">" + url + "</a>");
                 } else {
                     imageUrl.setText("<custom>");
@@ -106,8 +106,8 @@ public class NewCentralBodyWizardPage extends WizardPage implements ICentralBody
                     throw new RuntimeException("Failed to create a central body instance.", ex);
                 }
 
-                if (initialBody.getTexture() instanceof MaruCentralBodyResources) {
-                    String url = ((MaruCentralBodyResources) initialBody.getTexture()).getUrl();
+                if (initialBody.getTexture() instanceof CentralBodyResources) {
+                    String url = ((CentralBodyResources) initialBody.getTexture()).getUrl();
                     imageUrl.setText("<a href=\"" + url + "\">" + url + "</a>");
                 } else {
                     imageUrl.setText("<custom>");
@@ -138,8 +138,8 @@ public class NewCentralBodyWizardPage extends WizardPage implements ICentralBody
             throw new RuntimeException("Failed to create a central body instance.", e);
         }
 
-        if (initialBody.getTexture() instanceof MaruCentralBodyResources) {
-            String url = ((MaruCentralBodyResources) initialBody.getTexture()).getUrl();
+        if (initialBody.getTexture() instanceof CentralBodyResources) {
+            String url = ((CentralBodyResources) initialBody.getTexture()).getUrl();
             imageUrl.setText("<a href=\"" + url + "\">" + url + "</a>");
         } else {
             imageUrl.setText("<custom>");

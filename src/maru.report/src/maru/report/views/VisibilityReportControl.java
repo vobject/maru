@@ -1,7 +1,6 @@
 package maru.report.views;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import maru.core.model.ICoordinate;
@@ -10,9 +9,9 @@ import maru.core.model.IPropagator;
 import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
-import maru.core.utils.FormatUtils;
-import maru.core.utils.TimeUtils;
-import maru.core.utils.VisibilityUtils;
+import maru.core.model.utils.FormatUtils;
+import maru.core.model.utils.TimeUtils;
+import maru.core.model.utils.VisibilityUtils;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiProject;
 
@@ -248,8 +247,8 @@ public class VisibilityReportControl extends ReportTypeControl
     protected String[] getPropagatableItems()
     {
         IScenarioProject scenario = getCurrentProject().getUnderlyingElement();
-        Collection<ISpacecraft> spacecrafts = scenario.getSpacecrafts();
-        Collection<IGroundstation> groundstations = scenario.getGroundstations();
+        List<ISpacecraft> spacecrafts = scenario.getSpacecrafts();
+        List<IGroundstation> groundstations = scenario.getGroundstations();
 
         int itemCount = spacecrafts.size() + groundstations.size();
         List<String> items = new ArrayList<>(itemCount);
@@ -288,14 +287,14 @@ public class VisibilityReportControl extends ReportTypeControl
         double separationDuration = 0.0;
         int count = 0;
 
-        for (ICoordinate coordinate : propagator.getCoordinates(alpha, start, stop, stepSize))
+        for (ICoordinate coordinate : propagator.getCoordinates(start, stop, stepSize, alpha))
         {
             double distance = -1.0;
             if (beta instanceof ISpacecraft)
             {
                 ISpacecraft betaSc = (ISpacecraft) beta;
                 IPropagator betaProp = betaSc.getPropagator();
-                ICoordinate betaCoord = betaProp.getCoordinate(betaSc, coordinate.getDate());
+                ICoordinate betaCoord = betaProp.getCoordinate(coordinate.getDate(), betaSc);
 
                 if (VisibilityUtils.hasAccessTo(coordinate, betaCoord)) {
                     distance = VisibilityUtils.getDistanceTo(coordinate, betaCoord);

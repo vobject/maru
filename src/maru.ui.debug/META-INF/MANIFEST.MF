@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Maru Debug
 Bundle-SymbolicName: maru.ui.debug;singleton:=true
-Bundle-Version: 1.2.0.qualifier
-Bundle-Activator: maru.ui.debug.MaruDebugPlugin
+Bundle-Version: 1.3.0.qualifier
+Bundle-Activator: maru.ui.debug.MaruUiDebugPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,

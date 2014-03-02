@@ -1,17 +1,17 @@
 package maru.ui.views.timeline;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import maru.core.model.IScenarioProject;
 import maru.core.model.ITimepoint;
-import maru.ui.internal.model.UiProjectModelManager;
 import maru.ui.model.IUiTimelineSettingsListener;
 import maru.ui.model.IUiTimelineSettingsProvider;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiModel;
 import maru.ui.model.UiProject;
 import maru.ui.model.UiTimepoint;
+import maru.ui.model.internal.UiProjectModelManager;
 import maru.ui.views.ScenarioModelViewPart;
 
 import org.eclipse.swt.SWT;
@@ -28,7 +28,7 @@ public class Timeline extends ScenarioModelViewPart
     private TimeSettings settings;
     private TimeSlider slider;
 
-    private final Collection<IUiTimelineSettingsListener> settingsListeners = new ArrayList<>();
+    private final List<IUiTimelineSettingsListener> settingsListeners = new ArrayList<>();
 
     @Override
     public void createPartControl(Composite parent)

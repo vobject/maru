@@ -44,7 +44,7 @@
          </enabledWhen>
          <filter
                name="instanceof.underlying"
-               value="maru.groundstation.Groundstation">
+               value="maru.groundstation.model.Groundstation">
          </filter>
       </page>
    </extension>

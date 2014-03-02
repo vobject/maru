@@ -1,7 +1,7 @@
 package maru.spacecraft.controls;
 
 import maru.core.model.IScenarioProject;
-import maru.core.utils.TimeUtils;
+import maru.core.model.utils.TimeUtils;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.eclipse.swt.SWT;

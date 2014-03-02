@@ -1,7 +1,7 @@
 package maru.map;
 
-import maru.IMaruPluginResource;
-import maru.MaruPluginResource;
+import maru.core.model.resource.IMaruPluginResource;
+import maru.core.model.resource.MaruPluginResource;
 
 public enum MaruMapResources implements IMaruPluginResource
 {

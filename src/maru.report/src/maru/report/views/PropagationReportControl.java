@@ -3,7 +3,7 @@ package maru.report.views;
 import maru.core.model.ICoordinate;
 import maru.core.model.IPropagator;
 import maru.core.model.ISpacecraft;
-import maru.core.utils.TimeUtils;
+import maru.core.model.utils.TimeUtils;
 
 import org.eclipse.swt.widgets.Composite;
 import org.orekit.errors.OrekitException;
@@ -49,7 +49,7 @@ public class PropagationReportControl extends AbstractPropagationReportControl
         AbsoluteDate stop = getCurrentProject().getStopTime();
         long stepSize = getSelectedStepSize();
 
-        for (ICoordinate coordinate : propagator.getCoordinates(element, start, stop, stepSize))
+        for (ICoordinate coordinate : propagator.getCoordinates(start, stop, stepSize, element))
         {
             append(TimeUtils.asISO8601(coordinate.getDate()));
             append("\t");

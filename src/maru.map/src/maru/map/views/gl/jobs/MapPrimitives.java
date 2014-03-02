@@ -5,9 +5,8 @@ import java.util.List;
 
 import javax.media.opengl.GL2;
 
+import maru.core.model.VisibleElementColor;
 import maru.map.views.MapViewParameters;
-
-import org.eclipse.swt.graphics.RGB;
 
 public class MapPrimitives
 {
@@ -23,14 +22,14 @@ public class MapPrimitives
     {
         int x;
         int y;
-        RGB color;
+        VisibleElementColor color;
         byte opaque;
         Quadrant quadrant;
 
         int mapX;
         int mapY;
 
-        public Vertex(int x, int y, RGB color, byte opaque)
+        public Vertex(int x, int y, VisibleElementColor color, byte opaque)
         {
             this.x = x;
             this.y = y;
@@ -61,11 +60,11 @@ public class MapPrimitives
         this.vertices = new ArrayList<>();
     }
 
-    public void drawPoint(int x, int y, double width, RGB color, double opaque)
+    public void drawPoint(int x, int y, double width, VisibleElementColor color, double opaque)
     {
         gl.glPushAttrib(GL2.GL_POINT_BIT);
         gl.glPointSize((float) width);
-        gl.glColor4ub((byte) color.red, (byte) color.green, (byte) color.blue, toGLByte(opaque));
+        gl.glColor4ub((byte) color.r, (byte) color.g, (byte) color.b, toGLByte(opaque));
 
         Vertex v = new Vertex(x, y, null, (byte) 0);
 
@@ -76,11 +75,11 @@ public class MapPrimitives
         gl.glPopAttrib();
     }
 
-    public void drawLine(int srcX, int srcY, int dstX, int dstY, double width, RGB color, double opaque)
+    public void drawLine(int srcX, int srcY, int dstX, int dstY, double width, VisibleElementColor color, double opaque)
     {
         gl.glPushAttrib(GL2.GL_LINE_BIT);
         gl.glLineWidth((float) width);
-        gl.glColor4ub((byte) color.red, (byte) color.green, (byte) color.blue, toGLByte(opaque));
+        gl.glColor4ub((byte) color.r, (byte) color.g, (byte) color.b, toGLByte(opaque));
 
         Vertex vSrc = new Vertex(srcX, srcY, null, (byte) 0);
         Vertex vDst = new Vertex(dstX, dstY, null, (byte) 0);
@@ -128,7 +127,7 @@ public class MapPrimitives
         gl.glPopAttrib();
     }
 
-    public void addLineVertex(int x, int y, RGB color, double opaque)
+    public void addLineVertex(int x, int y, VisibleElementColor color, double opaque)
     {
         Vertex vNew = new Vertex(x, y, color, toGLByte(opaque));
         Vertex vCurrent = getCurrentVertex();
@@ -166,7 +165,7 @@ public class MapPrimitives
         gl.glPopAttrib();
     }
 
-    public void addPolygonVertex(int x, int y, RGB color, double opaque)
+    public void addPolygonVertex(int x, int y, VisibleElementColor color, double opaque)
     {
         Vertex vNew = new Vertex(x, y, color, toGLByte(opaque));
         Vertex vCurrent = getCurrentVertex();
@@ -192,7 +191,7 @@ public class MapPrimitives
     private void flushVertices()
     {
         for (Vertex v : vertices) {
-            gl.glColor4ub((byte) v.color.red, (byte) v.color.green, (byte) v.color.blue, v.opaque);
+            gl.glColor4ub((byte) v.color.r, (byte) v.color.g, (byte) v.color.b, v.opaque);
             gl.glVertex2d(v.mapX, v.mapY);
         }
         vertices.clear();

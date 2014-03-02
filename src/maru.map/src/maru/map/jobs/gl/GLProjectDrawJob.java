@@ -1,6 +1,6 @@
 package maru.map.jobs.gl;
 
-import maru.centralbody.projection.ICoordinateProjector;
+import maru.centralbody.model.projection.ICoordinateProjector;
 import maru.map.jobs.IProjectDrawJob;
 import maru.ui.model.UiProject;
 import maru.ui.model.UiVisible;

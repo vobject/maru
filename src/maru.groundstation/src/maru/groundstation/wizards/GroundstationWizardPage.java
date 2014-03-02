@@ -1,8 +1,8 @@
 package maru.groundstation.wizards;
 
 import maru.core.model.IScenarioProject;
-import maru.groundstation.MaruGroundstationResources;
 import maru.groundstation.controls.GroundstationControls;
+import maru.groundstation.model.GroundstationResources;
 import maru.ui.wizards.ScenarioElementWizard;
 import maru.ui.wizards.ScenarioElementWizardNamingPage;
 
@@ -60,11 +60,11 @@ public class GroundstationWizardPage extends ScenarioElementWizardNamingPage
     protected String[] getElementImages()
     {
         return new String[] {
-            MaruGroundstationResources.GROUNDSTATION_DEFAULT_1.getName(),
-            MaruGroundstationResources.GROUNDSTATION_DEFAULT_2.getName(),
-            MaruGroundstationResources.GROUNDSTATION_DEFAULT_3.getName(),
-            MaruGroundstationResources.GROUNDSTATION_DEFAULT_4.getName(),
-            MaruGroundstationResources.GROUNDSTATION_DEFAULT_5.getName(),
+            GroundstationResources.GROUNDSTATION_DEFAULT_1.getName(),
+            GroundstationResources.GROUNDSTATION_DEFAULT_2.getName(),
+            GroundstationResources.GROUNDSTATION_DEFAULT_3.getName(),
+            GroundstationResources.GROUNDSTATION_DEFAULT_4.getName(),
+            GroundstationResources.GROUNDSTATION_DEFAULT_5.getName(),
         };
     }
 

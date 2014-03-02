@@ -101,7 +101,7 @@
          </enabledWhen>
          <filter
                name="instanceof.underlying"
-               value="maru.spacecraft.custom.CustomSatellite">
+               value="maru.spacecraft.model.custom.CustomSatellite">
          </filter>
       </page>
       <page
@@ -115,7 +115,7 @@
          </enabledWhen>
          <filter
                name="instanceof.underlying"
-               value="maru.spacecraft.tle.TLESatellite">
+               value="maru.spacecraft.model.tle.TLESatellite">
          </filter>
       </page>
    </extension>

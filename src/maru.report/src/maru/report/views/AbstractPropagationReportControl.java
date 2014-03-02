@@ -1,14 +1,13 @@
 package maru.report.views;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import maru.core.model.IPropagator;
 import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
-import maru.core.utils.FormatUtils;
-import maru.core.utils.TimeUtils;
+import maru.core.model.utils.FormatUtils;
+import maru.core.model.utils.TimeUtils;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiProject;
 import maru.ui.model.UiSpacecraft;
@@ -208,7 +207,7 @@ public abstract class AbstractPropagationReportControl extends ReportTypeControl
 
         // do not use scenario.getPropagatables() because we want the spacecrafts
         // to appear in the list before the groundstations.
-        Collection<ISpacecraft> spacecrafts = scenario.getSpacecrafts();
+        List<ISpacecraft> spacecrafts = scenario.getSpacecrafts();
         List<String> items = new ArrayList<>(spacecrafts.size());
 
         for (ISpacecraft element : spacecrafts) {

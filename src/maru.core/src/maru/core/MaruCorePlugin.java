@@ -1,8 +1,8 @@
 package maru.core;
 
 import maru.core.model.CoreModel;
+import maru.core.workspace.WorkspaceModel;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 /**
@@ -23,7 +23,7 @@ public class MaruCorePlugin extends AbstractUIPlugin
     public static final String PLUGIN_ID = "maru.core"; //$NON-NLS-1$
 
     private static MaruCorePlugin plugin;
-    private CoreModel coreModel;
+    private WorkspaceModel workspaceModel;
 
     @Override
     public void start(BundleContext context) throws Exception
@@ -31,15 +31,15 @@ public class MaruCorePlugin extends AbstractUIPlugin
         super.start(context);
         plugin = this;
 
-        coreModel = CoreModel.getDefault();
-        coreModel.startup();
+        workspaceModel = WorkspaceModel.getDefault();
+        workspaceModel.startup();
     }
 
     @Override
     public void stop(BundleContext context) throws Exception
     {
-        if (coreModel != null) {
-            coreModel.shutdown();
+        if (workspaceModel != null) {
+            workspaceModel.shutdown();
         }
 
         plugin = null;
@@ -56,19 +56,13 @@ public class MaruCorePlugin extends AbstractUIPlugin
         return plugin;
     }
 
-    public CoreModel getCoreModel()
+    public WorkspaceModel getWorkspaceModel()
     {
-        return coreModel;
+        return workspaceModel;
     }
 
-    /**
-     * Get an image descriptor for the image file.
-     *
-     * @param path a path relative to the plug-in
-     * @return the image descriptor
-     */
-    public static ImageDescriptor getImageDescriptor(String path)
+    public CoreModel getCoreModel()
     {
-        return imageDescriptorFromPlugin(PLUGIN_ID, path);
+        return workspaceModel.getCoreModel();
     }
 }

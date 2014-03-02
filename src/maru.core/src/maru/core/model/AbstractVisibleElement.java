@@ -1,14 +1,12 @@
 package maru.core.model;
 
-import maru.IMaruResource;
-
-import org.eclipse.swt.graphics.RGB;
+import maru.core.model.resource.IMaruResource;
 
 public abstract class AbstractVisibleElement extends AbstractScenarioElement implements IVisibleElement
 {
     private static final long serialVersionUID = 1L;
 
-    private RGB elementColor;
+    private VisibleElementColor elementColor;
     private IMaruResource elementImage;
 
     public AbstractVisibleElement(String name)
@@ -16,14 +14,14 @@ public abstract class AbstractVisibleElement extends AbstractScenarioElement imp
         super(name);
 
         // the default color is black
-        this.elementColor = new RGB(0, 0, 0);
+        this.elementColor = new VisibleElementColor(0, 0, 0);
 
         // by default objects have no image
         this.elementImage = null;
     }
 
     @Override
-    public RGB getElementColor()
+    public VisibleElementColor getElementColor()
     {
         return elementColor;
     }
@@ -34,7 +32,7 @@ public abstract class AbstractVisibleElement extends AbstractScenarioElement imp
         return elementImage;
     }
 
-    public void setElementColor(RGB color)
+    public void setElementColor(VisibleElementColor color)
     {
         elementColor = color;
     }

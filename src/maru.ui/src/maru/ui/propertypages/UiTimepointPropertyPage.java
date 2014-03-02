@@ -2,7 +2,7 @@ package maru.ui.propertypages;
 
 import maru.core.model.CoreModel;
 import maru.core.model.ITimepoint;
-import maru.core.utils.TimeUtils;
+import maru.core.model.utils.TimeUtils;
 import maru.ui.model.UiTimepoint;
 
 import org.eclipse.swt.SWT;

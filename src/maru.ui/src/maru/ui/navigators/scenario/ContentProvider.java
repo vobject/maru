@@ -1,8 +1,8 @@
 package maru.ui.navigators.scenario;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import maru.core.model.CoreModel;
 import maru.core.model.IGroundstation;
@@ -12,13 +12,14 @@ import maru.core.model.ISpacecraft;
 import maru.core.model.ITimepoint;
 import maru.core.model.IVisibleElement;
 import maru.core.model.ScenarioModelAdapter;
-import maru.ui.internal.model.UiProjectModelManager;
+import maru.core.workspace.WorkspaceModel;
 import maru.ui.model.IUiProjectSelectionListener;
 import maru.ui.model.IUiProjectSelectionProvider;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiModel;
 import maru.ui.model.UiParent;
 import maru.ui.model.UiProject;
+import maru.ui.model.internal.UiProjectModelManager;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.ISelection;
@@ -63,8 +64,8 @@ public class ContentProvider extends BaseWorkbenchContentProvider
             {
                 IProject project = (IProject) object;
 
-                CoreModel coreModel = CoreModel.getDefault();
-                IScenarioProject scenarioProject = coreModel.getScenarioProject(project);
+                WorkspaceModel workspaceModel = WorkspaceModel.getDefault();
+                IScenarioProject scenarioProject = workspaceModel.getProject(project);
 
                 UiModel uiModel = UiModel.getDefault();
                 UiProject activeUiProject = uiModel.getUiProject(scenarioProject);
@@ -194,7 +195,7 @@ public class ContentProvider extends BaseWorkbenchContentProvider
 
     protected ScenarioModelListener scenarioModelListener;
 
-    private final Collection<IUiProjectSelectionListener> selectionListeners;
+    private final List<IUiProjectSelectionListener> selectionListeners;
 
     public ContentProvider()
     {
@@ -244,8 +245,8 @@ public class ContentProvider extends BaseWorkbenchContentProvider
             return super.getChildren(project);
         }
 
-        CoreModel coreModel = CoreModel.getDefault();
-        IScenarioProject scenario = coreModel.getScenarioProject(project);
+        WorkspaceModel workspaceModel = WorkspaceModel.getDefault();
+        IScenarioProject scenario = workspaceModel.getProject(project);
 
         UiModel uiModel = UiModel.getDefault();
         UiProject uiProject = uiModel.getUiProject(scenario);
@@ -271,7 +272,7 @@ public class ContentProvider extends BaseWorkbenchContentProvider
         super.dispose();
     }
 
-    private void refreshViewer(final IScenarioProject project, final boolean expand)
+    private void refreshViewer(final IScenarioProject scenario, final boolean expand)
     {
         Display.getDefault().asyncExec(new Runnable()
         {
@@ -284,7 +285,8 @@ public class ContentProvider extends BaseWorkbenchContentProvider
                 viewer.refresh();
 
                 if (expand) {
-                    viewer.expandToLevel(project.getProject(), 1);
+                    IProject project = WorkspaceModel.getDefault().getProject(scenario);
+                    viewer.expandToLevel(project, 1);
                 }
             }
         });

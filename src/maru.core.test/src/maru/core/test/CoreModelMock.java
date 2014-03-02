@@ -1,6 +1,6 @@
 package maru.core.test;
 
-import java.util.Collection;
+import java.util.List;
 
 import maru.core.model.AbstractCentralBody;
 import maru.core.model.AbstractGroundstation;
@@ -114,13 +114,13 @@ public class CoreModelMock
         }
 
         @Override
-        public ICoordinate getCoordinate(ISpacecraft element, AbsoluteDate date)
+        public ICoordinate getCoordinate(AbsoluteDate date, ISpacecraft element)
         {
             return null;
         }
 
         @Override
-        public Collection<ICoordinate> getCoordinates(ISpacecraft element, AbsoluteDate start, AbsoluteDate stop, long stepSize)
+        public List<ICoordinate> getCoordinates(AbsoluteDate start, AbsoluteDate stop, long stepSize, ISpacecraft element)
         {
             return null;
         }

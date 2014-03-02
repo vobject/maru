@@ -1,17 +1,17 @@
 package maru.spacecraft.propertypages;
 
-import maru.MaruRuntimeException;
 import maru.core.model.CoreModel;
 import maru.core.model.ICentralBody;
 import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioProject;
+import maru.core.model.MaruRuntimeException;
 import maru.spacecraft.controls.CartesianOrbitControls;
 import maru.spacecraft.controls.CircularOrbitControls;
 import maru.spacecraft.controls.EquinoctialOrbitControls;
 import maru.spacecraft.controls.KeplerianOrbitControls;
 import maru.spacecraft.controls.OrbitControls;
-import maru.spacecraft.custom.CustomSatellite;
-import maru.spacecraft.custom.InitialCustomCoordinate;
+import maru.spacecraft.model.custom.CustomSatellite;
+import maru.spacecraft.model.custom.InitialCustomCoordinate;
 import maru.ui.propertypages.UiPropertyPage;
 
 import org.eclipse.swt.SWT;

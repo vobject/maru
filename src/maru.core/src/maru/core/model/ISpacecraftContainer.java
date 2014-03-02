@@ -1,8 +1,8 @@
 package maru.core.model;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface ISpacecraftContainer extends IScenarioElement, IParent
 {
-    Collection<ISpacecraft> getSpacecrafts();
+    List<ISpacecraft> getSpacecrafts();
 }

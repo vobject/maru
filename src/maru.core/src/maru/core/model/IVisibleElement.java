@@ -1,11 +1,9 @@
 package maru.core.model;
 
-import maru.IMaruResource;
-
-import org.eclipse.swt.graphics.RGB;
+import maru.core.model.resource.IMaruResource;
 
 public interface IVisibleElement extends IScenarioElement
 {
-    RGB getElementColor();
+    VisibleElementColor getElementColor();
     IMaruResource getElementImage();
 }

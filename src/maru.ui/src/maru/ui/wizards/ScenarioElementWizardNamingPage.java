@@ -3,6 +3,7 @@ package maru.ui.wizards;
 import java.util.Random;
 
 import maru.core.model.IScenarioProject;
+import maru.core.model.VisibleElementColor;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -114,9 +115,9 @@ public abstract class ScenarioElementWizardNamingPage extends ScenarioElementWiz
         return comment.getText().trim();
     }
 
-    public RGB getElementColor()
+    public VisibleElementColor getElementColor()
     {
-        return color;
+        return new VisibleElementColor(color.red, color.green, color.blue);
     }
 
     public String getElementImage()

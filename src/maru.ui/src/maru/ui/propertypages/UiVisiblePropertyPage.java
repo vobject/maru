@@ -1,8 +1,9 @@
 package maru.ui.propertypages;
 
-import maru.IMaruResource;
 import maru.core.model.CoreModel;
 import maru.core.model.IVisibleElement;
+import maru.core.model.VisibleElementColor;
+import maru.core.model.resource.IMaruResource;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -53,7 +54,7 @@ public abstract class UiVisiblePropertyPage extends UiPropertyPage
         IVisibleElement element = getScenarioElement();
 
         if (newColorSelected()) {
-            CoreModel.getDefault().changeColor(element, newColor, true);
+            CoreModel.getDefault().changeColor(element, new VisibleElementColor(newColor.red, newColor.green, newColor.blue), true);
         }
 
         String newImage = images.getText();
@@ -148,7 +149,8 @@ public abstract class UiVisiblePropertyPage extends UiPropertyPage
             return;
         }
 
-        initialColor = element.getElementColor();
+        VisibleElementColor color = element.getElementColor();
+        initialColor = new RGB(color.r, color.g, color.b);
         newColor = initialColor;
 
         IMaruResource image = element.getElementImage();

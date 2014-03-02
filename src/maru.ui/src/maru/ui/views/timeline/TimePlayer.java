@@ -3,7 +3,7 @@ package maru.ui.views.timeline;
 import java.util.ArrayList;
 import java.util.List;
 
-import maru.core.utils.TimeUtils;
+import maru.core.model.utils.TimeUtils;
 import maru.ui.MaruUIPlugin;
 
 import org.eclipse.swt.SWT;

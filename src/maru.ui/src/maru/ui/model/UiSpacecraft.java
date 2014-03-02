@@ -1,6 +1,7 @@
 package maru.ui.model;
 
 import maru.core.model.ISpacecraft;
+import maru.core.model.VisibleElementColor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
@@ -29,6 +30,8 @@ public class UiSpacecraft extends UiVisible
     @Override
     public ImageDescriptor getImageDescriptor()
     {
-        return ImageDescriptor.createFromImageData(new ImageData(10, 10, 1, new PaletteData(new RGB[] { getUnderlyingElement().getElementColor() })));
+        VisibleElementColor color = getUnderlyingElement().getElementColor();
+        RGB rgb = new RGB(color.r, color.g, color.b);
+        return ImageDescriptor.createFromImageData(new ImageData(10, 10, 1, new PaletteData(new RGB[] { rgb })));
     }
 }

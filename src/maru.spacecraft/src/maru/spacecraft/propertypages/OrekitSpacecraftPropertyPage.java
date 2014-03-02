@@ -1,8 +1,8 @@
 package maru.spacecraft.propertypages;
 
-import maru.IMaruResource;
-import maru.spacecraft.MaruSpacecraftResources;
-import maru.spacecraft.OrekitSpacecraft;
+import maru.core.model.resource.IMaruResource;
+import maru.spacecraft.model.OrekitSpacecraft;
+import maru.spacecraft.model.SpacecraftResources;
 import maru.ui.propertypages.UiVisiblePropertyPage;
 
 import org.eclipse.swt.SWT;
@@ -18,22 +18,22 @@ public class OrekitSpacecraftPropertyPage extends UiVisiblePropertyPage
         // return an empty array be default
         return new String[] {
             "", // empty string allows to disable element image
-            MaruSpacecraftResources.SPACECRAFT_DEFAULT_1.getName(),
-            MaruSpacecraftResources.SPACECRAFT_DEFAULT_2.getName(),
-            MaruSpacecraftResources.SPACECRAFT_DEFAULT_3.getName(),
-            MaruSpacecraftResources.SPACECRAFT_ISS_1.getName(),
-            MaruSpacecraftResources.SPACECRAFT_ISS_2.getName(),
-            MaruSpacecraftResources.SPACECRAFT_ASTRONAUT_1.getName(),
-            MaruSpacecraftResources.SPACECRAFT_ROCKET_1.getName(),
-            MaruSpacecraftResources.SPACECRAFT_SHUTTLE_1.getName(),
-            MaruSpacecraftResources.SPACECRAFT_SHUTTLE_2.getName(),
+            SpacecraftResources.SPACECRAFT_DEFAULT_1.getName(),
+            SpacecraftResources.SPACECRAFT_DEFAULT_2.getName(),
+            SpacecraftResources.SPACECRAFT_DEFAULT_3.getName(),
+            SpacecraftResources.SPACECRAFT_ISS_1.getName(),
+            SpacecraftResources.SPACECRAFT_ISS_2.getName(),
+            SpacecraftResources.SPACECRAFT_ASTRONAUT_1.getName(),
+            SpacecraftResources.SPACECRAFT_ROCKET_1.getName(),
+            SpacecraftResources.SPACECRAFT_SHUTTLE_1.getName(),
+            SpacecraftResources.SPACECRAFT_SHUTTLE_2.getName(),
         };
     }
 
     @Override
     protected IMaruResource getImageFromName(String name)
     {
-        return MaruSpacecraftResources.fromName(name);
+        return SpacecraftResources.fromName(name);
     }
 
     @Override

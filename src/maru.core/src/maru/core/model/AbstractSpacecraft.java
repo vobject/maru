@@ -6,9 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import maru.MaruRuntimeException;
-import maru.core.utils.EclipseState;
-import maru.core.utils.VisibilityUtils;
+import maru.core.model.utils.EclipseState;
+import maru.core.model.utils.VisibilityUtils;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.orekit.bodies.GeodeticPoint;
@@ -16,18 +15,27 @@ import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
 
+class NullPropagatorCache implements IPropagatorCache
+{
+    private static final long serialVersionUID = 1L;
+    @Override public List<ICoordinate> getCoordinates(AbsoluteDate start, AbsoluteDate stop, long stepSize, ICoordinate initialCoordinate) { return null; }
+    @Override public void setCoordinates(AbsoluteDate start, AbsoluteDate stop, long stepSize, ICoordinate initialCoordinate, List<ICoordinate> coordinates) { }
+    @Override public void clearCoordinates() { }
+}
+
 class NullPropagator implements IPropagator
 {
     private static final long serialVersionUID = 1L;
+    private static final IPropagatorCache NULL_CACHE = new NullPropagatorCache();
     private static final ICoordinate NULL_COORDINATE = new NullCoordinate();
-    private static final Collection<ICoordinate> NULL_COORDINATES = Collections.emptyList();;
+    private static final List<ICoordinate> NULL_COORDINATES = Collections.emptyList();;
     @Override public String getName() { return "NullPropagator"; }
-    @Override public ICoordinate getCoordinate(ISpacecraft element, AbsoluteDate time) { return NULL_COORDINATE; }
-    @Override public Collection<ICoordinate> getCoordinates(ISpacecraft element,  AbsoluteDate start, AbsoluteDate stop, long stepSize) { return NULL_COORDINATES; }
+    @Override public IPropagatorCache getCache() { return NULL_CACHE; }
+    @Override public ICoordinate getCoordinate(AbsoluteDate date, ISpacecraft element) throws OrekitException { return NULL_COORDINATE; }
+    @Override public List<ICoordinate> getCoordinates(AbsoluteDate start, AbsoluteDate stop, long stepSize, ISpacecraft element) throws OrekitException { return NULL_COORDINATES; }
     @Override public void startTimeChanged(ISpacecraft element, AbsoluteDate date) { }
     @Override public void stopTimeChanged(ISpacecraft element, AbsoluteDate date) { }
     @Override public void currentTimeChanged(ISpacecraft element, AbsoluteDate date) { }
-    @Override public void clearCoordinateCache() { }
 }
 
 class NullCoordinate implements ICoordinate
@@ -81,6 +89,9 @@ public abstract class AbstractSpacecraft extends AbstractVisibleElement implemen
 
     public void setInitialCoordinate(ICoordinate coordinate) throws OrekitException
     {
+        // make sure we get coordinates based on the new initial coordinate
+        propagator.getCache().clearCoordinates();
+
         initialCoordinate = coordinate;
         updateCurrentCoordinate();
     }
@@ -123,10 +134,6 @@ public abstract class AbstractSpacecraft extends AbstractVisibleElement implemen
 
     public void setPropagator(AbstractPropagator propagator) throws OrekitException
     {
-        if (propagator == null) {
-            throw new MaruRuntimeException("The propagator may not be null.");
-        }
-
         this.propagator = propagator;
 
         propagator.addPropagationListener(this);
@@ -247,6 +254,6 @@ public abstract class AbstractSpacecraft extends AbstractVisibleElement implemen
         }
 
         AbsoluteDate currentTime = scenario.getCurrentTime().getTime();
-        currentCoordinate = propagator.getCoordinate(this, currentTime);
+        currentCoordinate = propagator.getCoordinate(currentTime, this);
     }
 }

@@ -6,11 +6,10 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import maru.core.utils.PathUtils;
+import maru.core.model.utils.PathUtils;
 import maru.spacecraft.MaruSpacecraftPlugin;
 import maru.spacecraft.preferences.PreferenceConstants;
 import maru.spacecraft.preferences.TleSourceEditor;
@@ -41,7 +40,7 @@ public final class TleUtils
         IPreferenceStore store = MaruSpacecraftPlugin.getDefault().getPreferenceStore();
         String stringList = store.getString(PreferenceConstants.P_EXTERNAL_TLE);
 
-        Collection<String> elements = TleSourceEditor.parsePreferenceString(stringList);
+        List<String> elements = TleSourceEditor.parsePreferenceString(stringList);
         return elements.toArray(new String[elements.size()]);
     }
 

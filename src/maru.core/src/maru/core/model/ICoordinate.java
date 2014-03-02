@@ -2,7 +2,7 @@ package maru.core.model;
 
 import java.io.Serializable;
 
-import maru.core.utils.EclipseState;
+import maru.core.model.utils.EclipseState;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.orekit.frames.Frame;

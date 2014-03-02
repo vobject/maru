@@ -3,7 +3,7 @@ package maru.core.model;
 import java.util.List;
 import java.util.Map;
 
-import maru.core.utils.VisibilityUtils;
+import maru.core.model.utils.VisibilityUtils;
 
 import org.orekit.bodies.GeodeticPoint;
 import org.orekit.errors.OrekitException;

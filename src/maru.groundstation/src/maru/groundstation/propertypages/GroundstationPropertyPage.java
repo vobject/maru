@@ -1,12 +1,12 @@
 package maru.groundstation.propertypages;
 
-import maru.IMaruResource;
 import maru.core.model.CoreModel;
 import maru.core.model.IGroundstation;
 import maru.core.model.IScenarioProject;
-import maru.groundstation.Groundstation;
-import maru.groundstation.MaruGroundstationResources;
+import maru.core.model.resource.IMaruResource;
 import maru.groundstation.controls.GroundstationControls;
+import maru.groundstation.model.Groundstation;
+import maru.groundstation.model.GroundstationResources;
 import maru.ui.propertypages.UiVisiblePropertyPage;
 
 import org.eclipse.swt.widgets.Composite;
@@ -22,18 +22,18 @@ public class GroundstationPropertyPage extends UiVisiblePropertyPage
         // return an empty array be default
         return new String[] {
             "", // empty string allows to disable element image
-            MaruGroundstationResources.GROUNDSTATION_DEFAULT_1.getName(),
-            MaruGroundstationResources.GROUNDSTATION_DEFAULT_2.getName(),
-            MaruGroundstationResources.GROUNDSTATION_DEFAULT_3.getName(),
-            MaruGroundstationResources.GROUNDSTATION_DEFAULT_4.getName(),
-            MaruGroundstationResources.GROUNDSTATION_DEFAULT_5.getName(),
+            GroundstationResources.GROUNDSTATION_DEFAULT_1.getName(),
+            GroundstationResources.GROUNDSTATION_DEFAULT_2.getName(),
+            GroundstationResources.GROUNDSTATION_DEFAULT_3.getName(),
+            GroundstationResources.GROUNDSTATION_DEFAULT_4.getName(),
+            GroundstationResources.GROUNDSTATION_DEFAULT_5.getName(),
         };
     }
 
     @Override
     protected IMaruResource getImageFromName(String name)
     {
-        return MaruGroundstationResources.fromName(name);
+        return GroundstationResources.fromName(name);
     }
 
     @Override

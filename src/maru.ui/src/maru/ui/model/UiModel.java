@@ -2,7 +2,7 @@ package maru.ui.model;
 
 import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioProject;
-import maru.ui.internal.model.UiProjectModelManager;
+import maru.ui.model.internal.UiProjectModelManager;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;

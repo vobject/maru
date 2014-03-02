@@ -2,6 +2,7 @@ package maru.ui.propertypages;
 
 import maru.core.model.IScenarioElement;
 import maru.core.model.IScenarioProject;
+import maru.core.workspace.WorkspaceModel;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiProject;
 
@@ -26,7 +27,8 @@ public abstract class UiPropertyPage extends PropertyPage
 
     public IProject getProject()
     {
-        return getUiElement().getUiProject().getUnderlyingElement().getProject();
+        IScenarioProject scenario = getUiElement().getUiProject().getUnderlyingElement();
+        return WorkspaceModel.getDefault().getProject(scenario);
     }
 
     public IScenarioProject getScenario()
