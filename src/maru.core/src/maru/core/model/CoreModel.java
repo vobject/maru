@@ -12,37 +12,32 @@ import org.orekit.bodies.GeodeticPoint;
 import org.orekit.time.AbsoluteDate;
 
 /**
- * Core model class.
+ * Core model class allows the manipulation of the core data model.
  */
 public final class CoreModel
 {
     private static CoreModel coreModel;
 
-    private final IScenarioModel scenarioModel;
-    private final ScenarioModelManager scenarioModelManager;
+    private IScenarioModel scenarioModel;
+    private ScenarioModelManager scenarioModelManager;
 
     public static CoreModel getDefault()
     {
         if (coreModel == null) {
-            coreModel = new CoreModel(new ScenarioModel(), new ScenarioModelManager());
+            coreModel = new CoreModel();
         }
         return coreModel;
     }
 
-    private CoreModel(IScenarioModel scenarioModel, ScenarioModelManager scenarioModelManager)
-    {
-        this.scenarioModel = scenarioModel;
-        this.scenarioModelManager = scenarioModelManager;
-    }
-
     public void startup()
     {
-
+        setScenarioModel(new ScenarioModel());
+        setScenarioModelManager(new ScenarioModelManager());
     }
 
     public void shutdown()
     {
-
+        coreModel = null;
     }
 
     public IScenarioModel getScenarioModel()
@@ -249,5 +244,15 @@ public final class CoreModel
     public void changePropagator(ISpacecraft element, AbstractPropagator propagator)
     {
         scenarioModelManager.changePropagator(element, propagator);
+    }
+
+    private void setScenarioModel(IScenarioModel scenarioModel)
+    {
+        this.scenarioModel = scenarioModel;
+    }
+
+    private void setScenarioModelManager(ScenarioModelManager scenarioModelManager)
+    {
+        this.scenarioModelManager = scenarioModelManager;
     }
 }

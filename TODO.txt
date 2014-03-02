@@ -27,6 +27,7 @@ Low-level coding notes:
 
 --> Bugs
 - delete StartTimepoint, currenttime will not be updated.
+- it is possible to add elements with the same name -> tested with ground stations
 
 --> Misc
 - clear propagator cache after report creation sensible? -> non-critical for performance
