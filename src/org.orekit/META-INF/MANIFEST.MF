@@ -11,6 +11,7 @@ Bundle-Activator: org.orekit.OrekitPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: CS Systèmes d'Information
 Bundle-ClassPath: .,orekit-6.1.jar
+Eclipse-BundleShape: dir
 Export-Package: org.orekit,
  org.orekit.attitudes,
  org.orekit.bodies,

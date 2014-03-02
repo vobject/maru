@@ -17,7 +17,7 @@
          </property>
          <property
                name="aboutImage"
-               value="about.gif">
+               value="platform:/plugin/maru/about.gif">
          </property>
          <property
                name="aboutText"
@@ -25,11 +25,11 @@
          </property>
          <property
                name="windowImages"
-               value="icons/maru_16.png,icons/maru_32.png,icons/maru_48.png,icons/maru_64.png,icons/maru_128.png">
+               value="platform:/plugin/maru/icons/maru_16.png,platform:/plugin/maru/icons/maru_32.png,platform:/plugin/maru/icons/maru_48.png,platform:/plugin/maru/icons/maru_64.png,platform:/plugin/maru/icons/maru_128.png">
          </property>
          <property
                name="startupForegroundColor"
-               value="FFFFFF">
+               value="FFFF00">
          </property>
          <property
                name="startupMessageRect"
@@ -47,6 +47,38 @@
             productId="maru.product.debug.product"
             splashId="maru.product.debug.splashHandler">
       </splashHandlerProductBinding>
+   </extension>
+   <extension
+         id="maru"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="maru.application"
+            name="Maru (Debug)">
+         <property
+               name="windowImages"
+               value="platform:/plugin/maru/icons/maru_16.png,platform:/plugin/maru/icons/maru_32.png,platform:/plugin/maru/icons/maru_48.png,platform:/plugin/maru/icons/maru_64.png,platform:/plugin/maru/icons/maru_128.png">
+         </property>
+         <property
+               name="aboutText"
+               value="Maru (Debug)&#x0A;&#x0A;Version 1.3.0&#x0A;Author: Volker Schneider &lt;volker.schneider@gmail.com&gt;&#x0A;License: Apache License, Version 2.0&#x0A;Repository: https://github.com/vobject/maru&#x0A;&#x0A;This product includes software and media&#x0A;developed by the following third parties:&#x0A;- Orekit: https://www.orekit.org&#x0A;- Apache Commons Math: http://commons.apache.org/proper/commons-math&#x0A;- JOGL: https://jogamp.org/jogl&#x0A;- NASA World Wind: http://worldwind.arc.nasa.gov&#x0A;- Oxygen Team: http://www.oxygen-icons.org&#x0A;- Unrestrictedstock.com: http://unrestrictedstock.com&#x0A;- JHT&apos;s Planetary Pixel Emporium: http://planetpixelemporium.com&#x0A;- Natural Earth II: http://www.shadedrelief.com/natural2">
+         </property>
+         <property
+               name="aboutImage"
+               value="platform:/plugin/maru/about.gif">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="FFFFFF">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="5,270,445,15">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,245,445,20">
+         </property>
+      </product>
    </extension>
 
 </plugin>
