@@ -30,5 +30,10 @@ local.properties
 
 workspace/
 
+# windows script files
 *.bat
 *.cmd
+
+# Maven/Tycho build directories
+target/
+

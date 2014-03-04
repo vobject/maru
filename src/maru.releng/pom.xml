@@ -11,6 +11,7 @@
     <properties>
         <tycho-version>0.19.0</tycho-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <buildDir>../../build</buildDir>
     </properties>
     
     <licenses>
@@ -21,8 +22,9 @@
     </licenses>
 
     <build>
+        <directory>${buildDir}</directory>
+        
         <plugins>
-
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-maven-plugin</artifactId>
@@ -49,15 +51,44 @@
                         </artifact>
                     </target>
                     <environments>
+<!--                         <environment>
+                            <os>win32</os>
+                            <ws>win32</ws>
+                            <arch>x86</arch>
+                        </environment> -->
                         <environment>
                             <os>win32</os>
                             <ws>win32</ws>
                             <arch>x86_64</arch>
                         </environment>
+<!--                         <environment>
+                            <os>linux</os>
+                            <ws>gtk</ws>
+                            <arch>x86</arch>
+                        </environment> -->
+<!--                         <environment>
+                            <os>linux</os>
+                            <ws>gtk</ws>
+                            <arch>x86_64</arch>
+                        </environment> -->
+<!--                         <environment>
+                            <os>macosx</os>
+                            <ws>cocoa</ws>
+                            <arch>x86_64</arch>
+                        </environment> -->
                     </environments>
                 </configuration>
             </plugin>
-
+            
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-p2-repository-plugin</artifactId>
+                <version>${tycho-version}</version>
+                <configuration>
+                    <createArtifactRepository>false</createArtifactRepository>
+                    <compress>false</compress>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
