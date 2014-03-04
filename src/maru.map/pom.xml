@@ -8,4 +8,8 @@
         <version>1.3.0-SNAPSHOT</version>
         <relativePath>../maru.releng</relativePath>
     </parent>
+
+    <build>
+        <directory>${buildDir}/maru.map</directory>
+    </build>
 </project>

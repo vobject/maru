@@ -10,6 +10,7 @@
     </parent>
     
     <build>
+        <directory>${buildDir}/maru.core.test</directory>
         <sourceDirectory>src</sourceDirectory>
         <plugins>
 <!--             <plugin>

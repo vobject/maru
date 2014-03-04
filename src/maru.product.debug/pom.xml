@@ -10,6 +10,7 @@
     </parent>
 
     <build>
+        <directory>${buildDir}/maru.product.debug</directory>
         <plugins>
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
@@ -22,12 +23,12 @@
                             <goal>materialize-products</goal>
                         </goals>
                     </execution>
-<!--                    <execution>
+<!--                     <execution>
                         <id>archive-products</id>
                         <goals>
                             <goal>archive-products</goal>
                         </goals>
-                    </execution>-->
+                    </execution> -->
                 </executions>
             </plugin>
         </plugins>

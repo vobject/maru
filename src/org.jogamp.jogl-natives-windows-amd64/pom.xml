@@ -11,6 +11,7 @@
     </parent>
     
     <build>
+        <directory>${buildDir}/org.jogamp.jogl-natives-windows-amd64</directory>
         <plugins>
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>

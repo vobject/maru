@@ -40,3 +40,4 @@ Goals for Maru v1.3:
 - Fix Linux and OSX issues -> Linux issues done, but needs testing
 - Maven build script that can also export the data model bindings (core, centralbody, groundstation, spacecraft)
 - UI improvements
+- get rid of debug/release-specific feature/product

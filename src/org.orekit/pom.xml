@@ -9,4 +9,8 @@
         <version>1.3.0-SNAPSHOT</version>
         <relativePath>../maru.releng</relativePath>
     </parent>
+
+    <build>
+        <directory>${buildDir}/org.orekit</directory>
+    </build>
 </project>
