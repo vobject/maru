@@ -15,15 +15,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.orekit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
-Export-Package: maru.spacecraft;
-  uses:="org.orekit.utils,
-   maru.core.model,
-   org.orekit.frames,
-   maru.core.model.template,
-   org.eclipse.ui.plugin,
-   org.osgi.framework,
-   org.orekit.time,
-   maru.core.units",
+Export-Package: maru.spacecraft,
  maru.spacecraft.model,
  maru.spacecraft.model.custom,
  maru.spacecraft.model.tle,

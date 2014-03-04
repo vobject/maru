@@ -22,7 +22,7 @@
     </licenses>
 
     <build>
-        <directory>${buildDir}</directory>
+<!--         <directory>${buildDir}</directory> -->
         
         <plugins>
             <plugin>
