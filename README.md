@@ -1,4 +1,4 @@
-Maru
+Maru [![](https://travis-ci.org/vobject/maru.png?branch=maru-next)](https://travis-ci.org/vobject/maru/)
 ====
 
 Maru is an satellite mission planning application licensed under the terms
