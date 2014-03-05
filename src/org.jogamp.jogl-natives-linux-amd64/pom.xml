@@ -7,11 +7,10 @@
         <groupId>maru.releng</groupId>
         <artifactId>maru-artifact</artifactId>
         <version>1.3.0-SNAPSHOT</version>
-        <relativePath>../maru.releng</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
-    
+
     <build>
-        <directory>${buildDir}/org.jogamp.jogl-natives-linux-amd64</directory>
         <plugins>
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>

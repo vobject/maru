@@ -7,10 +7,6 @@
         <groupId>maru.releng</groupId>
         <artifactId>maru-artifact</artifactId>
         <version>1.3.0-SNAPSHOT</version>
-        <relativePath>../maru.releng</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
-
-    <build>
-        <directory>${buildDir}/gov.nasa.worldwind</directory>
-    </build>
 </project>

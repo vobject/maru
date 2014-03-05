@@ -11,7 +11,6 @@
     <properties>
         <tycho-version>0.19.0</tycho-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <buildDir>../../build</buildDir>
     </properties>
 
     <licenses>
@@ -22,8 +21,6 @@
     </licenses>
 
     <build>
-        <directory>${buildDir}</directory>
-
         <plugins>
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
@@ -51,31 +48,31 @@
                         </artifact>
                     </target>
                     <environments>
-<!--                         <environment>
+                         <environment>
                             <os>win32</os>
                             <ws>win32</ws>
                             <arch>x86</arch>
-                        </environment> -->
+                        </environment>
                         <environment>
                             <os>win32</os>
                             <ws>win32</ws>
                             <arch>x86_64</arch>
                         </environment>
-<!--                         <environment>
+                         <environment>
                             <os>linux</os>
                             <ws>gtk</ws>
                             <arch>x86</arch>
-                        </environment> -->
+                        </environment>
                          <environment>
                             <os>linux</os>
                             <ws>gtk</ws>
                             <arch>x86_64</arch>
                         </environment>
-<!--                         <environment>
+                         <environment>
                             <os>macosx</os>
                             <ws>cocoa</ws>
                             <arch>x86_64</arch>
-                        </environment> -->
+                        </environment>
                     </environments>
                 </configuration>
             </plugin>
@@ -93,30 +90,30 @@
     </build>
 
     <modules>
-        <module>../gov.nasa.worldwind</module>
-        <module>../maru</module>
-        <module>../maru.centralbody</module>
-        <module>../maru.core</module>
-        <module>../maru.core.tests</module>
-        <module>../maru.feature.debug</module>
-         <module>../maru.feature.release</module>
-        <module>../maru.groundstation</module>
-        <module>../maru.map</module>
-        <module>../maru.map.worldwind</module>
-        <module>../maru.product.debug</module>
-         <module>../maru.product.release</module>
-        <module>../maru.report</module>
-        <module>../maru.spacecraft</module>
-        <module>../maru.target</module>
-        <module>../maru.ui</module>
-        <module>../maru.ui.debug</module>
-        <module>../maru.ui.tests</module>
-        <module>../org.apache.commons.math3</module>
-        <module>../org.jogamp.jogl</module>
-        <module>../org.jogamp.jogl-natives-linux-amd64</module>
-        <module>../org.jogamp.jogl-natives-linux-i586</module>
-        <module>../org.jogamp.jogl-natives-windows-amd64</module>
-        <module>../org.jogamp.jogl-natives-windows-i586</module>
-        <module>../org.orekit</module>
+        <module>src/gov.nasa.worldwind</module>
+        <module>src/maru</module>
+        <module>src/maru.centralbody</module>
+        <module>src/maru.core</module>
+        <module>src/maru.core.tests</module>
+        <module>src/maru.feature.debug</module>
+        <module>src/maru.feature.release</module>
+        <module>src/maru.groundstation</module>
+        <module>src/maru.map</module>
+        <module>src/maru.map.worldwind</module>
+        <module>src/maru.product.debug</module>
+        <module>src/maru.product.release</module>
+        <module>src/maru.report</module>
+        <module>src/maru.spacecraft</module>
+        <module>src/maru.target</module>
+        <module>src/maru.ui</module>
+        <module>src/maru.ui.debug</module>
+        <module>src/maru.ui.tests</module>
+        <module>src/org.apache.commons.math3</module>
+        <module>src/org.jogamp.jogl</module>
+        <module>src/org.jogamp.jogl-natives-linux-amd64</module>
+        <module>src/org.jogamp.jogl-natives-linux-i586</module>
+        <module>src/org.jogamp.jogl-natives-windows-amd64</module>
+        <module>src/org.jogamp.jogl-natives-windows-i586</module>
+        <module>src/org.orekit</module>
     </modules>
 </project>
