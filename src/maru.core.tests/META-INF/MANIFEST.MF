@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Maru Core Test
-Bundle-SymbolicName: maru.core.test
+Bundle-Name: Maru Core Tests
+Bundle-SymbolicName: maru.core.tests
 Bundle-Version: 1.3.0.qualifier
 Fragment-Host: maru.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

@@ -1,4 +1,4 @@
-package maru.core.test;
+package maru.core.model;
 
 import java.util.List;
 
