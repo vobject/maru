@@ -1,3 +1,3 @@
 language: java
 before_script: cd src/maru.releng
-script: mvn clean verify
+script: mvn -DbuildDir=target clean install
