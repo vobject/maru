@@ -11,7 +11,7 @@
     <properties>
         <tycho-version>0.19.0</tycho-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <buildDir>../../build</buildDir>
+        <buildDir>build</buildDir>
     </properties>
 
     <licenses>
