@@ -297,12 +297,12 @@ developed by the following third parties:
                value="FFFFFF">
          </property>
          <property
-               name="startupProgressRect"
-               value="5,270,445,15">
+               name="startupMessageRect"
+               value="7,215,445,20">
          </property>
          <property
-               name="startupMessageRect"
-               value="7,245,445,20">
+               name="startupProgressRect"
+               value="5,240,445,15">
          </property>
          <property
                name="appName"
