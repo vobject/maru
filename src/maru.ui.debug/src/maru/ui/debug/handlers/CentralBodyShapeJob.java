@@ -20,7 +20,7 @@ public class CentralBodyShapeJob extends GLProjectDrawJob
     public void draw()
     {
         GL2 gl = getGL();
-        MapViewParameters area = getParameters();
+        MapViewParameters area = getMapParameters();
 
         ICentralBody centralBody = getProject().getUnderlyingElement().getCentralBody();
         double radius_x = centralBody.getEquatorialRadius();

@@ -72,12 +72,16 @@ public class MapGLView extends AbstractGLView
     @Override
     public void projectChanged(UiProject project)
     {
+        super.projectChanged(project);
+
         redraw();
     }
 
     @Override
     public void projectRemoved(UiProject project)
     {
+        super.projectRemoved(project);
+
         if (project != UiModel.getDefault().getCurrentUiProject()) {
             return;
         }
@@ -90,6 +94,8 @@ public class MapGLView extends AbstractGLView
     @Override
     public void activeProjectChanged(UiProject project, UiElement element)
     {
+        super.activeProjectChanged(project, element);
+
         getMapDrawer().setSelectedElement(null);
         getMapDrawer().getParameters().setSettingsChanged(true);
         getMapDrawer().getSettings().setSettingsChanged(true);
@@ -99,6 +105,8 @@ public class MapGLView extends AbstractGLView
     @Override
     public void activeElementChanged(UiProject project, UiElement element)
     {
+        super.activeElementChanged(project, element);
+
         if (element instanceof UiVisible) {
             getMapDrawer().setSelectedElement((UiVisible) element);
         } else {

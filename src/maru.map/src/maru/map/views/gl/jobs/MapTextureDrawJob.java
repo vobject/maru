@@ -15,7 +15,7 @@ public class MapTextureDrawJob extends GLProjectDrawJob
     public void draw()
     {
         GL2 gl = getGL();
-        MapViewParameters area = getParameters();
+        MapViewParameters area = getMapParameters();
 
         Texture mapTexture = getMapTexture();
         int x = area.mapX;

@@ -5,10 +5,10 @@ import javax.media.opengl.GL2;
 import maru.core.model.utils.DaylengthDefinition;
 import maru.core.model.utils.DaylengthUtils;
 import maru.map.jobs.gl.GLProjectDrawJob;
+import maru.map.settings.uiproject.UiProjectSettings;
 import maru.map.utils.MapUtils;
 import maru.map.views.DayLength;
 import maru.map.views.MapViewParameters;
-import maru.map.views.MapViewSettings;
 
 import org.orekit.time.AbsoluteDate;
 
@@ -17,16 +17,16 @@ public class DayNightDrawJob extends GLProjectDrawJob
     @Override
     public void draw()
     {
-        MapViewParameters area = getParameters();
-        MapViewSettings drawing = getSettings();
+        MapViewParameters area = getMapParameters();
+        UiProjectSettings settings = getUiProjectSettings();
 
-        if (!drawing.getShowNight()) {
+        if (!settings.getShowNightOverlay()) {
             return;
         }
 
         AbsoluteDate currentTime = getProject().getCurrentTime();
         int currentMapX = timeToHorizontalPixel(currentTime);
-        DayLength[] currentDayTimes = getDayTimes(currentTime, area.mapHeight, drawing.getNightStepSize(), drawing.getDaylengthDefinition());
+        DayLength[] currentDayTimes = getDayTimes(currentTime, area.mapHeight, (int) settings.getNightStepSize(), settings.getDaylengthDefinition());
         drawDayNightTimes(currentMapX, currentDayTimes);
     }
 
@@ -38,7 +38,7 @@ public class DayNightDrawJob extends GLProjectDrawJob
 
     private int timeToHorizontalPixel(AbsoluteDate date)
     {
-        MapViewParameters area = getParameters();
+        MapViewParameters area = getMapParameters();
 
         double minutesInDay = DaylengthUtils.getMinutesInDay(date);
         double pixelsPerMinute = (double) area.mapWidth / DaylengthUtils.MINUTES_IN_A_DAY;
@@ -72,8 +72,8 @@ public class DayNightDrawJob extends GLProjectDrawJob
     private void drawDayNightTimes(int x, DayLength[] dayTimes)
     {
         GL2 gl = getGL();
-        MapViewParameters params = getParameters();
-        MapViewSettings settings = getSettings();
+        MapViewParameters params = getMapParameters();
+        UiProjectSettings settings = getUiProjectSettings();
 
         gl.glColor4f(0.0f, 0.0f, 0.0f, 0.25f);
         gl.glLineWidth(settings.getNightStepSize());

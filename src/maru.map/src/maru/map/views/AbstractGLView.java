@@ -1,5 +1,6 @@
 package maru.map.views;
 
+import maru.map.MaruMapPlugin;
 import maru.ui.model.IUiProjectModelListener;
 import maru.ui.model.IUiProjectSelectionListener;
 import maru.ui.model.UiElement;
@@ -38,7 +39,7 @@ public abstract class AbstractGLView extends ViewPart
     @Override
     public void projectAdded(UiProject project)
     {
-
+        MaruMapPlugin.getDefault().getUiProjectsSettings().projectAdded(project);
     }
 
     @Override
@@ -50,7 +51,7 @@ public abstract class AbstractGLView extends ViewPart
     @Override
     public void projectRemoved(UiProject project)
     {
-
+        MaruMapPlugin.getDefault().getUiProjectsSettings().projectRemoved(project);
     }
 
     @Override

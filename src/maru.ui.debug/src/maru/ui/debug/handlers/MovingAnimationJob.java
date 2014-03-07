@@ -45,7 +45,7 @@ public class MovingAnimationJob extends GLProjectAnimationJob
     public void draw()
     {
         GL2 gl = getGL();
-        MapViewParameters area = getParameters();
+        MapViewParameters area = getMapParameters();
         Random rand = new Random();
 
         if (isDone()) {

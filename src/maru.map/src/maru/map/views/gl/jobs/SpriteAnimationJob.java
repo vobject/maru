@@ -77,7 +77,7 @@ public class SpriteAnimationJob extends GLProjectAnimationJob
     public void draw()
     {
         GL2 gl = getGL();
-        MapViewParameters area = getParameters();
+        MapViewParameters area = getMapParameters();
 
         if (isDone()) {
             return;

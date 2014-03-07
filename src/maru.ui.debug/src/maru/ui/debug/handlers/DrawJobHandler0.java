@@ -25,7 +25,7 @@ public class DrawJobHandler0 extends AbstractHandler
             public void draw()
             {
                 GL2 gl = getGL();
-                MapViewParameters area = getParameters();
+                MapViewParameters area = getMapParameters();
                 Random rand = new Random();
 
                 byte r = (byte) rand.nextInt(255);

@@ -13,6 +13,7 @@ import maru.map.MaruMapPlugin;
 import maru.map.jobs.gl.GLProjectAnimationJob;
 import maru.map.jobs.gl.GLProjectDrawJob;
 import maru.map.jobs.gl.TextureCache;
+import maru.map.settings.uiproject.UiProjectSettings;
 import maru.map.views.AbstractMapDrawer;
 import maru.map.views.gl.jobs.DayNightDrawJob;
 import maru.map.views.gl.jobs.LatLonDrawJob;
@@ -125,14 +126,25 @@ public class MapGLDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
     @Override
     protected void updateContext(GLContext context, UiProject project)
     {
-        updateContext(context);
+        UiProjectSettings settings = MaruMapPlugin.getDefault().getUiProjectsSettings().getProject(project);
+        gl = context.getGL().getGL2();
+
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+
+        if (!settings.getShowNightMode()) {
+            gl.glColor3f(1.0f, 1.0f, 1.0f);
+        } else {
+            gl.glColor3f(1.0f, 0.0f, 0.0f);
+        }
+
+        updateJobs();
     }
 
     private void updateJobs()
     {
         for (GLProjectDrawJob job : projectDrawJobs) {
-            job.setMapAreaSettings(getParameters());
-            job.setMapDrawSettings(getSettings());
+            job.setMapParameters(getParameters());
+            job.setMapSettings(getSettings());
             job.setGL(gl);
             job.setTextRenderer(text);
             job.setTextureCache(textureCache);
@@ -141,8 +153,8 @@ public class MapGLDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
         }
 
         for (GLProjectAnimationJob job : postAnimationJobs) {
-            job.setMapAreaSettings(getParameters());
-            job.setMapDrawSettings(getSettings());
+            job.setMapParameters(getParameters());
+            job.setMapSettings(getSettings());
             job.setGL(gl);
             job.setTextRenderer(text);
             job.setTextureCache(textureCache);

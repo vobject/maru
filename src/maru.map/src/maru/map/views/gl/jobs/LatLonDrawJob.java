@@ -16,8 +16,8 @@ public class LatLonDrawJob extends GLProjectDrawJob
     {
         GL2 gl = getGL();
         TextRenderer text = getTextRenderer();
-        MapViewParameters area = getParameters();
-        double stepSize = getSettings().getLatLonStepSize();
+        MapViewParameters area = getMapParameters();
+        double stepSize = getUiProjectSettings().getLatLonStepSize();
 
         gl.glPushAttrib(GL2.GL_LINE_BIT);
         gl.glDisable(GL2.GL_LINE_SMOOTH);

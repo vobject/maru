@@ -20,10 +20,10 @@ import maru.core.model.resource.IMaruResource;
 import maru.core.model.utils.EclipseState;
 import maru.core.model.utils.FormatUtils;
 import maru.map.jobs.gl.GLProjectDrawJob;
+import maru.map.settings.uiproject.UiProjectSettings;
 import maru.map.views.GroundtrackPoint;
 import maru.map.views.GroundtrackRange;
 import maru.map.views.MapViewParameters;
-import maru.map.views.MapViewSettings;
 import maru.map.views.gl.GLUtils;
 import maru.ui.model.UiVisible;
 
@@ -46,8 +46,8 @@ public class ScenarioDrawJob extends GLProjectDrawJob
     @Override
     public void draw()
     {
-        MapViewParameters area = getParameters();
-        MapViewSettings drawing = getSettings();
+        MapViewParameters area = getMapParameters();
+        UiProjectSettings settings = getUiProjectSettings();
 
         IScenarioProject scenario = getProject().getUnderlyingElement();
 
@@ -83,11 +83,11 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
                 GroundtrackRange currentGtBarrier;
                 if (!gtBarriers.containsKey(element)) {
-                    currentGtBarrier = new GroundtrackRange(currentCoordinate.getDate(), drawing.getGroundtrackLength());
+                    currentGtBarrier = new GroundtrackRange(currentCoordinate.getDate(), settings.getGroundtrackLength());
                     gtBarriers.put(element, currentGtBarrier);
                 } else {
                     currentGtBarrier = gtBarriers.get(element);
-                    currentGtBarrier.update(currentCoordinate.getDate(), drawing.getGroundtrackLength());
+                    currentGtBarrier.update(currentCoordinate.getDate(), settings.getGroundtrackLength());
                 }
 
                 VisibleElementColor defaultColor = element.getElementColor();
@@ -115,7 +115,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
     private void drawGroundtrack(ISpacecraft element, GroundtrackRange barrier, VisibleElementColor day, VisibleElementColor night) throws OrekitException
     {
-        MapPrimitives painter = new MapPrimitives(getGL(), getParameters());
+        MapPrimitives painter = new MapPrimitives(getGL(), getMapParameters());
 
         for (List<GroundtrackPoint> lineStrips : getGroundtrack(element, barrier))
         {
@@ -131,7 +131,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
     private void drawElement(IVisibleElement element, FlatMapPosition mapPos, VisibleElementColor color)
     {
-        MapViewParameters area = getParameters();
+        MapViewParameters area = getMapParameters();
         IconSize iconSize = getElementIconSize(element);
         IMaruResource resource = element.getElementImage();
 
@@ -159,7 +159,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
     private void drawSatToGsVisibility(IScenarioProject scenario, ISpacecraft element) throws OrekitException
     {
-        MapViewSettings settings = getSettings();
+        UiProjectSettings settings = getUiProjectSettings();
         if (!settings.getShowVisibilitySpacecraftToGroundstation()) {
             return;
         }
@@ -183,7 +183,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
     private void drawSatToSatVisibility(IScenarioProject scenario, ISpacecraft element) throws OrekitException
     {
-        MapViewSettings settings = getSettings();
+        UiProjectSettings settings = getUiProjectSettings();
         if (!settings.getShowVisibilitySpacecraftToSpacecraft()) {
             return;
         }
@@ -213,14 +213,14 @@ public class ScenarioDrawJob extends GLProjectDrawJob
                                 FlatMapPosition pos2,
                                 double dist, boolean showDist)
     {
-        MapPrimitives painter = new MapPrimitives(getGL(), getParameters());
+        MapPrimitives painter = new MapPrimitives(getGL(), getMapParameters());
         painter.drawLine(pos1.X, pos1.Y, pos2.X, pos2.Y, 1.0, new VisibleElementColor(255, 255, 255), 1.0);
 
         if (!showDist) {
             return;
         }
 
-        MapViewParameters area = getParameters();
+        MapViewParameters area = getMapParameters();
         GLUtils.drawText(getTextRenderer(),
                          area.clientAreaWidth,
                          area.clientAreaHeight,
@@ -232,7 +232,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
     private void drawVisibilityCircle(IGroundstation groundstaion) throws OrekitException
     {
-        MapViewSettings settings = getSettings();
+        UiProjectSettings settings = getUiProjectSettings();
         if (!settings.getShowVisibilityCircles()) {
             return;
         }
@@ -251,7 +251,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         ISpacecraft selectedSpacecraft = (ISpacecraft) selectedUnderlying;
         VisibleElementColor color = selectedSpacecraft.getElementColor();
         List<GeodeticPoint> points = groundstaion.getVisibilityCircle(selectedSpacecraft.getCurrentCoordinate(), 48);
-        MapPrimitives painter = new MapPrimitives(getGL(), getParameters());
+        MapPrimitives painter = new MapPrimitives(getGL(), getMapParameters());
 
         painter.beginPolygon();
         for (GeodeticPoint point : points) {
@@ -270,14 +270,14 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
     private void drawVisibilityCircle(ISpacecraft spacecraft, FlatMapPosition scPos) throws OrekitException
     {
-        MapViewSettings settings = getSettings();
+        UiProjectSettings settings = getUiProjectSettings();
         if (!settings.getShowVisibilityCircles()) {
             return;
         }
 
         VisibleElementColor color = spacecraft.getElementColor();
         List<GeodeticPoint> points = spacecraft.getVisibilityCircle(48);
-        MapPrimitives painter = new MapPrimitives(getGL(), getParameters());
+        MapPrimitives painter = new MapPrimitives(getGL(), getMapParameters());
 
         painter.beginPolygon();
         for (GeodeticPoint point : points) {
@@ -326,8 +326,8 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
     private List<List<GroundtrackPoint>> getGroundtrack(ISpacecraft element, GroundtrackRange barrier) throws OrekitException
     {
-        MapViewParameters area = getParameters();
-        MapViewSettings drawing = getSettings();
+        MapViewParameters area = getMapParameters();
+        UiProjectSettings settings = getUiProjectSettings();
 
         List<List<GroundtrackPoint>> elementLineStrips = new ArrayList<>();
 
@@ -335,10 +335,10 @@ public class ScenarioDrawJob extends GLProjectDrawJob
         FlatMapPosition lastMapPos = null;
         List<GroundtrackPoint> lineStrip = new ArrayList<>();
 
-        for (ICoordinate coordinate : propagator.getCoordinates(barrier.getStart(), barrier.getStop(), drawing.getGroundtrackStepSize(), element))
+        for (ICoordinate coordinate : propagator.getCoordinates(barrier.getStart(), barrier.getStop(), settings.getGroundtrackStepSize(), element))
         {
             FlatMapPosition mapPos = getMapPosition(coordinate);
-            boolean inDaylight = !drawing.getShowShadowTimes() ? true : !inShadow(coordinate);
+            boolean inDaylight = !settings.getShowUmbraOnGroundtrack() ? true : !inShadow(coordinate);
 
             if (lastMapPos == null)
             {
@@ -376,7 +376,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
     private IconSize getElementIconSize(IVisibleElement element)
     {
-        MapViewParameters area = getParameters();
+        MapViewParameters area = getMapParameters();
         IconSize size = new IconSize();
 
         // TODO: automatically scale x/y size of the icon
@@ -396,7 +396,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
     private void drawElementTexture(String imagePath, FlatMapPosition mapPos, VisibleElementColor color, IconSize iconSize)
     {
         GL2 gl = getGL();
-        MapViewParameters area = getParameters();
+        MapViewParameters area = getMapParameters();
         Texture texture = getTextureCache().get(imagePath);
 
         gl.glColor3ub((byte) color.r, (byte) color.g, (byte) color.b);
@@ -409,7 +409,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
     private void drawElementFallback(FlatMapPosition mapPos, VisibleElementColor color, IconSize iconSize)
     {
-        MapPrimitives painter = new MapPrimitives(getGL(), getParameters());
+        MapPrimitives painter = new MapPrimitives(getGL(), getMapParameters());
         painter.drawPoint(mapPos.X, mapPos.Y, Math.max(iconSize.x, iconSize.y), color, 1.0);
     }
 

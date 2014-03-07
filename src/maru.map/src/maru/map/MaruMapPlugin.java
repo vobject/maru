@@ -5,12 +5,16 @@ import java.util.List;
 
 import maru.map.jobs.gl.GLProjectAnimationJob;
 import maru.map.jobs.gl.GLProjectDrawJob;
+import maru.map.settings.uiproject.UiProjectsSettings;
 import maru.map.views.gl.IGLDrawJobRunner;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.prefs.Preferences;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -21,25 +25,45 @@ public class MaruMapPlugin extends AbstractUIPlugin
 
     private static MaruMapPlugin plugin;
 
+    private UiProjectsSettings uiProjectsSettings;
     private final List<IGLDrawJobRunner> glDrawJobRunners = new ArrayList<>();
 
     @Override
     public void start(BundleContext context) throws Exception
     {
         super.start(context);
+
         plugin = this;
+        uiProjectsSettings = new UiProjectsSettings(getUiProjectsPreferenceNode());
     }
 
     @Override
     public void stop(BundleContext context) throws Exception
     {
+        plugin.getPreferenceNode().flush();
         plugin = null;
+
         super.stop(context);
     }
 
     public static MaruMapPlugin getDefault()
     {
         return plugin;
+    }
+
+    public IEclipsePreferences getPreferenceNode()
+    {
+        return InstanceScope.INSTANCE.getNode(PLUGIN_ID);
+    }
+
+    public Preferences getUiProjectsPreferenceNode()
+    {
+        return getPreferenceNode().node("UiProjects");
+    }
+
+    public UiProjectsSettings getUiProjectsSettings()
+    {
+        return uiProjectsSettings;
     }
 
     /**

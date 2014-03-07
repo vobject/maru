@@ -1,30 +1,37 @@
 package maru.map.jobs;
 
+import maru.map.MaruMapPlugin;
+import maru.map.settings.uiproject.UiProjectSettings;
 import maru.map.views.MapViewParameters;
 import maru.map.views.MapViewSettings;
 
 public abstract class DrawJob implements IDrawJob
 {
-    private MapViewParameters areaSettings;
-    private MapViewSettings drawSettings;
+    private MapViewParameters mapParameters;
+    private MapViewSettings mapSettings;
 
-    public MapViewParameters getParameters()
+    public MapViewParameters getMapParameters()
     {
-        return areaSettings;
+        return mapParameters;
     }
 
-    public void setMapAreaSettings(MapViewParameters areaSettings)
+    public void setMapParameters(MapViewParameters mapParameters)
     {
-        this.areaSettings = areaSettings;
+        this.mapParameters = mapParameters;
     }
 
-    public MapViewSettings getSettings()
+    public MapViewSettings getMapSettings()
     {
-        return drawSettings;
+        return mapSettings;
     }
 
-    public void setMapDrawSettings(MapViewSettings drawSettings)
+    public void setMapSettings(MapViewSettings mapSettings)
     {
-        this.drawSettings = drawSettings;
+        this.mapSettings = mapSettings;
+    }
+
+    public UiProjectSettings getUiProjectSettings()
+    {
+        return MaruMapPlugin.getDefault().getUiProjectsSettings().getCurrentProject();
     }
 }
