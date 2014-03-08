@@ -1,6 +1,8 @@
 package maru.map.settings.uiproject;
 
 import maru.core.model.utils.DaylengthDefinition;
+import maru.map.settings.uielement.UiElementSettings;
+import maru.ui.model.UiElement;
 
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
@@ -50,6 +52,32 @@ public class UiProjectSettings
             // invalidate the current object
             prjNode = null;
             prjName = null;
+        }
+    }
+
+    public UiElementSettings getElement(UiElement element)
+    {
+        return getElement(element.getName());
+    }
+
+    public UiElementSettings getElement(String elemName)
+    {
+        UiElementSettings elemSettings = null;
+
+        try
+        {
+            if (prjNode.nodeExists(elemName)) {
+                elemSettings = new UiElementSettings(prjNode, prjNode.node(elemName), elemName);
+            } else {
+                elemSettings = new UiElementSettings(prjNode, prjNode.node(elemName), elemName);
+                elemSettings.initialize();
+            }
+            return elemSettings;
+        }
+        catch (BackingStoreException e)
+        {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -134,7 +162,7 @@ public class UiProjectSettings
         prjNode.putBoolean(UiProjectSettingsConstants.SHOW_VISIBILITY_CIRCLES, show);
     }
 
-    public void sethowVisibilitySpacecraftToSpacecraft(boolean show)
+    public void setShowVisibilitySpacecraftToSpacecraft(boolean show)
     {
         prjNode.putBoolean(UiProjectSettingsConstants.SHOW_VISIBILITY_SC_TO_SC, show);
     }

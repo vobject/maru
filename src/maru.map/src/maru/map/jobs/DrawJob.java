@@ -1,9 +1,11 @@
 package maru.map.jobs;
 
 import maru.map.MaruMapPlugin;
+import maru.map.settings.uielement.UiElementSettings;
 import maru.map.settings.uiproject.UiProjectSettings;
 import maru.map.views.MapViewParameters;
 import maru.map.views.MapViewSettings;
+import maru.ui.model.UiElement;
 
 public abstract class DrawJob implements IDrawJob
 {
@@ -33,5 +35,15 @@ public abstract class DrawJob implements IDrawJob
     public UiProjectSettings getUiProjectSettings()
     {
         return MaruMapPlugin.getDefault().getUiProjectsSettings().getCurrentProject();
+    }
+
+    public UiElementSettings getUiElementSettings(UiElement element)
+    {
+        return getUiProjectSettings().getElement(element);
+    }
+
+    public UiElementSettings getUiElementSettings(String elemName)
+    {
+        return getUiProjectSettings().getElement(elemName);
     }
 }

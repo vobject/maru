@@ -5,7 +5,7 @@ import javax.media.opengl.GLContext;
 import maru.centralbody.model.projection.EquirectangularProjector;
 import maru.centralbody.model.projection.ICoordinateProjector;
 import maru.ui.model.UiProject;
-import maru.ui.model.UiVisible;
+import maru.ui.model.UiVisibleElement;
 
 
 public abstract class AbstractMapDrawer implements IMapDrawer
@@ -21,7 +21,7 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     private ICoordinateProjector mapProjector;
 
     // the element currently selected in the scenario explorer (or null)
-    private UiVisible selectedElement;
+    private UiVisibleElement selectedElement;
 
     public AbstractMapDrawer(AbstractGLView parent)
     {
@@ -85,13 +85,13 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     }
 
     @Override
-    public UiVisible getSelectedElement()
+    public UiVisibleElement getSelectedElement()
     {
         return selectedElement;
     }
 
     @Override
-    public void setSelectedElement(UiVisible element)
+    public void setSelectedElement(UiVisibleElement element)
     {
         this.selectedElement = element;
     }

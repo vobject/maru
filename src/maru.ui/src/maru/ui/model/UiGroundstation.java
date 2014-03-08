@@ -8,7 +8,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 
-public class UiGroundstation extends UiVisible
+public class UiGroundstation extends UiVisibleElement
 {
     public UiGroundstation(UiGroundstationContrainer parent, IGroundstation underlying)
     {

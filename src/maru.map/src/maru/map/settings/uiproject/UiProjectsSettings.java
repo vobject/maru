@@ -17,7 +17,11 @@ public class UiProjectsSettings
 
     public UiProjectSettings getProject(UiProject project)
     {
-        String prjName = project.getName();
+        return getProject(project.getName());
+    }
+
+    public UiProjectSettings getProject(String prjName)
+    {
         Preferences prjNode = null;
 
         try

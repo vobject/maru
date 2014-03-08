@@ -64,6 +64,16 @@
             </instanceof>
          </enabledWhen>
       </page>
+      <page
+            class="maru.map.settings.uielement.UiElementSettingsPage"
+            id="maru.map.settings.uielement.8000"
+            name="2D Map">
+         <enabledWhen>
+            <instanceof
+                  value="maru.ui.model.UiVisibleElement">
+            </instanceof>
+         </enabledWhen>
+      </page>
    </extension>
 
 </plugin>

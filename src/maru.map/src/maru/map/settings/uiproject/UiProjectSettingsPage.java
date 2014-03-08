@@ -69,7 +69,7 @@ public class UiProjectSettingsPage extends UiPropertyPage
     public boolean performOk()
     {
         settings.setShowVisibilityCircles(showVisibilityCircles.getSelection());
-        settings.sethowVisibilitySpacecraftToSpacecraft(showVisibilityScToSc.getSelection());
+        settings.setShowVisibilitySpacecraftToSpacecraft(showVisibilityScToSc.getSelection());
         settings.setShowVisibilitySpacecraftToGroundstation(showVisibilityScToGs.getSelection());
         settings.setShowUmbraOnGroundtrack(showUmbraOnGroundtrack.getSelection());
         settings.setGroundtrackStepSize(Long.parseLong(groundtrackStepSize.getText()));

@@ -3,12 +3,12 @@ package maru.map.jobs.gl;
 import maru.centralbody.model.projection.ICoordinateProjector;
 import maru.map.jobs.IProjectDrawJob;
 import maru.ui.model.UiProject;
-import maru.ui.model.UiVisible;
+import maru.ui.model.UiVisibleElement;
 
 public abstract class GLProjectDrawJob extends GLDrawJob implements IProjectDrawJob
 {
     private UiProject project;
-    private UiVisible selectedElement;
+    private UiVisibleElement selectedElement;
     private ICoordinateProjector projector;
 
     @Override
@@ -23,12 +23,12 @@ public abstract class GLProjectDrawJob extends GLDrawJob implements IProjectDraw
         this.project = project;
     }
 
-    public UiVisible getSelectedElement()
+    public UiVisibleElement getSelectedElement()
     {
         return selectedElement;
     }
 
-    public void setSelectedElement(UiVisible selectedElement)
+    public void setSelectedElement(UiVisibleElement selectedElement)
     {
         this.selectedElement = selectedElement;
     }

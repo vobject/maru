@@ -20,12 +20,13 @@ import maru.core.model.resource.IMaruResource;
 import maru.core.model.utils.EclipseState;
 import maru.core.model.utils.FormatUtils;
 import maru.map.jobs.gl.GLProjectDrawJob;
+import maru.map.settings.uielement.UiElementSettings;
 import maru.map.settings.uiproject.UiProjectSettings;
 import maru.map.views.GroundtrackPoint;
 import maru.map.views.GroundtrackRange;
 import maru.map.views.MapViewParameters;
 import maru.map.views.gl.GLUtils;
-import maru.ui.model.UiVisible;
+import maru.ui.model.UiVisibleElement;
 
 import org.orekit.bodies.GeodeticPoint;
 import org.orekit.errors.OrekitException;
@@ -131,28 +132,38 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
     private void drawElement(IVisibleElement element, FlatMapPosition mapPos, VisibleElementColor color)
     {
-        MapViewParameters area = getMapParameters();
+        MapViewParameters params = getMapParameters();
+        UiElementSettings settings = getUiElementSettings(element.getElementName());
+
         IconSize iconSize = getElementIconSize(element);
         IMaruResource resource = element.getElementImage();
 
-        if ((resource != null ) && !resource.getPath().isEmpty())
+        if (settings.getShowElementIcon())
         {
-            drawElementTexture(resource.getPath(), mapPos, color, iconSize);
+            if ((resource != null ) && !resource.getPath().isEmpty())
+            {
+                drawElementTexture(resource.getPath(), mapPos, color, iconSize);
+            }
+            else
+            {
+                // fallback for when we cannot load an image for the element
+                iconSize.x /= 2;
+                iconSize.y /= 2;
+                drawElementFallback(mapPos, color, iconSize);
+            }
         }
         else
         {
-            // fallback for when we cannot load an image for the element
-            iconSize.x /= 2;
-            iconSize.y /= 2;
-            drawElementFallback(mapPos, color, iconSize);
+            iconSize.x = 0;
+            iconSize.y = 0;
         }
 
         // draw the element name no matter if we are in fallback mode or not
         GLUtils.drawText(getTextRenderer(),
-                         area.clientAreaWidth,
-                         area.clientAreaHeight,
-                         area.mapX + mapPos.X + (iconSize.x / 2),
-                         area.mapHeight - (mapPos.Y - area.mapY),
+                         params.clientAreaWidth,
+                         params.clientAreaHeight,
+                         params.mapX + mapPos.X + (iconSize.x / 2),
+                         params.mapHeight - (mapPos.Y - params.mapY),
                          element.getElementName(),
                          true);
     }
@@ -237,7 +248,7 @@ public class ScenarioDrawJob extends GLProjectDrawJob
             return;
         }
 
-        UiVisible selectedElement = getSelectedElement();
+        UiVisibleElement selectedElement = getSelectedElement();
         if (selectedElement == null) {
             return;
         }
@@ -376,19 +387,17 @@ public class ScenarioDrawJob extends GLProjectDrawJob
 
     private IconSize getElementIconSize(IVisibleElement element)
     {
-        MapViewParameters area = getMapParameters();
+        UiElementSettings settings = getUiElementSettings(element.getElementName());
         IconSize size = new IconSize();
-
-        // TODO: automatically scale x/y size of the icon
 
         if ((getSelectedElement() != null) && element == getSelectedElement().getUnderlyingElement()) {
             // draw the selected element larger
-            size.x = (int) (1.5 * area.iconSize);
-            size.y = (int) (1.5 * area.iconSize);
+            size.x = (int) (1.5 * settings.getElementIconSize());
+            size.y = (int) (1.5 * settings.getElementIconSize());
             return size;
         } else {
-            size.x = area.iconSize;
-            size.y = area.iconSize;
+            size.x = (int) settings.getElementIconSize();
+            size.y = (int) settings.getElementIconSize();
             return size;
         }
     }

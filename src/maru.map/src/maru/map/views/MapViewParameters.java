@@ -20,8 +20,6 @@ public class MapViewParameters
     public int mapX;
     public int mapY;
 
-    public int iconSize;
-
     public boolean getSettingsChanged()
     {
         return settingsChanged;
@@ -56,7 +54,6 @@ public class MapViewParameters
 
         this.mapWidth = (int) (mapImageWidth * mapScale);
         this.mapHeight = (int) (mapImageHeight * mapScale);
-        this.iconSize = mapWidth / 48;
 
         this.mapX = (clientAreaWidth - mapWidth) / 2;
         this.mapY = (clientAreaHeight - mapHeight) / 2;

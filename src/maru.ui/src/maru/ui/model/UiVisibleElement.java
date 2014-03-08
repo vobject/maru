@@ -2,9 +2,9 @@ package maru.ui.model;
 
 import maru.core.model.IVisibleElement;
 
-public abstract class UiVisible extends UiElement
+public abstract class UiVisibleElement extends UiElement
 {
-    public UiVisible(UiParent parent, IVisibleElement underlying)
+    public UiVisibleElement(UiParent parent, IVisibleElement underlying)
     {
         super(parent, underlying);
     }

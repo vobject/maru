@@ -12,7 +12,7 @@ import maru.ui.MaruUIPlugin;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiModel;
 import maru.ui.model.UiProject;
-import maru.ui.model.UiVisible;
+import maru.ui.model.UiVisibleElement;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
@@ -107,8 +107,8 @@ public class MapGLView extends AbstractGLView
     {
         super.activeElementChanged(project, element);
 
-        if (element instanceof UiVisible) {
-            getMapDrawer().setSelectedElement((UiVisible) element);
+        if (element instanceof UiVisibleElement) {
+            getMapDrawer().setSelectedElement((UiVisibleElement) element);
         } else {
             getMapDrawer().setSelectedElement(null);
         }

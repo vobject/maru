@@ -4,7 +4,7 @@ import javax.media.opengl.GLContext;
 
 import maru.centralbody.model.projection.ICoordinateProjector;
 import maru.ui.model.UiProject;
-import maru.ui.model.UiVisible;
+import maru.ui.model.UiVisibleElement;
 
 public interface IMapDrawer
 {
@@ -17,8 +17,8 @@ public interface IMapDrawer
     ICoordinateProjector getMapProjector();
     void setMapProjector(ICoordinateProjector projector);
 
-    UiVisible getSelectedElement();
-    void setSelectedElement(UiVisible element);
+    UiVisibleElement getSelectedElement();
+    void setSelectedElement(UiVisibleElement element);
 
     void draw(GLContext context);
     void draw(GLContext context, UiProject project);
