@@ -24,6 +24,9 @@ public class MapViewSettings
     /** Whether or not to use anti-aliasing when drawing. */
     private boolean antiAliasing;
 
+    /** Number of points to use for drawing visibility circles around elements. */
+    private int visibilityCirclePoints;
+
     /**
      * Initializes its values with the plugin's preferences values and
      * starts to listen to the plugin's preference changes.
@@ -63,11 +66,18 @@ public class MapViewSettings
         return antiAliasing;
     }
 
+    /** {@link #visibilityCirclePoints} */
+    public int getVisibilityCirclePoints()
+    {
+        return visibilityCirclePoints;
+    }
+
     private void initPreferenceStore()
     {
         preferenceStore = MaruMapPlugin.getDefault().getPreferenceStore();
 
         antiAliasing = preferenceStore.getBoolean(PreferenceConstants.P_MAP_ANTI_ALIASING);
+        visibilityCirclePoints = (int) preferenceStore.getLong(PreferenceConstants.P_MAP_VISIBILITY_CIRCLE_POINTS);
 
         setSettingsChanged(true);
     }
@@ -83,6 +93,8 @@ public class MapViewSettings
 
                 if (changedProperty.equals(PreferenceConstants.P_MAP_ANTI_ALIASING)) {
                     antiAliasing = (boolean) event.getNewValue();
+                } else if (changedProperty.equals(PreferenceConstants.P_MAP_VISIBILITY_CIRCLE_POINTS)) {
+                    visibilityCirclePoints = (int) event.getNewValue();
                 } else {
                     return;
                 }

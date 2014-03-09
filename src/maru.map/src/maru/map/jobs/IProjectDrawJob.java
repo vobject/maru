@@ -1,9 +1,9 @@
 package maru.map.jobs;
 
-import maru.ui.model.UiProject;
+import maru.core.model.IScenarioProject;
 
 public interface IProjectDrawJob extends IDrawJob
 {
-    UiProject getProject();
-    void setProject(UiProject project);
+    IScenarioProject getScenario();
+    void setScenario(IScenarioProject project);
 }

@@ -1,34 +1,34 @@
 package maru.map.jobs.gl;
 
 import maru.centralbody.model.projection.ICoordinateProjector;
+import maru.core.model.IScenarioProject;
+import maru.core.model.IVisibleElement;
 import maru.map.jobs.IProjectDrawJob;
-import maru.ui.model.UiProject;
-import maru.ui.model.UiVisibleElement;
 
 public abstract class GLProjectDrawJob extends GLDrawJob implements IProjectDrawJob
 {
-    private UiProject project;
-    private UiVisibleElement selectedElement;
+    private IScenarioProject scenario;
+    private IVisibleElement selectedElement;
     private ICoordinateProjector projector;
 
     @Override
-    public UiProject getProject()
+    public IScenarioProject getScenario()
     {
-        return project;
+        return scenario;
     }
 
     @Override
-    public void setProject(UiProject project)
+    public void setScenario(IScenarioProject scenario)
     {
-        this.project = project;
+        this.scenario = scenario;
     }
 
-    public UiVisibleElement getSelectedElement()
+    public IVisibleElement getSelectedElement()
     {
         return selectedElement;
     }
 
-    public void setSelectedElement(UiVisibleElement selectedElement)
+    public void setSelectedElement(IVisibleElement selectedElement)
     {
         this.selectedElement = selectedElement;
     }

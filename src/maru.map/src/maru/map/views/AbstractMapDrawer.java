@@ -4,8 +4,8 @@ import javax.media.opengl.GLContext;
 
 import maru.centralbody.model.projection.EquirectangularProjector;
 import maru.centralbody.model.projection.ICoordinateProjector;
-import maru.ui.model.UiProject;
-import maru.ui.model.UiVisibleElement;
+import maru.core.model.IScenarioProject;
+import maru.core.model.IVisibleElement;
 
 
 public abstract class AbstractMapDrawer implements IMapDrawer
@@ -21,7 +21,7 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     private ICoordinateProjector mapProjector;
 
     // the element currently selected in the scenario explorer (or null)
-    private UiVisibleElement selectedElement;
+    private IVisibleElement selectedElement;
 
     public AbstractMapDrawer(AbstractGLView parent)
     {
@@ -85,13 +85,13 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     }
 
     @Override
-    public UiVisibleElement getSelectedElement()
+    public IVisibleElement getSelectedElement()
     {
         return selectedElement;
     }
 
     @Override
-    public void setSelectedElement(UiVisibleElement element)
+    public void setSelectedElement(IVisibleElement element)
     {
         this.selectedElement = element;
     }
@@ -103,7 +103,7 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     }
 
     @Override
-    public void draw(GLContext context, UiProject project)
+    public void draw(GLContext context, IScenarioProject project)
     {
         updateContext(context, project);
 
@@ -126,11 +126,11 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     }
 
     protected abstract void updateContext(GLContext context);
-    protected abstract void updateContext(GLContext context, UiProject project);
+    protected abstract void updateContext(GLContext context, IScenarioProject project);
 
-    protected abstract void updateMapParameters(UiProject project);
-    protected abstract void updateMapSettings(UiProject project);
+    protected abstract void updateMapParameters(IScenarioProject project);
+    protected abstract void updateMapSettings(IScenarioProject project);
 
-    protected abstract void doProjectDrawJobs(UiProject project);
-    protected abstract void doProjectAnimationJobs(UiProject project);
+    protected abstract void doProjectDrawJobs(IScenarioProject project);
+    protected abstract void doProjectAnimationJobs(IScenarioProject project);
 }

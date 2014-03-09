@@ -1,4 +1,4 @@
-package maru.map.settings.uiproject;
+package maru.map.settings.scenario;
 
 import maru.core.model.utils.DaylengthDefinition;
 
@@ -23,9 +23,9 @@ class DaylightDefinitionChoices
     public static final String DEF_CHOICE_5_VALUE = Double.toString(DaylengthDefinition.WITH_ASTRONOMICAL_TWILIGHT.getValue());
 }
 
-public final class UiProjectSettingsConstants
+public final class ScenarioSettingsConstants
 {
-    // all possible settings for a UiProject in the current plugin
+    // all possible settings for a IScenarioProject in the current plugin
     public static final String SHOW_VISIBILITY_CIRCLES = "showVisibilityCircles";
     public static final String SHOW_VISIBILITY_SC_TO_SC = "showVisibilityScToSc";
     public static final String SHOW_VISIBILITY_SC_TO_GS = "showVisibilityScToGs";

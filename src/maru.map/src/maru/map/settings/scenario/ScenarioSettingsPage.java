@@ -1,4 +1,4 @@
-package maru.map.settings.uiproject;
+package maru.map.settings.scenario;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -25,9 +25,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class UiProjectSettingsPage extends UiPropertyPage
+public class ScenarioSettingsPage extends UiPropertyPage
 {
-    private UiProjectSettings settings;
+    private ScenarioSettings settings;
 
     private Button showVisibilityCircles;
     private Button showVisibilityScToSc;
@@ -97,10 +97,10 @@ public class UiProjectSettingsPage extends UiPropertyPage
         return controls;
     }
 
-    protected UiProjectSettings getElementSettings()
+    protected ScenarioSettings getElementSettings()
     {
-        UiProject selection = getUiProject();
-        return MaruMapPlugin.getDefault().getUiProjectsSettings().getProject(selection);
+        IScenarioProject selection = getScenario();
+        return MaruMapPlugin.getDefault().getScenarioModelSettings().getScenario(selection);
     }
 
     private Composite createContainer(Composite parent)
@@ -143,19 +143,19 @@ public class UiProjectSettingsPage extends UiPropertyPage
         showUmbraOnGroundtrackData.horizontalSpan = 2;
         showUmbraOnGroundtrack.setLayoutData(showUmbraOnGroundtrackData);
 
-        new Label(container, SWT.NONE).setText(UiProjectSettingsConstants.DESCRIPTION_GROUNDTRACK_STEP_SIZE);
+        new Label(container, SWT.NONE).setText(ScenarioSettingsConstants.DESCRIPTION_GROUNDTRACK_STEP_SIZE);
         groundtrackStepSize = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.WRAP);
         GridData groundtrackStepSizeData = new GridData();
         groundtrackStepSizeData.horizontalAlignment = SWT.FILL;
         groundtrackStepSize.setLayoutData(groundtrackStepSizeData);
 
-        new Label(container, SWT.NONE).setText(UiProjectSettingsConstants.DESCRIPTION_GROUNDTRACK_LENGTH);
+        new Label(container, SWT.NONE).setText(ScenarioSettingsConstants.DESCRIPTION_GROUNDTRACK_LENGTH);
         groundtrackLength = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.WRAP);
         GridData groundtrackLengthData = new GridData();
         groundtrackLengthData.horizontalAlignment = SWT.FILL;
         groundtrackLength.setLayoutData(groundtrackLengthData);
 
-        new Label(container, SWT.NONE).setText(UiProjectSettingsConstants.DESCRIPTION_LAT_LON_LINE_STEPSIZE);
+        new Label(container, SWT.NONE).setText(ScenarioSettingsConstants.DESCRIPTION_LAT_LON_LINE_STEPSIZE);
         latLonLinesStepSize = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.WRAP);
         GridData latLonLinesStepSizeData = new GridData();
         latLonLinesStepSizeData.horizontalAlignment = SWT.FILL;
@@ -173,13 +173,13 @@ public class UiProjectSettingsPage extends UiPropertyPage
         showNightOverlayData.horizontalSpan = 2;
         showNightOverlay.setLayoutData(showNightOverlayData);
 
-        new Label(container, SWT.NONE).setText(UiProjectSettingsConstants.DESCRIPTION_NIGHT_OVERLAY_PIXELSTEPS);
+        new Label(container, SWT.NONE).setText(ScenarioSettingsConstants.DESCRIPTION_NIGHT_OVERLAY_PIXELSTEPS);
         nightOverlayPixelSteps = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.WRAP);
         GridData nightOverlayPixelStepsData = new GridData();
         nightOverlayPixelStepsData.horizontalAlignment = SWT.FILL;
         nightOverlayPixelSteps.setLayoutData(nightOverlayPixelStepsData);
 
-        new Label(container, SWT.NONE).setText(UiProjectSettingsConstants.DESCRIPTION_DAYLENGTH_DEFINITION);
+        new Label(container, SWT.NONE).setText(ScenarioSettingsConstants.DESCRIPTION_DAYLENGTH_DEFINITION);
         daylengthDefinition = new Combo(container, SWT.READ_ONLY);
         GridData daylengthDefinitionData = new GridData();
         daylengthDefinitionData.horizontalAlignment = SWT.FILL;
@@ -197,16 +197,16 @@ public class UiProjectSettingsPage extends UiPropertyPage
 
     private void initControls()
     {
-        showVisibilityCircles.setText(UiProjectSettingsConstants.DESCRIPTION_SHOW_VISIBILITY_CIRCLES);
+        showVisibilityCircles.setText(ScenarioSettingsConstants.DESCRIPTION_SHOW_VISIBILITY_CIRCLES);
         showVisibilityCircles.setSelection(settings.getShowVisibilityCircles());
 
-        showVisibilityScToSc.setText(UiProjectSettingsConstants.DESCRIPTION_SHOW_VISIBILITY_SC_TO_SC);
+        showVisibilityScToSc.setText(ScenarioSettingsConstants.DESCRIPTION_SHOW_VISIBILITY_SC_TO_SC);
         showVisibilityScToSc.setSelection(settings.getShowVisibilitySpacecraftToSpacecraft());
 
-        showVisibilityScToGs.setText(UiProjectSettingsConstants.DESCRIPTION_SHOW_VISIBILITY_SC_TO_GS);
+        showVisibilityScToGs.setText(ScenarioSettingsConstants.DESCRIPTION_SHOW_VISIBILITY_SC_TO_GS);
         showVisibilityScToGs.setSelection(settings.getShowVisibilitySpacecraftToGroundstation());
 
-        showUmbraOnGroundtrack.setText(UiProjectSettingsConstants.DESCRIPTION_SHOW_UMBRA_ON_GROUNDTRACK);
+        showUmbraOnGroundtrack.setText(ScenarioSettingsConstants.DESCRIPTION_SHOW_UMBRA_ON_GROUNDTRACK);
         showUmbraOnGroundtrack.setSelection(settings.getShowUmbraOnGroundtrack());
 
         groundtrackStepSize.setText(Long.toString(settings.getGroundtrackStepSize()));
@@ -215,10 +215,10 @@ public class UiProjectSettingsPage extends UiPropertyPage
 
         latLonLinesStepSize.setText(Long.toString(settings.getLatLonStepSize()));
 
-        showNightMode.setText(UiProjectSettingsConstants.DESCRIPTION_SHOW_NIGHT_MODE);
+        showNightMode.setText(ScenarioSettingsConstants.DESCRIPTION_SHOW_NIGHT_MODE);
         showNightMode.setSelection(settings.getShowNightMode());
 
-        showNightOverlay.setText(UiProjectSettingsConstants.DESCRIPTION_SHOW_NIGHT_OVERLAY);
+        showNightOverlay.setText(ScenarioSettingsConstants.DESCRIPTION_SHOW_NIGHT_OVERLAY);
         showNightOverlay.setSelection(settings.getShowNightOverlay());
 
         nightOverlayPixelSteps.setText(Long.toString(settings.getNightStepSize()));

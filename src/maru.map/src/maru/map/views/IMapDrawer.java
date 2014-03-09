@@ -3,8 +3,8 @@ package maru.map.views;
 import javax.media.opengl.GLContext;
 
 import maru.centralbody.model.projection.ICoordinateProjector;
-import maru.ui.model.UiProject;
-import maru.ui.model.UiVisibleElement;
+import maru.core.model.IScenarioProject;
+import maru.core.model.IVisibleElement;
 
 public interface IMapDrawer
 {
@@ -17,11 +17,11 @@ public interface IMapDrawer
     ICoordinateProjector getMapProjector();
     void setMapProjector(ICoordinateProjector projector);
 
-    UiVisibleElement getSelectedElement();
-    void setSelectedElement(UiVisibleElement element);
+    IVisibleElement getSelectedElement();
+    void setSelectedElement(IVisibleElement element);
 
     void draw(GLContext context);
-    void draw(GLContext context, UiProject project);
+    void draw(GLContext context, IScenarioProject project);
     void dispose();
 
     void mouseEvent(int btn, int mask, int count, int x, int y);

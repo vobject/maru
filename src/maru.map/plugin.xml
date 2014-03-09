@@ -55,8 +55,8 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            class="maru.map.settings.uiproject.UiProjectSettingsPage"
-            id="maru.map.settings.uiproject.8000"
+            class="maru.map.settings.scenario.ScenarioSettingsPage"
+            id="maru.map.settings.scenario.8000"
             name="2D Map">
          <enabledWhen>
             <instanceof
@@ -65,12 +65,22 @@
          </enabledWhen>
       </page>
       <page
-            class="maru.map.settings.uielement.UiElementSettingsPage"
-            id="maru.map.settings.uielement.8000"
+            class="maru.map.settings.groundstation.GroundstationSettingsPage"
+            id="maru.map.settings.groundstation.8000"
             name="2D Map">
          <enabledWhen>
             <instanceof
-                  value="maru.ui.model.UiVisibleElement">
+                  value="maru.ui.model.UiGroundstation">
+            </instanceof>
+         </enabledWhen>
+      </page>
+      <page
+            class="maru.map.settings.spacecraft.SpacecraftSettingsPage"
+            id="maru.map.settings.spacecraft.8000"
+            name="2D Map">
+         <enabledWhen>
+            <instanceof
+                  value="maru.ui.model.UiSpacecraft">
             </instanceof>
          </enabledWhen>
       </page>

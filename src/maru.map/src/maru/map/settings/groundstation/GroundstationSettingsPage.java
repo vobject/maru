@@ -1,8 +1,10 @@
-package maru.map.settings.uielement;
+package maru.map.settings.groundstation;
 
-import maru.core.model.IVisibleElement;
+import maru.core.model.IGroundstation;
 import maru.map.MaruMapPlugin;
-import maru.ui.model.UiVisibleElement;
+import maru.map.settings.scenario.ScenarioModelSettings;
+import maru.map.settings.scenario.ScenarioSettings;
+import maru.ui.model.UiGroundstation;
 import maru.ui.propertypages.UiPropertyPage;
 
 import org.eclipse.swt.SWT;
@@ -14,30 +16,30 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class UiElementSettingsPage extends UiPropertyPage
+public class GroundstationSettingsPage extends UiPropertyPage
 {
-    private UiElementSettings settings;
+    private GroundstationSettings settings;
 
-    private Button showElementIcon;
     private Text elementIconSize;
+    private Button showElementName;
 
     @Override
-    public UiVisibleElement getUiElement()
+    public UiGroundstation getUiElement()
     {
-        return (UiVisibleElement) super.getUiElement();
+        return (UiGroundstation) super.getUiElement();
     }
 
     @Override
-    public IVisibleElement getScenarioElement()
+    public IGroundstation getScenarioElement()
     {
-        return (IVisibleElement) super.getScenarioElement();
+        return getUiElement().getUnderlyingElement();
     }
 
     @Override
     public boolean performOk()
     {
-        settings.setShowElementIcon(showElementIcon.getSelection());
         settings.setElementIconSize(Long.parseLong(elementIconSize.getText()));
+        settings.setShowElementName(showElementName.getSelection());
 
         MaruMapPlugin.getDefault().redraw();
         return true;
@@ -56,10 +58,13 @@ public class UiElementSettingsPage extends UiPropertyPage
         return controls;
     }
 
-    protected UiElementSettings getElementSettings()
+    protected GroundstationSettings getElementSettings()
     {
-        UiVisibleElement element = getUiElement();
-        return MaruMapPlugin.getDefault().getUiProjectsSettings().getProject(element.getUiProject()).getElement(element);
+        IGroundstation element = getScenarioElement();
+
+        ScenarioModelSettings model = MaruMapPlugin.getDefault().getScenarioModelSettings();
+        ScenarioSettings scenario = model.getScenario(element.getScenarioProject());
+        return scenario.getGroundstation(element);
     }
 
     private Composite createContainer(Composite parent)
@@ -82,25 +87,26 @@ public class UiElementSettingsPage extends UiPropertyPage
 
     private Composite createControls(Composite container)
     {
-        showElementIcon = new Button(container, SWT.CHECK | SWT.LEFT);
-        GridData showElementIconData = new GridData();
-        showElementIconData.horizontalSpan = 2;
-        showElementIcon.setLayoutData(showElementIconData);
-
-        new Label(container, SWT.NONE).setText(UiElementSettingsConstants.DESCRIPTION_ELEMENT_ICON_SIZE);
+        new Label(container, SWT.NONE).setText(GroundstationSettingsConstants.DESCRIPTION_ELEMENT_ICON_SIZE);
         elementIconSize = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.WRAP);
         GridData elementIconSizeData = new GridData();
+        elementIconSizeData.grabExcessHorizontalSpace = true;
         elementIconSizeData.horizontalAlignment = SWT.FILL;
         elementIconSize.setLayoutData(elementIconSizeData);
+
+        showElementName = new Button(container, SWT.CHECK | SWT.LEFT);
+        GridData showElementIconData = new GridData();
+        showElementIconData.horizontalSpan = 2;
+        showElementName.setLayoutData(showElementIconData);
 
         return container;
     }
 
     private void initControls()
     {
-        showElementIcon.setText(UiElementSettingsConstants.DESCRIPTION_SHOW_ELEMENT_ICON);
-        showElementIcon.setSelection(settings.getShowElementIcon());
-
         elementIconSize.setText(Long.toString(settings.getElementIconSize()));
+
+        showElementName.setText(GroundstationSettingsConstants.DESCRIPTION_SHOW_ELEMENT_NAME);
+        showElementName.setSelection(settings.getShowElementName());
     }
 }

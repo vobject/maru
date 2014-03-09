@@ -5,7 +5,7 @@ import javax.media.opengl.GL2;
 import maru.core.model.utils.DaylengthDefinition;
 import maru.core.model.utils.DaylengthUtils;
 import maru.map.jobs.gl.GLProjectDrawJob;
-import maru.map.settings.uiproject.UiProjectSettings;
+import maru.map.settings.scenario.ScenarioSettings;
 import maru.map.utils.MapUtils;
 import maru.map.views.DayLength;
 import maru.map.views.MapViewParameters;
@@ -18,13 +18,13 @@ public class DayNightDrawJob extends GLProjectDrawJob
     public void draw()
     {
         MapViewParameters area = getMapParameters();
-        UiProjectSettings settings = getUiProjectSettings();
+        ScenarioSettings settings = getScenarioSettings();
 
         if (!settings.getShowNightOverlay()) {
             return;
         }
 
-        AbsoluteDate currentTime = getProject().getCurrentTime();
+        AbsoluteDate currentTime = getScenario().getCurrentTime().getTime();
         int currentMapX = timeToHorizontalPixel(currentTime);
         DayLength[] currentDayTimes = getDayTimes(currentTime, area.mapHeight, (int) settings.getNightStepSize(), settings.getDaylengthDefinition());
         drawDayNightTimes(currentMapX, currentDayTimes);
@@ -73,7 +73,7 @@ public class DayNightDrawJob extends GLProjectDrawJob
     {
         GL2 gl = getGL();
         MapViewParameters params = getMapParameters();
-        UiProjectSettings settings = getUiProjectSettings();
+        ScenarioSettings settings = getScenarioSettings();
 
         gl.glColor4f(0.0f, 0.0f, 0.0f, 0.25f);
         gl.glLineWidth(settings.getNightStepSize());

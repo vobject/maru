@@ -1,11 +1,13 @@
 package maru.map.jobs;
 
+import maru.core.model.IGroundstation;
+import maru.core.model.ISpacecraft;
 import maru.map.MaruMapPlugin;
-import maru.map.settings.uielement.UiElementSettings;
-import maru.map.settings.uiproject.UiProjectSettings;
+import maru.map.settings.groundstation.GroundstationSettings;
+import maru.map.settings.scenario.ScenarioSettings;
+import maru.map.settings.spacecraft.SpacecraftSettings;
 import maru.map.views.MapViewParameters;
 import maru.map.views.MapViewSettings;
-import maru.ui.model.UiElement;
 
 public abstract class DrawJob implements IDrawJob
 {
@@ -32,18 +34,18 @@ public abstract class DrawJob implements IDrawJob
         this.mapSettings = mapSettings;
     }
 
-    public UiProjectSettings getUiProjectSettings()
+    public ScenarioSettings getScenarioSettings()
     {
-        return MaruMapPlugin.getDefault().getUiProjectsSettings().getCurrentProject();
+        return MaruMapPlugin.getDefault().getScenarioModelSettings().getCurrentScenario();
     }
 
-    public UiElementSettings getUiElementSettings(UiElement element)
+    public GroundstationSettings getGroundstationSettings(IGroundstation element)
     {
-        return getUiProjectSettings().getElement(element);
+        return getScenarioSettings().getGroundstation(element);
     }
 
-    public UiElementSettings getUiElementSettings(String elemName)
+    public SpacecraftSettings getSpacecraftSettings(ISpacecraft element)
     {
-        return getUiProjectSettings().getElement(elemName);
+        return getScenarioSettings().getSpacecraft(element);
     }
 }

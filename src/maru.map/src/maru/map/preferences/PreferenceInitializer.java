@@ -13,5 +13,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
         IPreferenceStore store = MaruMapPlugin.getDefault().getPreferenceStore();
 
         store.setDefault(PreferenceConstants.P_MAP_ANTI_ALIASING, true);
+        store.setDefault(PreferenceConstants.P_MAP_VISIBILITY_CIRCLE_POINTS, 48L);
     }
 }

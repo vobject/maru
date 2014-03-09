@@ -9,17 +9,17 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLContext;
 
 import maru.core.model.ICentralBody;
+import maru.core.model.IScenarioProject;
 import maru.map.MaruMapPlugin;
 import maru.map.jobs.gl.GLProjectAnimationJob;
 import maru.map.jobs.gl.GLProjectDrawJob;
 import maru.map.jobs.gl.TextureCache;
-import maru.map.settings.uiproject.UiProjectSettings;
+import maru.map.settings.scenario.ScenarioSettings;
 import maru.map.views.AbstractMapDrawer;
 import maru.map.views.gl.jobs.DayNightDrawJob;
 import maru.map.views.gl.jobs.LatLonDrawJob;
 import maru.map.views.gl.jobs.MapTextureDrawJob;
 import maru.map.views.gl.jobs.ScenarioDrawJob;
-import maru.ui.model.UiProject;
 
 import org.eclipse.swt.widgets.Display;
 
@@ -124,9 +124,9 @@ public class MapGLDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
     }
 
     @Override
-    protected void updateContext(GLContext context, UiProject project)
+    protected void updateContext(GLContext context, IScenarioProject project)
     {
-        UiProjectSettings settings = MaruMapPlugin.getDefault().getUiProjectsSettings().getProject(project);
+        ScenarioSettings settings = MaruMapPlugin.getDefault().getScenarioModelSettings().getScenario(project);
         gl = context.getGL().getGL2();
 
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
@@ -164,14 +164,14 @@ public class MapGLDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
     }
 
     @Override
-    protected void updateMapParameters(UiProject project)
+    protected void updateMapParameters(IScenarioProject project)
     {
-        updateBackground(project.getUnderlyingElement().getCentralBody());
+        updateBackground(project.getCentralBody());
         getParameters().update();
     }
 
     @Override
-    protected void updateMapSettings(UiProject project)
+    protected void updateMapSettings(IScenarioProject project)
     {
         updateAntiAliasing();
         getSettings().update();
@@ -198,23 +198,23 @@ public class MapGLDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
     }
 
     @Override
-    protected void doProjectDrawJobs(UiProject project)
+    protected void doProjectDrawJobs(IScenarioProject project)
     {
         for (GLProjectDrawJob job : projectDrawJobs) {
-            job.setProject(project);
+            job.setScenario(project);
             job.draw();
         }
     }
 
     @Override
-    protected void doProjectAnimationJobs(UiProject project)
+    protected void doProjectAnimationJobs(IScenarioProject project)
     {
         Iterator<GLProjectAnimationJob> it = postAnimationJobs.iterator();
         while (it.hasNext())
         {
             GLProjectAnimationJob job = it.next();
             if (!job.isDone()) {
-                job.setProject(project);
+                job.setScenario(project);
                 job.draw();
             } else {
                 it.remove();
