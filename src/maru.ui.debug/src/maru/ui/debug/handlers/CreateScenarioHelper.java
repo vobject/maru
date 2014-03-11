@@ -49,7 +49,7 @@ public final class CreateScenarioHelper
     private static String DEFAULT_GROUNDSTATION_NAME = "DebugGroundstation";
     private static String DEFAULT_GROUNDSTATION_COMMENT = "DebugGroundstation Comment";
     private static VisibleElementColor DEFAULT_GROUNDSTATION_COLOR = new VisibleElementColor(192, 192, 224);
-    private static IMaruPluginResource DEFAULT_GROUNDSTATION_GRAPHIC2D = GroundstationResources.GROUNDSTATION_DEFAULT_1;
+    private static IMaruPluginResource DEFAULT_GROUNDSTATION_GRAPHIC2D = GroundstationResources.GROUNDSTATION_ANTENNA_1;
     private static double DEFAULT_GROUNDSTATION_LATITUDE_DEG = 49.78186646; // degree
     private static double DEFAULT_GROUNDSTATION_LONGITUDE_DEG = 9.97290914; // degree
     private static double DEFAULT_GROUNDSTATION_ALTITUDE = 274.68; // meter
@@ -61,7 +61,7 @@ public final class CreateScenarioHelper
 
     private static String DEFAULT_TLE_SATELLITE_COMMENT = "DebugTleSatellite Comment";
     private static VisibleElementColor DEFAULT_TLE_SATELLITE_COLOR = new VisibleElementColor(64, 96, 255);
-    private static IMaruPluginResource DEFAULT_TLE_SATELLITE_GRAPHIC2D = SpacecraftResources.SPACECRAFT_ISS_1;
+    private static IMaruPluginResource DEFAULT_TLE_SATELLITE_GRAPHIC2D = SpacecraftResources.SPACECRAFT_ISS_2;
 
     public static IScenarioProject createEmpty()
     {

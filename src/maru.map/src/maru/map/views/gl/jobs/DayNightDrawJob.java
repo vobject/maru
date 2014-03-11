@@ -9,6 +9,7 @@ import maru.map.settings.scenario.ScenarioSettings;
 import maru.map.utils.MapUtils;
 import maru.map.views.DayLength;
 import maru.map.views.MapViewParameters;
+import maru.map.views.MapViewSettings;
 
 import org.orekit.time.AbsoluteDate;
 
@@ -17,16 +18,17 @@ public class DayNightDrawJob extends GLProjectDrawJob
     @Override
     public void draw()
     {
-        MapViewParameters area = getMapParameters();
-        ScenarioSettings settings = getScenarioSettings();
+        MapViewParameters params = getMapParameters();
+        MapViewSettings settings = getMapSettings();
+        ScenarioSettings scenarioSettings = getScenarioSettings();
 
-        if (!settings.getShowNightOverlay()) {
+        if (!scenarioSettings.getShowNightOverlay()) {
             return;
         }
 
         AbsoluteDate currentTime = getScenario().getCurrentTime().getTime();
         int currentMapX = timeToHorizontalPixel(currentTime);
-        DayLength[] currentDayTimes = getDayTimes(currentTime, area.mapHeight, (int) settings.getNightStepSize(), settings.getDaylengthDefinition());
+        DayLength[] currentDayTimes = getDayTimes(currentTime, params.mapHeight, settings.getNightOverlayStepSize(), scenarioSettings.getDaylengthDefinition());
         drawDayNightTimes(currentMapX, currentDayTimes);
     }
 
@@ -73,10 +75,10 @@ public class DayNightDrawJob extends GLProjectDrawJob
     {
         GL2 gl = getGL();
         MapViewParameters params = getMapParameters();
-        ScenarioSettings settings = getScenarioSettings();
+        MapViewSettings settings = getMapSettings();
 
-        gl.glColor4f(0.0f, 0.0f, 0.0f, 0.25f);
-        gl.glLineWidth(settings.getNightStepSize());
+        gl.glColor4f(0.0f, 0.0f, 0.0f, settings.getNightOverlayOpacity() / 100.0f);
+        gl.glLineWidth(settings.getNightOverlayStepSize());
 
         for (DayLength dayTime : dayTimes)
         {

@@ -1,8 +1,8 @@
 Maru [![](https://travis-ci.org/vobject/maru.png?branch=maru-next)](https://travis-ci.org/vobject/maru/)
 ====
 
-Maru is an satellite mission planning application. Its main functionality is to show satellite orbits and create reports for further processing. It relies heavily on the excellent [Orekit](https://www.orekit.org/) library and other external resources.
-The program is written in Java and is based on Eclipse RCP. Maru runs on Windows and Linux operating systems.
+Maru is an satellite mission planning application. Its main functionality is to visualize satellite orbits and create reports for further processing. It heavily relies on the excellent [Orekit](https://www.orekit.org/) library and other external resources.
+The program is written in Java and is based on Eclipse RCP to be highly extensible. Maru runs on Windows and Linux operating systems; a Mac version is planned.
 
 Its features include:
 - Satellite orbits defined by

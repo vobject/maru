@@ -210,7 +210,7 @@
       </page>
       <page
             class="maru.ui.propertypages.UiTimeframePropertyPage"
-            id="maru.ui.propertypages.uiproject.timeframe.1000"
+            id="maru.ui.propertypages.uiproject.timeframe.1500"
             name="Timeframe">
          <enabledWhen>
             <instanceof

@@ -40,7 +40,7 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="maru.map.preferences.PreferenceInitializer">
+            class="maru.map.preferences.MapPreferenceInitializer">
       </initializer>
    </extension>
    <extension

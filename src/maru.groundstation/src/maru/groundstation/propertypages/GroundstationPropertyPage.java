@@ -22,11 +22,13 @@ public class GroundstationPropertyPage extends UiVisiblePropertyPage
         // return an empty array be default
         return new String[] {
             "", // empty string allows to disable element image
-            GroundstationResources.GROUNDSTATION_DEFAULT_1.getName(),
-            GroundstationResources.GROUNDSTATION_DEFAULT_2.getName(),
-            GroundstationResources.GROUNDSTATION_DEFAULT_3.getName(),
-            GroundstationResources.GROUNDSTATION_DEFAULT_4.getName(),
-            GroundstationResources.GROUNDSTATION_DEFAULT_5.getName(),
+            GroundstationResources.GROUNDSTATION_ANTENNA_1.getName(),
+            GroundstationResources.GROUNDSTATION_ANTENNA_2.getName(),
+            GroundstationResources.GROUNDSTATION_ANTENNA_3.getName(),
+            GroundstationResources.GROUNDSTATION_ANTENNA_4.getName(),
+            GroundstationResources.GROUNDSTATION_ANTENNA_5.getName(),
+            GroundstationResources.GROUNDSTATION_MARKER_1.getName(),
+            GroundstationResources.GROUNDSTATION_MARKER_2.getName(),
         };
     }
 

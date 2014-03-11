@@ -9,10 +9,7 @@ import maru.core.model.IVisibleElement;
 public interface IMapDrawer
 {
     MapViewParameters getParameters();
-    void setParameters(MapViewParameters mapAreaSettings);
-
     MapViewSettings getSettings();
-    void setSettings(MapViewSettings mapDrawSettings);
 
     ICoordinateProjector getMapProjector();
     void setMapProjector(ICoordinateProjector projector);

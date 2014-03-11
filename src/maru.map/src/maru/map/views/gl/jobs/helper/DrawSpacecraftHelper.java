@@ -101,11 +101,11 @@ public final class DrawSpacecraftHelper
 
             GroundtrackRange currentGtBarrier;
             if (!gtRanges.containsKey(element)) {
-                currentGtBarrier = new GroundtrackRange(currentCoordinate.getDate(), scenarioSettings.getGroundtrackLength());
+                currentGtBarrier = new GroundtrackRange(currentCoordinate.getDate(), settings.getGroundtrackLength());
                 gtRanges.put(element, currentGtBarrier);
             } else {
                 currentGtBarrier = gtRanges.get(element);
-                currentGtBarrier.update(currentCoordinate.getDate(), scenarioSettings.getGroundtrackLength());
+                currentGtBarrier.update(currentCoordinate.getDate(), settings.getGroundtrackLength());
             }
 
             IScenarioProject scenario = element.getScenarioProject();
@@ -161,25 +161,23 @@ public final class DrawSpacecraftHelper
                          mapParams.mapX + mapPos.X + (iconSize / 2),
                          mapParams.mapHeight - (mapPos.Y - mapParams.mapY),
                          element.getElementName(),
-                         true);
+                         mapSettings.getOutlineText());
     }
 
     private void drawTexturedIcon(String imagePath, FlatMapPosition mapPos, VisibleElementColor color, int size)
     {
         Texture texture = textureCache.get(imagePath);
 
-        gl.glColor3ub((byte) color.r, (byte) color.g, (byte) color.b);
-
-        GLUtils.drawTexture(gl, texture,
+        GLUtils.drawTexture(gl, texture, color,
                             mapParams.mapX + mapPos.X - (size / 2),
                             mapParams.mapHeight - (mapPos.Y - mapParams.mapY) - (size / 2),
-                            size, size);
+                            size, size, mapSettings.getOutlineIcons());
     }
 
     private void drawFallbackIcon(FlatMapPosition mapPos, VisibleElementColor color, int size)
     {
         MapPrimitives painter = new MapPrimitives(gl, mapParams);
-        painter.drawPoint(mapPos.X, mapPos.Y, size, color, 1.0);
+        painter.drawPoint(mapPos.X, mapPos.Y, size, color, 1.0, mapSettings.getOutlineText());
     }
 
     private int getIconSize(ISpacecraft element, SpacecraftSettings settings)
@@ -304,7 +302,7 @@ public final class DrawSpacecraftHelper
                          mapParams.mapX + ((Math.max(pos1.X, pos2.X) + Math.min(pos1.X, pos2.X)) / 2),
                          mapParams.mapHeight - (((Math.max(pos1.Y, pos2.Y) + Math.min(pos1.Y, pos2.Y)) / 2) - mapParams.mapY),
                          FormatUtils.formatNoDecimalPoint(dist / 1000.0) + " km",
-                         true);
+                         mapSettings.getOutlineText());
     }
 
     private void drawGroundtrack(ISpacecraft element, GroundtrackRange barrier, VisibleElementColor day, VisibleElementColor night, SpacecraftSettings settings) throws OrekitException
@@ -313,7 +311,7 @@ public final class DrawSpacecraftHelper
 
         for (List<GroundtrackPoint> lineStrips : getGroundtrack(element, barrier))
         {
-            painter.beginLine(2.0, false);
+            painter.beginLine(settings.getGroundtrackLineWidth(), false);
             for (GroundtrackPoint lineStrip : lineStrips)
             {
                 VisibleElementColor color = lineStrip.day ? day : night;
@@ -331,7 +329,7 @@ public final class DrawSpacecraftHelper
         FlatMapPosition lastMapPos = null;
         List<GroundtrackPoint> lineStrip = new ArrayList<>();
 
-        for (ICoordinate coordinate : propagator.getCoordinates(barrier.getStart(), barrier.getStop(), scenarioSettings.getGroundtrackStepSize(), element))
+        for (ICoordinate coordinate : propagator.getCoordinates(barrier.getStart(), barrier.getStop(), mapSettings.getGroundtrackStepSize(), element))
         {
             FlatMapPosition mapPos = getMapPosition(coordinate);
             boolean inDaylight = !scenarioSettings.getShowUmbraOnGroundtrack() ? true : !inShadow(coordinate);

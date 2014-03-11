@@ -5,9 +5,11 @@ import java.util.List;
 
 import javax.media.opengl.GL2;
 
+import maru.core.model.VisibleElementColor;
 import maru.map.MaruMapResources;
 import maru.map.jobs.gl.GLProjectAnimationJob;
 import maru.map.views.MapViewParameters;
+import maru.map.views.MapViewSettings;
 import maru.map.views.gl.GLUtils;
 
 import com.jogamp.opengl.util.texture.Texture;
@@ -77,7 +79,8 @@ public class SpriteAnimationJob extends GLProjectAnimationJob
     public void draw()
     {
         GL2 gl = getGL();
-        MapViewParameters area = getMapParameters();
+        MapViewParameters params = getMapParameters();
+        MapViewSettings settings = getMapSettings();
 
         if (isDone()) {
             return;
@@ -108,13 +111,17 @@ public class SpriteAnimationJob extends GLProjectAnimationJob
             height = currentFrame.getImageHeight();
         }
 
-        int scaledWidth = area.getScaledSize(width);
-        int scaledHeight = area.getScaledSize(height);
+        int scaledWidth = params.getScaledSize(width);
+        int scaledHeight = params.getScaledSize(height);
         int scaledWidthHalf = scaledWidth / 2;
         int scaledHeightHalf = scaledHeight / 2;
 
-        gl.glColor3f(1.0f, 1.0f, 1.0f);
-        GLUtils.drawTexture(gl, currentFrame, posX - scaledWidthHalf, area.clientAreaHeight - posY - scaledHeightHalf, scaledWidth, scaledHeight);
+        GLUtils.drawTexture(gl, currentFrame,
+                            new VisibleElementColor(255,  255,  255),
+                            posX - scaledWidthHalf,
+                            params.clientAreaHeight - posY - scaledHeightHalf,
+                            scaledWidth, scaledHeight,
+                            settings.getOutlineIcons());
     }
 
     @Override

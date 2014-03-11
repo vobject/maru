@@ -5,6 +5,7 @@ import javax.media.opengl.GL2;
 import maru.map.jobs.gl.GLProjectDrawJob;
 import maru.map.utils.MapUtils;
 import maru.map.views.MapViewParameters;
+import maru.map.views.MapViewSettings;
 import maru.map.views.gl.GLUtils;
 
 import com.jogamp.opengl.util.awt.TextRenderer;
@@ -16,8 +17,9 @@ public class LatLonDrawJob extends GLProjectDrawJob
     {
         GL2 gl = getGL();
         TextRenderer text = getTextRenderer();
-        MapViewParameters area = getMapParameters();
-        double stepSize = getScenarioSettings().getLatLonStepSize();
+        MapViewParameters params = getMapParameters();
+        MapViewSettings settings = getMapSettings();
+        double stepSize = getMapSettings().getLatLonStepSize();
 
         gl.glPushAttrib(GL2.GL_LINE_BIT);
         gl.glDisable(GL2.GL_LINE_SMOOTH);
@@ -27,41 +29,41 @@ public class LatLonDrawJob extends GLProjectDrawJob
 
         for (double lon = -180.0 + stepSize; lon < 180.0; lon += stepSize)
         {
-            int x = MapUtils.longitudeToHorizontalPixel(lon, area.mapWidth);
+            int x = MapUtils.longitudeToHorizontalPixel(lon, params.mapWidth);
 
             GLUtils.drawText(text,
-                             area.clientAreaWidth,
-                             area.clientAreaHeight,
-                             area.mapX + x,
-                             area.mapY + 1,
+                             params.clientAreaWidth,
+                             params.clientAreaHeight,
+                             params.mapX + x,
+                             params.mapY + 1,
                              Double.toString(lon),
-                             true);
+                             settings.getOutlineText());
 
             gl.glColor4f(1.0f, 1.0f, 1.0f, 0.3f);
 
             gl.glBegin(GL2.GL_LINES);
-            gl.glVertex2i(area.mapX + x, area.mapHeight + area.mapY);
-            gl.glVertex2i(area.mapX + x, area.mapY);
+            gl.glVertex2i(params.mapX + x, params.mapHeight + params.mapY);
+            gl.glVertex2i(params.mapX + x, params.mapY);
             gl.glEnd();
         }
 
         for (double lat = -90.0 + stepSize; lat < 90.0; lat += stepSize)
         {
-            int y = MapUtils.latitudeToVerticalPixel(lat, area.mapHeight);
+            int y = MapUtils.latitudeToVerticalPixel(lat, params.mapHeight);
 
             GLUtils.drawText(text,
-                             area.clientAreaWidth,
-                             area.clientAreaHeight,
-                             area.mapX + 1,
-                             area.mapHeight - y + area.mapY,
+                             params.clientAreaWidth,
+                             params.clientAreaHeight,
+                             params.mapX + 1,
+                             params.mapHeight - y + params.mapY,
                              Double.toString(lat),
-                             true);
+                             settings.getOutlineText());
 
             gl.glColor4f(1.0f, 1.0f, 1.0f, 0.3f);
 
             gl.glBegin(GL2.GL_LINES);
-            gl.glVertex2i(area.mapX, area.mapHeight - y + area.mapY);
-            gl.glVertex2i(area.mapX + area.mapWidth, area.mapHeight - y + area.mapY);
+            gl.glVertex2i(params.mapX, params.mapHeight - y + params.mapY);
+            gl.glVertex2i(params.mapX + params.mapWidth, params.mapHeight - y + params.mapY);
             gl.glEnd();
         }
 

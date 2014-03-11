@@ -60,17 +60,20 @@ public class MapPrimitives
         this.vertices = new ArrayList<>();
     }
 
-    public void drawPoint(int x, int y, double width, VisibleElementColor color, double opaque)
+    public void drawPoint(int x, int y, double width, VisibleElementColor color, double opaque, boolean outline)
     {
         gl.glPushAttrib(GL2.GL_POINT_BIT);
+
+        if (outline)
+        {
+            gl.glPointSize((float) width + 2.0f);
+            gl.glColor3f(0.0f, 0.0f, 0.0f);
+            drawPoint(x, y);
+        }
+
         gl.glPointSize((float) width);
         gl.glColor4ub((byte) color.r, (byte) color.g, (byte) color.b, toGLByte(opaque));
-
-        Vertex v = new Vertex(x, y, null, (byte) 0);
-
-        gl.glBegin(GL2.GL_POINTS);
-        gl.glVertex2d(v.mapX, v.mapY);
-        gl.glEnd();
+        drawPoint(x, y);
 
         gl.glPopAttrib();
     }
@@ -195,6 +198,15 @@ public class MapPrimitives
             gl.glVertex2d(v.mapX, v.mapY);
         }
         vertices.clear();
+    }
+
+    private void drawPoint(int x, int y)
+    {
+        Vertex v = new Vertex(x, y, null, (byte) 0);
+
+        gl.glBegin(GL2.GL_POINTS);
+        gl.glVertex2d(v.mapX, v.mapY);
+        gl.glEnd();
     }
 
     private boolean isValidXDistance(Vertex v1, Vertex v2)

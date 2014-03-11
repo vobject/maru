@@ -129,25 +129,23 @@ public final class DrawGroundstationHelper
                          mapParams.mapX + mapPos.X + (iconSize / 2),
                          mapParams.mapHeight - (mapPos.Y - mapParams.mapY),
                          element.getElementName(),
-                         true);
+                         mapSettings.getOutlineText());
     }
 
     private void drawTexturedIcon(String imagePath, FlatMapPosition mapPos, VisibleElementColor color, int size)
     {
         Texture texture = textureCache.get(imagePath);
 
-        gl.glColor3ub((byte) color.r, (byte) color.g, (byte) color.b);
-
-        GLUtils.drawTexture(gl, texture,
+        GLUtils.drawTexture(gl, texture, color,
                             mapParams.mapX + mapPos.X - (size / 2),
                             mapParams.mapHeight - (mapPos.Y - mapParams.mapY) - (size / 2),
-                            size, size);
+                            size, size, mapSettings.getOutlineIcons());
     }
 
     private void drawFallbackIcon(FlatMapPosition mapPos, VisibleElementColor color, int size)
     {
         MapPrimitives painter = new MapPrimitives(gl, mapParams);
-        painter.drawPoint(mapPos.X, mapPos.Y, size, color, 1.0);
+        painter.drawPoint(mapPos.X, mapPos.Y, size, color, 1.0, mapSettings.getOutlineText());
     }
 
     private int getIconSize(IGroundstation element, GroundstationSettings settings)

@@ -7,27 +7,30 @@ import maru.centralbody.model.projection.ICoordinateProjector;
 import maru.core.model.IScenarioProject;
 import maru.core.model.IVisibleElement;
 
+interface IFontChangedListener {
+    void fontChanged();
+}
 
-public abstract class AbstractMapDrawer implements IMapDrawer
+public abstract class AbstractMapDrawer implements IMapDrawer, IFontChangedListener
 {
     public static final int DEFAULT_PROJECTOR_CACHE_SIZE = 1024 * 32;
 
     private final AbstractGLView parent;
 
-    private MapViewParameters params;
-    private MapViewSettings settings;
+    private final MapViewParameters params;
+    private final MapViewSettings settings;
 
-    // projector that converts from scenario element frames to pixel positions
+    /** projector that converts from scenario element frames to pixel positions. */
     private ICoordinateProjector mapProjector;
 
-    // the element currently selected in the scenario explorer (or null)
+    /** the element currently selected in the scenario explorer (or null). */
     private IVisibleElement selectedElement;
 
     public AbstractMapDrawer(AbstractGLView parent)
     {
         this.parent = parent;
         this.params = new MapViewParameters();
-        this.settings = new MapViewSettings();
+        this.settings = new MapViewSettings(this);
         this.mapProjector = new EquirectangularProjector();
         this.mapProjector.setCacheSize(DEFAULT_PROJECTOR_CACHE_SIZE);
     }
@@ -55,21 +58,9 @@ public abstract class AbstractMapDrawer implements IMapDrawer
     }
 
     @Override
-    public void setParameters(MapViewParameters parameters)
-    {
-        this.params = parameters;
-    }
-
-    @Override
     public MapViewSettings getSettings()
     {
         return settings;
-    }
-
-    @Override
-    public void setSettings(MapViewSettings settings)
-    {
-        this.settings = settings;
     }
 
     @Override

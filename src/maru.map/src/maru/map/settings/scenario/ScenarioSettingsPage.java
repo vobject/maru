@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 
 public class ScenarioSettingsPage extends UiPropertyPage
 {
@@ -33,12 +32,8 @@ public class ScenarioSettingsPage extends UiPropertyPage
     private Button showVisibilityScToSc;
     private Button showVisibilityScToGs;
     private Button showUmbraOnGroundtrack;
-    private Text groundtrackStepSize;
-    private Text groundtrackLength;
-    private Text latLonLinesStepSize;
     private Button showNightMode;
     private Button showNightOverlay;
-    private Text nightOverlayPixelSteps;
     private Combo daylengthDefinition;
 
     // mapping helper for daylength definitions name <-> value
@@ -72,16 +67,26 @@ public class ScenarioSettingsPage extends UiPropertyPage
         settings.setShowVisibilitySpacecraftToSpacecraft(showVisibilityScToSc.getSelection());
         settings.setShowVisibilitySpacecraftToGroundstation(showVisibilityScToGs.getSelection());
         settings.setShowUmbraOnGroundtrack(showUmbraOnGroundtrack.getSelection());
-        settings.setGroundtrackStepSize(Long.parseLong(groundtrackStepSize.getText()));
-        settings.setGroundtrackLength(Long.parseLong(groundtrackLength.getText()) * (60 * 60)); // hours -> seconds
-        settings.setLatLonLinesStepSize(Long.parseLong(latLonLinesStepSize.getText()));
         settings.setShowNightMode(showNightMode.getSelection());
         settings.setShowNightOverlay(showNightOverlay.getSelection());
-        settings.setNightOverlayPixelSteps(Long.parseLong(nightOverlayPixelSteps.getText()));
         settings.setDaylengthDefinition(DaylengthDefinition.toDaylengthDefinition(daylengthDefinitionMap.get(daylengthDefinition.getText())));
 
         MaruMapPlugin.getDefault().redraw();
         return true;
+    }
+
+    @Override
+    protected void performDefaults()
+    {
+        showVisibilityCircles.setSelection(ScenarioSettingsConstants.DEFAULT_SHOW_VISIBILITY_CIRCLES);
+        showVisibilityScToSc.setSelection(ScenarioSettingsConstants.DEFAULT_SHOW_VISIBILITY_SC_TO_SC);
+        showVisibilityScToGs.setSelection(ScenarioSettingsConstants.DEFAULT_SHOW_VISIBILITY_SC_TO_GS);
+        showUmbraOnGroundtrack.setSelection(ScenarioSettingsConstants.DEFAULT_SHOW_UMBRA_ON_GROUNDTRACK);
+        showNightMode.setSelection(ScenarioSettingsConstants.DEFAULT_SHOW_NIGHT_MODE);
+        showNightOverlay.setSelection(ScenarioSettingsConstants.DEFAULT_SHOW_NIGHT_OVERLAY);
+
+        List<String> daylengthDefinitionValues = new ArrayList<>(daylengthDefinitionMap.values());
+        daylengthDefinition.select(daylengthDefinitionValues.indexOf(ScenarioSettingsConstants.DEFAULT_DAYLENGTH_DEFINITION));
     }
 
     @Override
@@ -143,26 +148,6 @@ public class ScenarioSettingsPage extends UiPropertyPage
         showUmbraOnGroundtrackData.horizontalSpan = 2;
         showUmbraOnGroundtrack.setLayoutData(showUmbraOnGroundtrackData);
 
-        new Label(container, SWT.NONE).setText(ScenarioSettingsConstants.DESCRIPTION_GROUNDTRACK_STEP_SIZE);
-        groundtrackStepSize = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.WRAP);
-        GridData groundtrackStepSizeData = new GridData();
-        groundtrackStepSizeData.horizontalAlignment = SWT.FILL;
-        groundtrackStepSize.setLayoutData(groundtrackStepSizeData);
-
-        new Label(container, SWT.NONE).setText(ScenarioSettingsConstants.DESCRIPTION_GROUNDTRACK_LENGTH);
-        groundtrackLength = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.WRAP);
-        GridData groundtrackLengthData = new GridData();
-        groundtrackLengthData.horizontalAlignment = SWT.FILL;
-        groundtrackLength.setLayoutData(groundtrackLengthData);
-
-        new Label(container, SWT.NONE).setText(ScenarioSettingsConstants.DESCRIPTION_LAT_LON_LINE_STEPSIZE);
-        latLonLinesStepSize = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.WRAP);
-        GridData latLonLinesStepSizeData = new GridData();
-        latLonLinesStepSizeData.horizontalAlignment = SWT.FILL;
-        latLonLinesStepSize.setLayoutData(latLonLinesStepSizeData);
-
-        addSeparator(container);
-
         showNightMode = new Button(container, SWT.CHECK | SWT.LEFT);
         GridData showNightModeData = new GridData();
         showNightModeData.horizontalSpan = 2;
@@ -172,12 +157,6 @@ public class ScenarioSettingsPage extends UiPropertyPage
         GridData showNightOverlayData = new GridData();
         showNightOverlayData.horizontalSpan = 2;
         showNightOverlay.setLayoutData(showNightOverlayData);
-
-        new Label(container, SWT.NONE).setText(ScenarioSettingsConstants.DESCRIPTION_NIGHT_OVERLAY_PIXELSTEPS);
-        nightOverlayPixelSteps = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.WRAP);
-        GridData nightOverlayPixelStepsData = new GridData();
-        nightOverlayPixelStepsData.horizontalAlignment = SWT.FILL;
-        nightOverlayPixelSteps.setLayoutData(nightOverlayPixelStepsData);
 
         new Label(container, SWT.NONE).setText(ScenarioSettingsConstants.DESCRIPTION_DAYLENGTH_DEFINITION);
         daylengthDefinition = new Combo(container, SWT.READ_ONLY);
@@ -209,19 +188,11 @@ public class ScenarioSettingsPage extends UiPropertyPage
         showUmbraOnGroundtrack.setText(ScenarioSettingsConstants.DESCRIPTION_SHOW_UMBRA_ON_GROUNDTRACK);
         showUmbraOnGroundtrack.setSelection(settings.getShowUmbraOnGroundtrack());
 
-        groundtrackStepSize.setText(Long.toString(settings.getGroundtrackStepSize()));
-
-        groundtrackLength.setText(Long.toString(settings.getGroundtrackLength() / (60 * 60))); // seconds -> hours
-
-        latLonLinesStepSize.setText(Long.toString(settings.getLatLonStepSize()));
-
         showNightMode.setText(ScenarioSettingsConstants.DESCRIPTION_SHOW_NIGHT_MODE);
         showNightMode.setSelection(settings.getShowNightMode());
 
         showNightOverlay.setText(ScenarioSettingsConstants.DESCRIPTION_SHOW_NIGHT_OVERLAY);
         showNightOverlay.setSelection(settings.getShowNightOverlay());
-
-        nightOverlayPixelSteps.setText(Long.toString(settings.getNightStepSize()));
 
         List<String> daylengthDefinitionKeys = new ArrayList<>(daylengthDefinitionMap.keySet());
         List<String> daylengthDefinitionValues = new ArrayList<>(daylengthDefinitionMap.values());

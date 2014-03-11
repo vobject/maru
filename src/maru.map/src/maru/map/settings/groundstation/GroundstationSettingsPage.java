@@ -20,8 +20,8 @@ public class GroundstationSettingsPage extends UiPropertyPage
 {
     private GroundstationSettings settings;
 
-    private Text elementIconSize;
     private Button showElementName;
+    private Text elementIconSize;
 
     @Override
     public UiGroundstation getUiElement()
@@ -38,11 +38,18 @@ public class GroundstationSettingsPage extends UiPropertyPage
     @Override
     public boolean performOk()
     {
-        settings.setElementIconSize(Long.parseLong(elementIconSize.getText()));
         settings.setShowElementName(showElementName.getSelection());
+        settings.setElementIconSize(Long.parseLong(elementIconSize.getText()));
 
         MaruMapPlugin.getDefault().redraw();
         return true;
+    }
+
+    @Override
+    protected void performDefaults()
+    {
+        showElementName.setSelection(GroundstationSettingsConstants.DEFAULT_SHOW_ELEMENT_NAME);
+        elementIconSize.setText(Long.toString(GroundstationSettingsConstants.DEFAULT_ELEMENT_ICON_SIZE));
     }
 
     @Override
@@ -87,6 +94,11 @@ public class GroundstationSettingsPage extends UiPropertyPage
 
     private Composite createControls(Composite container)
     {
+        showElementName = new Button(container, SWT.CHECK | SWT.LEFT);
+        GridData showElementIconData = new GridData();
+        showElementIconData.horizontalSpan = 2;
+        showElementName.setLayoutData(showElementIconData);
+
         new Label(container, SWT.NONE).setText(GroundstationSettingsConstants.DESCRIPTION_ELEMENT_ICON_SIZE);
         elementIconSize = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.WRAP);
         GridData elementIconSizeData = new GridData();
@@ -94,19 +106,14 @@ public class GroundstationSettingsPage extends UiPropertyPage
         elementIconSizeData.horizontalAlignment = SWT.FILL;
         elementIconSize.setLayoutData(elementIconSizeData);
 
-        showElementName = new Button(container, SWT.CHECK | SWT.LEFT);
-        GridData showElementIconData = new GridData();
-        showElementIconData.horizontalSpan = 2;
-        showElementName.setLayoutData(showElementIconData);
-
         return container;
     }
 
     private void initControls()
     {
-        elementIconSize.setText(Long.toString(settings.getElementIconSize()));
-
         showElementName.setText(GroundstationSettingsConstants.DESCRIPTION_SHOW_ELEMENT_NAME);
         showElementName.setSelection(settings.getShowElementName());
+
+        elementIconSize.setText(Long.toString(settings.getElementIconSize()));
     }
 }

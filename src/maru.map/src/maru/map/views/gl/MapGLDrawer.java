@@ -14,7 +14,6 @@ import maru.map.MaruMapPlugin;
 import maru.map.jobs.gl.GLProjectAnimationJob;
 import maru.map.jobs.gl.GLProjectDrawJob;
 import maru.map.jobs.gl.TextureCache;
-import maru.map.settings.scenario.ScenarioSettings;
 import maru.map.views.AbstractMapDrawer;
 import maru.map.views.gl.jobs.DayNightDrawJob;
 import maru.map.views.gl.jobs.LatLonDrawJob;
@@ -31,7 +30,7 @@ public class MapGLDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
     private static final int DEFAULT_ANIMATION_SPEED = 1000 / 30; // 30 fps
 
     private GL2 gl;
-    private final TextRenderer text;
+    private TextRenderer textRenderer;
     private final TextureCache textureCache;
 
     private final List<GLProjectDrawJob> projectDrawJobs;
@@ -42,7 +41,7 @@ public class MapGLDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
         super(parent);
 
         // render with the operating systems default font at 12pt.
-        text = new TextRenderer(new java.awt.Font(Display.getDefault().getSystemFont().getFontData()[0].getName(), java.awt.Font.PLAIN, 12), true, false);
+        textRenderer = new TextRenderer(new java.awt.Font(getSettings().getFontName(), java.awt.Font.PLAIN, getSettings().getFontSize()), true, false);
         textureCache = new TextureCache(context.getGL().getGL2());
 
         projectDrawJobs = new ArrayList<>();
@@ -54,6 +53,12 @@ public class MapGLDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
         addProjectDrawJob(new ScenarioDrawJob());
 
         MaruMapPlugin.getDefault().addGLDrawJobRunner(this);
+    }
+
+    @Override
+    public void fontChanged()
+    {
+        textRenderer = new TextRenderer(new java.awt.Font(getSettings().getFontName(), java.awt.Font.PLAIN, getSettings().getFontSize()), true, false);
     }
 
     @Override
@@ -118,7 +123,6 @@ public class MapGLDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
         gl = context.getGL().getGL2();
 
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-        gl.glColor3f(1.0f, 1.0f, 1.0f);
 
         updateJobs();
     }
@@ -126,18 +130,7 @@ public class MapGLDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
     @Override
     protected void updateContext(GLContext context, IScenarioProject project)
     {
-        ScenarioSettings settings = MaruMapPlugin.getDefault().getScenarioModelSettings().getScenario(project);
-        gl = context.getGL().getGL2();
-
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-
-        if (!settings.getShowNightMode()) {
-            gl.glColor3f(1.0f, 1.0f, 1.0f);
-        } else {
-            gl.glColor3f(1.0f, 0.0f, 0.0f);
-        }
-
-        updateJobs();
+        updateContext(context);
     }
 
     private void updateJobs()
@@ -146,7 +139,7 @@ public class MapGLDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
             job.setMapParameters(getParameters());
             job.setMapSettings(getSettings());
             job.setGL(gl);
-            job.setTextRenderer(text);
+            job.setTextRenderer(textRenderer);
             job.setTextureCache(textureCache);
             job.setProjector(getMapProjector());
             job.setSelectedElement(getSelectedElement());
@@ -156,7 +149,7 @@ public class MapGLDrawer extends AbstractMapDrawer implements IGLDrawJobRunner
             job.setMapParameters(getParameters());
             job.setMapSettings(getSettings());
             job.setGL(gl);
-            job.setTextRenderer(text);
+            job.setTextRenderer(textRenderer);
             job.setTextureCache(textureCache);
             job.setProjector(getMapProjector());
             job.setSelectedElement(getSelectedElement());
