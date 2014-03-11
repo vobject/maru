@@ -31,11 +31,8 @@ public final class GLUtils
         {
             gl.glColor3f(0.0f, 0.0f, 0.0f);
             drawTexture(gl, texture, x - 1, y - 1, width, height);
-            drawTexture(gl, texture, x - 1, y, width, height);
             drawTexture(gl, texture, x - 1, y + 1, width, height);
-
             drawTexture(gl, texture, x + 1, y - 1, width, height);
-            drawTexture(gl, texture, x + 1, y, width, height);
             drawTexture(gl, texture, x + 1, y + 1, width, height);
         }
 
