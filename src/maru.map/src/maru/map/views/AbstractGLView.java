@@ -5,11 +5,7 @@ import maru.ui.model.IUiProjectSelectionListener;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiProject;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.part.ViewPart;
 
 import com.jogamp.newt.opengl.GLWindow;
@@ -24,15 +20,14 @@ public abstract class AbstractGLView extends ViewPart
     @Override
     public void dispose()
     {
-        getWindow().destroy();
-
+        glWindow.destroy();
         super.dispose();
     }
 
     @Override
     public void setFocus()
     {
-        getContainer().setFocus();
+        container.setFocus();
     }
 
     @Override
@@ -82,6 +77,9 @@ public abstract class AbstractGLView extends ViewPart
 
     public void setWindow(GLWindow window)
     {
+        if (this.glWindow != null) {
+            this.glWindow.destroy();
+        }
         this.glWindow = window;
     }
 
@@ -93,20 +91,9 @@ public abstract class AbstractGLView extends ViewPart
 //                getContainer().redraw();
 //            }
 //        });
-        getWindow().display();
-    }
-
-    protected void addResizeListener()
-    {
-        getContainer().addListener(SWT.Resize, new Listener()
-        {
-            @Override
-            public void handleEvent(Event event)
-            {
-                Rectangle rect = container.getClientArea();
-                getWindow().setSize(rect.width, rect.height);
-            }
-        });
+        if (glWindow != null) {
+            glWindow.display();
+        }
     }
 
     protected abstract void addEventListener();

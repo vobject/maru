@@ -16,11 +16,8 @@ import maru.ui.model.UiVisibleElement;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 
 import com.jogamp.newt.awt.NewtCanvasAWT;
 import com.jogamp.newt.event.MouseAdapter;
@@ -32,7 +29,7 @@ public class MapGLView extends AbstractGLView
     private IMapDrawer mapDrawer;
 
     @Override
-    public void createPartControl(Composite parent)
+    public void createPartControl(final Composite parent)
     {
         setContainer(new Composite(parent, SWT.EMBEDDED));
         getContainer().setLayout(new FillLayout());
@@ -41,12 +38,11 @@ public class MapGLView extends AbstractGLView
         GLCapabilities caps = new GLCapabilities(glp);
 
         setWindow(GLWindow.create(caps));
-        getWindow().setVisible(true);
+        getWindow().setVisible(true, true);
 
         NewtCanvasAWT canvas = new NewtCanvasAWT(getWindow());
         SWT_AWT.new_Frame(getContainer()).add(canvas);
 
-        addResizeListener();
         addEventListener();
 
         MaruUIPlugin.getDefault().getUiModel().addUiProjectModelListener(this);
@@ -118,22 +114,6 @@ public class MapGLView extends AbstractGLView
     }
 
     @Override
-    protected void addResizeListener()
-    {
-        getContainer().addListener(SWT.Resize, new Listener()
-        {
-            @Override
-            public void handleEvent(Event event)
-            {
-                Rectangle rect = getContainer().getClientArea();
-
-                getMapDrawer().getParameters().setClientArea(rect.width, rect.height);
-                getWindow().setSize(rect.width, rect.height);
-            }
-        });
-    }
-
-    @Override
     protected void addEventListener()
     {
         final MapGLView thisRef = this;
@@ -166,6 +146,7 @@ public class MapGLView extends AbstractGLView
             public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height)
             {
                 GLUtils.setupGL(drawable.getContext().getGL().getGL2(), width, height);
+                getMapDrawer().getParameters().setClientArea(width, height);
             }
 
             @Override
