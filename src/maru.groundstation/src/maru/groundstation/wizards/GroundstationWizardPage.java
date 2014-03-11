@@ -79,7 +79,7 @@ public class GroundstationWizardPage extends ScenarioElementWizardNamingPage
         }
 
         // check if another groundstation with the same name already exits!
-        if (getProject().getGroundstationContainer().hasChild(getName())) {
+        if (getProject().getGroundstationContainer().hasChild(getElementName())) {
             setErrorMessage("An groundstation with the same name already exists in the selected scenario.");
             return false;
         }
