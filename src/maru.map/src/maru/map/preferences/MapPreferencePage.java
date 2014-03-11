@@ -83,7 +83,7 @@ public class MapPreferencePage extends FieldEditorPreferencePage implements IWor
             new IntegerFieldEditor(MapPreferenceConstants.P_MAP_NIGHT_OVERLAY_PIXELSTEPS,
                                    "Night overlay step size in pixels",
                                    getFieldEditorParent());
-        nightOverlayPixelSteps.setValidRange(1, 32);
+        nightOverlayPixelSteps.setValidRange(1, 10);
         addField(nightOverlayPixelSteps);
     }
 
