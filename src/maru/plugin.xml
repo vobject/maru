@@ -49,11 +49,11 @@ developed by the following third parties:
          </property>
          <property
                name="startupMessageRect"
-               value="7,215,445,20">
+               value="67,15,387,20">
          </property>
          <property
                name="startupProgressRect"
-               value="5,240,445,15">
+               value="65,35,389,15">
          </property>
       </product>
    </extension>
@@ -106,11 +106,11 @@ developed by the following third parties:
          </property>
          <property
                name="startupMessageRect"
-               value="7,215,445,20">
+               value="67,15,387,20">
          </property>
          <property
                name="startupProgressRect"
-               value="5,240,445,15">
+               value="65,35,389,15">
          </property>
       </product>
    </extension>
@@ -298,11 +298,11 @@ developed by the following third parties:
          </property>
          <property
                name="startupMessageRect"
-               value="7,215,445,20">
+               value="67,15,387,20">
          </property>
          <property
                name="startupProgressRect"
-               value="5,240,445,15">
+               value="65,35,389,15">
          </property>
          <property
                name="appName"

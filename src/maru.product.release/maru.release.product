@@ -37,8 +37,8 @@ developed by the following third parties:
 
    <splash
       location="maru"
-      startupProgressRect="5,240,445,15"
-      startupMessageRect="7,215,445,20"
+      startupProgressRect="65,35,389,15"
+      startupMessageRect="67,15,387,20"
       startupForegroundColor="FFFFFF" />
    <launcher name="maru">
       <linux icon="icons/maru_64.xpm"/>
