@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: jogl-natives-macosx-universal
+Bundle-SymbolicName: org.jogamp.jogl-natives-macosx-universal
+Bundle-Version: 2.1.3
+Bundle-Vendor: JogAmp
+Fragment-Host: org.jogamp.jogl
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Eclipse-PlatformFilter: (& (osgi.os=macosx) (osgi.arch=x86_64))
