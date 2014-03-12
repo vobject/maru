@@ -95,12 +95,10 @@
         <module>src/maru.centralbody</module>
         <module>src/maru.core</module>
         <module>src/maru.core.tests</module>
-        <module>src/maru.feature.debug</module>
         <module>src/maru.feature.release</module>
         <module>src/maru.groundstation</module>
         <module>src/maru.map</module>
         <module>src/maru.map.worldwind</module>
-        <module>src/maru.product.debug</module>
         <module>src/maru.product.release</module>
         <module>src/maru.report</module>
         <module>src/maru.spacecraft</module>
