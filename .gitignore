@@ -28,7 +28,7 @@ local.properties
 # PMD
 .pmd
 
-workspace/
+./workspace/
 
 # script files
 *.bat
