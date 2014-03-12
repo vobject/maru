@@ -161,7 +161,7 @@
       </splashHandlerProductBinding>
    </extension>
    <extension
-         id="maru"
+         id="product"
          point="org.eclipse.core.runtime.products">
       <product
             application="maru.application"

@@ -53,26 +53,6 @@
                             <ws>win32</ws>
                             <arch>x86</arch>
                         </environment>
-                        <environment>
-                            <os>win32</os>
-                            <ws>win32</ws>
-                            <arch>x86_64</arch>
-                        </environment>
-                         <environment>
-                            <os>linux</os>
-                            <ws>gtk</ws>
-                            <arch>x86</arch>
-                        </environment>
-                         <environment>
-                            <os>linux</os>
-                            <ws>gtk</ws>
-                            <arch>x86_64</arch>
-                        </environment>
-                         <environment>
-                            <os>macosx</os>
-                            <ws>cocoa</ws>
-                            <arch>x86_64</arch>
-                        </environment>
                     </environments>
                 </configuration>
             </plugin>
@@ -95,11 +75,11 @@
         <module>src/maru.centralbody</module>
         <module>src/maru.core</module>
         <module>src/maru.core.tests</module>
-        <module>src/maru.feature.release</module>
+        <module>src/maru.feature</module>
         <module>src/maru.groundstation</module>
         <module>src/maru.map</module>
         <module>src/maru.map.worldwind</module>
-        <module>src/maru.product.release</module>
+        <module>src/maru.product</module>
         <module>src/maru.report</module>
         <module>src/maru.spacecraft</module>
         <module>src/maru.target</module>
