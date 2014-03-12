@@ -27,20 +27,20 @@ Low-level coding notes:
 
 --> Bugs
 - delete StartTimepoint, currenttime will not be updated.
-- it is possible to add elements with the same name -> tested with ground stations
-- when jogl awt_swt bridged window is created with negative x-coordinates, the application freezes
+- it is possible to add elements with the same name -> tested with ground stations -> fixed
+- when jogl awt_swt bridged window is created with negative x-coordinates, the application freezes -> fixed
 
 --> Misc
-- clear propagator cache after report creation sensible? -> non-critical for performance
-- fix JOGL redraw issue for Linux/Mac
+- clear propagator cache after report creation sensible? -> non-critical for performance -> good for memory usage?
+- fix JOGL redraw issue for Linux/Mac -> fixed
 
 
 Goals for Maru v1.3:
-- Project-specific preferences/properties
 - Integrate more Propagators from Orekit and their options
-- Fix Linux and OSX issues -> Linux issues done, but needs testing
 - add OSX JOGL fragment
 - Maven build script that can also export the data model bindings (core, centralbody, groundstation, spacecraft)
-- UI improvements
-- get rid of debug/release-specific feature/product -> put maru.ui.debug into maru.ui plugin and activate it in the preferences
-- non-copyright infinging splashscreen
+- get rid of debug/release-specific feature/product
+- put maru.ui.debug into maru.ui plugin and activate it in the preferences
+- Project-specific preferences/properties -> done/fixed
+- Fix Linux and OSX issues -> Linux issues done/fixed
+- non-copyright infinging splashscreen -> fixed

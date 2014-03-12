@@ -1,5 +1,6 @@
 package maru.ui;
 
+import maru.ui.debug.DebugPreferenceStoreListener;
 import maru.ui.model.UiModel;
 import maru.ui.wizards.ICentralBodyWizardPage;
 
@@ -16,6 +17,7 @@ public class MaruUIPlugin extends AbstractUIPlugin
     private static MaruUIPlugin plugin;
     private UiModel uiModel;
     private ICentralBodyWizardPage centralBodyWizardPage;
+    private DebugPreferenceStoreListener debugPreferenceListener;
 
     @Override
     public void start(BundleContext context) throws Exception
@@ -25,11 +27,16 @@ public class MaruUIPlugin extends AbstractUIPlugin
 
         uiModel = UiModel.getDefault();
         uiModel.startup();
+
+        debugPreferenceListener = new DebugPreferenceStoreListener();
+        debugPreferenceListener.startListening();
     }
 
     @Override
     public void stop(BundleContext context) throws Exception
     {
+        debugPreferenceListener.stopListening();
+
         if (uiModel != null) {
             uiModel.shutdown();
         }
