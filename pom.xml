@@ -74,7 +74,7 @@
         <module>src/maru</module>
         <module>src/maru.centralbody</module>
         <module>src/maru.core</module>
-        <module>src/maru.core.tests</module>
+<!--         <module>src/maru.core.tests</module> -->
         <module>src/maru.feature</module>
         <module>src/maru.groundstation</module>
         <module>src/maru.map</module>
@@ -85,7 +85,7 @@
         <module>src/maru.target</module>
         <module>src/maru.ui</module>
         <module>src/maru.ui.debug</module>
-        <module>src/maru.ui.tests</module>
+<!--         <module>src/maru.ui.tests</module> -->
         <module>src/org.apache.commons.math3</module>
         <module>src/org.jogamp.jogl</module>
         <module>src/org.jogamp.jogl-natives-linux-amd64</module>
