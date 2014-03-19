@@ -14,7 +14,7 @@ public interface IScenarioProject extends IScenarioElement
     ITimepoint getStartTime();
     ITimepoint getStopTime();
     ITimepoint getCurrentTime();
-    List<? extends ITimepoint> getTimepoints();
+    List<ITimepoint> getTimepoints();
     ITimepoint getPreviousTimepoint(ITimepoint timepoint);
     ITimepoint getNextTimepoint(ITimepoint timepoint);
 }

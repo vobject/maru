@@ -16,7 +16,7 @@ public class ScenarioModel extends Parent implements IScenarioModel
     @Override
     public List<IScenarioProject> getScenarioProjects()
     {
-        return this.<IScenarioProject>castList(getChildren());
+        return Parent.<IScenarioProject>castList(getChildren());
     }
 
     @Override

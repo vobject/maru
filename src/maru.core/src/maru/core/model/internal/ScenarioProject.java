@@ -24,21 +24,17 @@ public class ScenarioProject extends AbstractScenarioElement implements IScenari
     private final List<Timepoint> timepoints;
     private Timepoint currentTimepoint;
 
-    public ScenarioProject(String name,
-                           Timepoint start,
-                           Timepoint stop,
-                           String comment,
-                           ICentralBody centralBody)
+    public ScenarioProject(String name, Timepoint start, Timepoint stop,
+                           String comment, ICentralBody centralBody)
     {
         super(name);
 
         this.timepoints = new ArrayList<>();
+        this.groundstationContainer = new GroundstationContainer();
+        this.spacecraftContainer = new SpacecraftContainer();
 
-        groundstationContainer = new GroundstationContainer();
-        spacecraftContainer = new SpacecraftContainer();
-
-        groundstationContainer.setParent(this);
-        spacecraftContainer.setParent(this);
+        this.groundstationContainer.setParent(this);
+        this.spacecraftContainer.setParent(this);
 
         addTimepoint(start);
         addTimepoint(stop);
@@ -95,9 +91,9 @@ public class ScenarioProject extends AbstractScenarioElement implements IScenari
     }
 
     @Override
-    public List<? extends ITimepoint> getTimepoints()
+    public List<ITimepoint> getTimepoints()
     {
-        return timepoints;
+        return Parent.<ITimepoint>castList(timepoints);
     }
 
     @Override

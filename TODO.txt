@@ -37,8 +37,9 @@ Low-level coding notes:
 
 Goals for Maru v1.3:
 - Integrate more Propagators from Orekit and their options
-- add OSX JOGL fragment
 - Maven build script that can also export the data model bindings (core, centralbody, groundstation, spacecraft)
+- fix maven build for core and ui tests
+- add OSX JOGL fragment -> done/fixed
 - get rid of debug/release-specific feature/product -> done/fixed
 - activate maru.ui.debug via preferences in maru.ui plugin -> done/fixed
 - Project-specific preferences/properties -> done/fixed

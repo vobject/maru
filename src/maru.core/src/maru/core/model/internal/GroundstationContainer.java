@@ -18,7 +18,7 @@ public class GroundstationContainer extends Parent implements IGroundstationCont
     @Override
     public List<IGroundstation> getGroundstations()
     {
-        return this.<IGroundstation>castList(getChildren());
+        return Parent.<IGroundstation>castList(getChildren());
     }
 
     public void addGroundstation(IGroundstation gs)

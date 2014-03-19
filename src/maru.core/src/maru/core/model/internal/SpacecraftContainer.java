@@ -18,7 +18,7 @@ public class SpacecraftContainer extends Parent implements ISpacecraftContainer
     @Override
     public List<ISpacecraft> getSpacecrafts()
     {
-        return this.<ISpacecraft>castList(getChildren());
+        return Parent.<ISpacecraft>castList(getChildren());
     }
 
     public void addSpacecraft(ISpacecraft sc)

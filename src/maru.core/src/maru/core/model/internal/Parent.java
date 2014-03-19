@@ -91,7 +91,7 @@ public abstract class Parent extends AbstractScenarioElement implements IParent
         return null;
     }
 
-    protected <E extends IScenarioElement> List<E> castList(List<IScenarioElement> list)
+    public static <E extends IScenarioElement> List<E> castList(List<? extends IScenarioElement> list)
     {
         @SuppressWarnings("unchecked")
         List<E> castList = (List<E>) list;
