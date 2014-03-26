@@ -6,7 +6,8 @@ Bundle-Version: 2.0.0.903
 Bundle-ClassPath: gdal.jar,
  worldwind.jar,
  worldwindx.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8,
+ JavaSE-1.7
 Bundle-Vendor: NASA
 Require-Bundle: org.jogamp.jogl
 Export-Package: com.zebraimaging,

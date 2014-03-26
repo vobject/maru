@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.commons.math3,
  org.orekit
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8,
+ JavaSE-1.7
 Export-Package: maru.ui,
  maru.ui.model,
  maru.ui.propertypages,

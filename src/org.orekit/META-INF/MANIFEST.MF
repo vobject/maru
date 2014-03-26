@@ -3,7 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Orekit
 Bundle-SymbolicName: org.orekit;singleton:=true
 Bundle-Version: 6.1.0
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8,
+ JavaSE-1.7
 Require-Bundle: org.eclipse.osgi,
  org.eclipse.core.runtime,
  org.apache.commons.math3;bundle-version="3.2.0"

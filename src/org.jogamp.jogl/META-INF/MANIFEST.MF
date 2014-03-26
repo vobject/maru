@@ -6,7 +6,8 @@ Bundle-Version: 2.1.3
 Bundle-ClassPath: gluegen-rt.jar,
  jogl-all.jar
 Bundle-Vendor: JogAmp
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8,
+ JavaSE-1.7
 Export-Package: com.jogamp.common,
  com.jogamp.common.jvm,
  com.jogamp.common.net,

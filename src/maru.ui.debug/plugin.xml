@@ -54,6 +54,12 @@
             <command
                   commandId="maru.ui.debug.commands.stopnetworkscenariomodel">
             </command>
+            <command
+                  commandId="maru.ui.debug.commands.startnetworkmap">
+            </command>
+            <command
+                  commandId="maru.ui.debug.commands.stopnetworkmap">
+            </command>
          </menu>
       </menuContribution>
    </extension>
@@ -111,6 +117,14 @@
             id="maru.ui.debug.commands.stopnetworkscenariomodel"
             name="Stop NetworkScenarioModel Server">
       </command>
+      <command
+            id="maru.ui.debug.commands.startnetworkmap"
+            name="Start NetworkMap Server">
+      </command>
+      <command
+            id="maru.ui.debug.commands.stopnetworkmap"
+            name="Stop NetworkMap Server">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -165,6 +179,14 @@
       <handler
             class="maru.ui.debug.handlers.StopNetworkScenarioModel"
             commandId="maru.ui.debug.commands.stopnetworkscenariomodel">
+      </handler>
+      <handler
+            class="maru.ui.debug.handlers.StartNetworkMap"
+            commandId="maru.ui.debug.commands.startnetworkmap">
+      </handler>
+      <handler
+            class="maru.ui.debug.handlers.StopNetworkMap"
+            commandId="maru.ui.debug.commands.stopnetworkmap">
       </handler>
    </extension>
 
