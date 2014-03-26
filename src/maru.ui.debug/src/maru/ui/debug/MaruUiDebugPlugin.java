@@ -10,6 +10,7 @@ public class MaruUiDebugPlugin extends AbstractUIPlugin
     private static MaruUiDebugPlugin plugin;
 
     private Thread networkScenarioModelThread;
+    private Thread networkMapThread;
 
     @Override
     public void start(final BundleContext context) throws Exception
@@ -38,5 +39,15 @@ public class MaruUiDebugPlugin extends AbstractUIPlugin
     public void setNetworkScenarioModelThread(Thread t)
     {
         networkScenarioModelThread = t;
+    }
+
+    public Thread getNetworkMapThread()
+    {
+        return networkMapThread;
+    }
+
+    public void setNetworkMapThread(Thread t)
+    {
+        networkMapThread = t;
     }
 }

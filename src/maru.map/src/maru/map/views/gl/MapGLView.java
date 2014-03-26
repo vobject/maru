@@ -6,8 +6,10 @@ import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
 
+import maru.map.MaruMapPlugin;
 import maru.map.views.AbstractGLView;
 import maru.map.views.IMapDrawer;
+import maru.map.views.MapViewParameters;
 import maru.ui.MaruUIPlugin;
 import maru.ui.model.UiElement;
 import maru.ui.model.UiModel;
@@ -23,6 +25,8 @@ import com.jogamp.newt.awt.NewtCanvasAWT;
 import com.jogamp.newt.event.MouseAdapter;
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.opengl.GLWindow;
+import com.jogamp.opengl.util.GLReadBufferUtil;
+import com.jogamp.opengl.util.texture.TextureData;
 
 public class MapGLView extends AbstractGLView
 {
@@ -157,6 +161,58 @@ public class MapGLView extends AbstractGLView
                     getMapDrawer().draw(drawable.getContext(), project.getUnderlyingElement());
                 } else {
                     getMapDrawer().draw(drawable.getContext());
+                }
+
+                //if (MaruMapPlugin.getDefault().hasTextureListeners())
+                {
+                    MapViewParameters mapParams = getMapDrawer().getParameters();
+                    GLReadBufferUtil bufUtil = new GLReadBufferUtil(false, false);
+                    boolean read = bufUtil.readPixels(drawable.getGL(),
+                                                      mapParams.mapX,
+                                                      mapParams.mapY,
+                                                      mapParams.mapWidth,
+                                                      mapParams.mapHeight,
+                                                      false);
+                    if (read) {
+                        TextureData data = bufUtil.getTextureData();
+
+
+
+//                        int pixelFormat = data.getPixelFormat();
+//                        int pixelType   = data.getPixelType();
+//
+//                        if ((pixelFormat != GL.GL_RGB) || (pixelType != GL.GL_UNSIGNED_BYTE)) {
+//                            return;
+//                        }
+//
+//                        BufferedImage img = new BufferedImage(data.getWidth(), data.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+//                        byte[] imgData = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+//
+//                        ByteBuffer buf = (ByteBuffer) data.getBuffer().rewind();
+//                        buf.get(imgData).rewind();
+//
+//                        for (int i = 0; i < imgData.length; i += 3) {
+//                            byte red  = imgData[i + 0];
+//                            byte blue = imgData[i + 2];
+//                            imgData[i + 0] = blue;
+//                            imgData[i + 2] = red;
+//                        }
+//
+//                        ImageUtil.flipImageVertically(img);
+//                        try
+//                        {
+//                            ImageIO.write(img, "jpg", new File("D:\\aaaa3.jpg"));
+//                        }
+//                        catch (IOException e)
+//                        {
+//                            e.printStackTrace();
+//                        }
+
+
+
+
+                        MaruMapPlugin.getDefault().notifyTextureListeners(data);
+                    }
                 }
             }
         });

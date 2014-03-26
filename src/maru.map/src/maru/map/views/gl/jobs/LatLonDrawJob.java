@@ -36,7 +36,7 @@ public class LatLonDrawJob extends GLProjectDrawJob
                              params.clientAreaHeight,
                              params.mapX + x,
                              params.mapY + 1,
-                             Double.toString(lon),
+                             Integer.toString((int) lon),
                              settings.getOutlineText());
 
             gl.glColor4f(1.0f, 1.0f, 1.0f, 0.3f);
@@ -56,7 +56,7 @@ public class LatLonDrawJob extends GLProjectDrawJob
                              params.clientAreaHeight,
                              params.mapX + 1,
                              params.mapHeight - y + params.mapY,
-                             Double.toString(lat),
+                             Integer.toString((int) lat),
                              settings.getOutlineText());
 
             gl.glColor4f(1.0f, 1.0f, 1.0f, 0.3f);
@@ -73,6 +73,6 @@ public class LatLonDrawJob extends GLProjectDrawJob
     @Override
     public void dispose()
     {
-     // this job does not own any resources
+        // this job does not own any resources
     }
 }

@@ -77,8 +77,13 @@ public class DayNightDrawJob extends GLProjectDrawJob
         MapViewParameters params = getMapParameters();
         MapViewSettings settings = getMapSettings();
 
-        gl.glColor4f(0.0f, 0.0f, 0.0f, settings.getNightOverlayOpacity() / 100.0f);
+        gl.glPushAttrib(GL2.GL_LINE_BIT);
         gl.glLineWidth(settings.getNightOverlayStepSize());
+        gl.glColor4f(0.0f, 0.0f, 0.0f, settings.getNightOverlayOpacity() / 100.0f);
+
+        // never use anti-aliasing for the shadow lines as it is hard on the
+        // GPU and does not look much better.
+        gl.glDisable(GL2.GL_LINE_SMOOTH);
 
         for (DayLength dayTime : dayTimes)
         {
@@ -119,5 +124,7 @@ public class DayNightDrawJob extends GLProjectDrawJob
                 gl.glEnd();
             }
         }
+
+        gl.glPopAttrib();
     }
 }

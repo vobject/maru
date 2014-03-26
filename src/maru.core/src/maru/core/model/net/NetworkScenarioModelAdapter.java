@@ -1,9 +1,5 @@
 package maru.core.model.net;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-
 import maru.core.model.ICentralBody;
 import maru.core.model.IGroundstation;
 import maru.core.model.IScenarioElement;
@@ -12,177 +8,137 @@ import maru.core.model.ISpacecraft;
 import maru.core.model.ITimepoint;
 import maru.core.model.IVisibleElement;
 
-public abstract class NetworkScenarioModelAdapter implements INetworkScenarioModelListener
+public class NetworkScenarioModelAdapter extends NetworkScenarioModelListener
 {
-    private Socket client;
-    private ObjectOutputStream objOutput;
-
-    public NetworkScenarioModelAdapter(Socket client) throws IOException
+    @Override
+    public void scenarioCreated(IScenarioProject element)
     {
-        this.client = client;
-        this.objOutput = new ObjectOutputStream(this.client.getOutputStream());
-    }
-
-    public void close() throws IOException
-    {
-        if (objOutput != null)
-        {
-            objOutput.close();
-            objOutput = null;
-            client = null;
-        }
+        sendMessage(NetworkMessageID.SCENARIO_CREATED, element);
     }
 
     @Override
-    public void scenarioCreated(IScenarioProject project)
+    public void scenarioAdded(IScenarioProject element)
     {
-
+        sendMessage(NetworkMessageID.SCENARIO_ADDED, element);
     }
 
     @Override
-    public void scenarioAdded(IScenarioProject project)
+    public void scenarioRemoved(IScenarioProject element)
     {
-
-    }
-
-    @Override
-    public void scenarioRemoved(IScenarioProject project)
-    {
-
+        sendMessage(NetworkMessageID.SCENARIO_REMOVED, element);
     }
 
     @Override
     public void elementAdded(IScenarioElement element)
     {
-
+        sendMessage(NetworkMessageID.ELEMENT_ADDED, element);
     }
 
     @Override
     public void elementRemoved(IScenarioElement element)
     {
-
+        sendMessage(NetworkMessageID.ELEMENT_REMOVED, element);
     }
 
     @Override
     public void elementRenamed(IScenarioElement element)
     {
-
+        sendMessage(NetworkMessageID.ELEMENT_RENAMED, element);
     }
 
     @Override
     public void elementCommented(IScenarioElement element)
     {
-
+        sendMessage(NetworkMessageID.ELEMENT_COMMENTED, element);
     }
 
     @Override
     public void elementColorChanged(IVisibleElement element)
     {
-
+        sendMessage(NetworkMessageID.ELEMENT_COLOR_CHANGED, element);
     }
 
     @Override
     public void elementImageChanged(IVisibleElement element)
     {
-
+        sendMessage(NetworkMessageID.ELEMENT_IMAGE_CHANGED, element);
     }
 
     @Override
     public void centralbodyImageChanged(ICentralBody element)
     {
-
+        sendMessage(NetworkMessageID.CENTRAL_BODY_IMAGE_CHANGED, element);
     }
 
     @Override
     public void centralbodyGmChanged(ICentralBody element)
     {
-
+        sendMessage(NetworkMessageID.CENTRAL_BODY_GM_CHANGED, element);
     }
 
     @Override
     public void centralbodyEquatorialRadiusChanged(ICentralBody element)
     {
-
+        sendMessage(NetworkMessageID.CENTRAL_BODY_EQUATORIAL_RADIUS_CHANGED, element);
     }
 
     @Override
     public void centralbodyFlatteningChanged(ICentralBody element)
     {
-
+        sendMessage(NetworkMessageID.CENTRAL_BODY_FLATTENING_CHANGED, element);
     }
 
     @Override
     public void elementInitialCoordinateChanged(IGroundstation element)
     {
-
+        sendMessage(NetworkMessageID.GROUNDSTATION_INITIAL_COORDINATE_CHANGED, element);
     }
 
     @Override
     public void elementInitialCoordinateChanged(ISpacecraft element)
     {
-
+        sendMessage(NetworkMessageID.SPACECRAFT_INITIAL_COORDINATE_CHANGED, element);
     }
 
     @Override
     public void propagatablesTimeChanged(IScenarioProject element)
     {
-
+        sendMessage(NetworkMessageID.PROPAGATABLES_TIME_CHANGED, element);
     }
 
     @Override
     public void timepointStartChanged(ITimepoint element)
     {
-
+        sendMessage(NetworkMessageID.TIMEPOINT_START_CHANGED, element);
     }
 
     @Override
     public void timepointStopChanged(ITimepoint element)
     {
-
+        sendMessage(NetworkMessageID.TIMEPOINT_STOP_CHANGED, element);
     }
 
     @Override
     public void timepointCurrentChanged(ITimepoint element)
     {
-
+        sendMessage(NetworkMessageID.TIMEPOINT_CURRENT_CHANGED, element);
     }
 
     @Override
     public void timepointAdded(ITimepoint element)
     {
-
+        sendMessage(NetworkMessageID.TIMEPOINT_ADDED, element);
     }
 
     @Override
     public void timepointRemoved(ITimepoint element)
     {
-
+        sendMessage(NetworkMessageID.TIMEPOINT_REMOVED, element);
     }
 
     @Override
     public void timepointChanged(ITimepoint element)
     {
-
-    }
-
-    protected void sendMessage(NetworkMessageID msg, IScenarioElement element)
-    {
-        if (objOutput == null) {
-            return; // the object is in invalid state
-        }
-
-        try {
-            objOutput.writeObject(new NetworkMessageWrapper(msg, element));
-            objOutput.reset();
-        } catch (IOException e) {
-            e.printStackTrace();
-
-            try {
-                objOutput.close();
-            } catch (IOException eAgain) {
-                eAgain.printStackTrace();
-                objOutput = null;
-            }
-        }
+        sendMessage(NetworkMessageID.TIMEPOINT_CHANGED, element);
     }
 }

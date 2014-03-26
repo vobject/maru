@@ -2,36 +2,64 @@ package maru.core.model.net;
 
 import java.io.IOException;
 
-public abstract class NetworkClientThread extends NetworkScenarioModelReceiver
-                                          implements Runnable
+public abstract class NetworkClientThread<T extends INetworkServerConnection> implements Runnable
 {
-    public NetworkClientThread(String serverIP, int serverPort) throws IOException
+    private final String ip;
+    private final int port;
+    private final T connection;
+
+    public NetworkClientThread(Class<T> clazz, String serverIP, int serverPort) throws InstantiationException, IllegalAccessException
     {
-        super(serverIP, serverPort);
+        this.ip = serverIP;
+        this.port = serverPort;
+        this.connection = clazz.newInstance();
     }
 
     @Override
     public void run()
     {
+        if (!openConnection()) {
+            return;
+        }
+
         while (!Thread.currentThread().isInterrupted())
         {
-            try
-            {
-                processMessage(readMessage());
-            }
-            catch (ClassNotFoundException | IOException e)
-            {
-                e.printStackTrace();
-
-                try {
-                    close();
-                } catch (IOException eAgain) {
-                    eAgain.printStackTrace();
-                }
+            if (!readFromServer()) {
                 break;
             }
         }
 
-        System.out.println("client done!");
+        closeConnection();
+    }
+
+    boolean openConnection()
+    {
+        try {
+            connection.open(ip, port);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    boolean readFromServer()
+    {
+        try {
+            connection.read();
+            return true;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    void closeConnection()
+    {
+        try {
+            connection.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

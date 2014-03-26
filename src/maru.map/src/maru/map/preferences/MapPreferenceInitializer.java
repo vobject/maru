@@ -22,6 +22,6 @@ public class MapPreferenceInitializer extends AbstractPreferenceInitializer
         store.setDefault(MapPreferenceConstants.P_MAP_VISIBILITY_CIRCLE_POINTS, 48L);
         store.setDefault(MapPreferenceConstants.P_MAP_LAT_LON_LINE_STEPSIZE, 30L);
         store.setDefault(MapPreferenceConstants.P_MAP_NIGHT_OVERLAY_OPACITY, 25L);
-        store.setDefault(MapPreferenceConstants.P_MAP_NIGHT_OVERLAY_PIXELSTEPS, 2L);
+        store.setDefault(MapPreferenceConstants.P_MAP_NIGHT_OVERLAY_PIXELSTEPS, 1L);
     }
 }

@@ -7,6 +7,7 @@ import maru.map.jobs.gl.GLProjectAnimationJob;
 import maru.map.jobs.gl.GLProjectDrawJob;
 import maru.map.settings.scenario.ScenarioModelSettings;
 import maru.map.views.gl.IGLDrawJobRunner;
+import maru.map.views.gl.ITextureListener;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -14,6 +15,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import com.jogamp.opengl.util.texture.TextureData;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -26,6 +29,7 @@ public class MaruMapPlugin extends AbstractUIPlugin
 
     private ScenarioModelSettings settings;
     private final List<IGLDrawJobRunner> glDrawJobRunners = new ArrayList<>();
+    private final List<ITextureListener> textureListeners = new ArrayList<>();
 
     @Override
     public void start(BundleContext context) throws Exception
@@ -107,6 +111,30 @@ public class MaruMapPlugin extends AbstractUIPlugin
         for (IGLDrawJobRunner jobRunner : glDrawJobRunners) {
             jobRunner.redraw();
         }
+    }
+
+    public void addTextureListener(ITextureListener listener)
+    {
+        if (!textureListeners.contains(listener)) {
+            textureListeners.add(listener);
+        }
+    }
+
+    public void removeTextureListener(ITextureListener listener)
+    {
+        if (textureListeners.contains(listener)) {
+            textureListeners.remove(listener);
+        }
+    }
+
+    public boolean hasTextureListeners()
+    {
+        return !textureListeners.isEmpty();
+    }
+
+    public void notifyTextureListeners(TextureData data)
+    {
+        textureListeners.forEach(listener -> listener.textureUpdated(data));
     }
 
     private IEclipsePreferences getPreferenceNode()

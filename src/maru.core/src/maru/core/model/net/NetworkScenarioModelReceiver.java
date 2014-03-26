@@ -12,24 +12,37 @@ import maru.core.model.IScenarioProject;
 import maru.core.model.ISpacecraft;
 import maru.core.model.ITimepoint;
 import maru.core.model.IVisibleElement;
+import maru.core.model.ScenarioModelAdapter;
 
 import org.orekit.data.DataProvidersManager;
 
-public abstract class NetworkScenarioModelReceiver implements INetworkScenarioModelListener
+public abstract class NetworkScenarioModelReceiver extends ScenarioModelAdapter
+                                                   implements INetworkServerConnection
 {
     private Socket server;
     private ObjectInputStream objInput;
 
-    public NetworkScenarioModelReceiver(String serverIP, int serverPort) throws IOException
+    public NetworkScenarioModelReceiver()
     {
         initOrekitDataPath();
+    }
 
+    @Override
+    public void open(String serverIP, int serverPort) throws IOException
+    {
         InetAddress serverAddr = InetAddress.getByName(serverIP);
 
         this.server = new Socket(serverAddr, serverPort);
         this.objInput = new ObjectInputStream(this.server.getInputStream());
     }
 
+    @Override
+    public void read() throws IOException, ClassNotFoundException
+    {
+        processMessage(readMessage());
+    }
+
+    @Override
     public void close() throws IOException
     {
         if (objInput != null)
@@ -38,138 +51,6 @@ public abstract class NetworkScenarioModelReceiver implements INetworkScenarioMo
             objInput = null;
             server = null;
         }
-    }
-
-    @Override
-    public void scenarioCreated(IScenarioProject project)
-    {
-
-    }
-
-    @Override
-    public void scenarioAdded(IScenarioProject project)
-    {
-
-    }
-
-    @Override
-    public void scenarioRemoved(IScenarioProject project)
-    {
-
-    }
-
-    @Override
-    public void elementAdded(IScenarioElement element)
-    {
-
-    }
-
-    @Override
-    public void elementRemoved(IScenarioElement element)
-    {
-
-    }
-
-    @Override
-    public void elementRenamed(IScenarioElement element)
-    {
-
-    }
-
-    @Override
-    public void elementCommented(IScenarioElement element)
-    {
-
-    }
-
-    @Override
-    public void elementColorChanged(IVisibleElement element)
-    {
-
-    }
-
-    @Override
-    public void elementImageChanged(IVisibleElement element)
-    {
-
-    }
-
-    @Override
-    public void centralbodyImageChanged(ICentralBody element)
-    {
-
-    }
-
-    @Override
-    public void centralbodyGmChanged(ICentralBody element)
-    {
-
-    }
-
-    @Override
-    public void centralbodyEquatorialRadiusChanged(ICentralBody element)
-    {
-
-    }
-
-    @Override
-    public void centralbodyFlatteningChanged(ICentralBody element)
-    {
-
-    }
-
-    @Override
-    public void elementInitialCoordinateChanged(IGroundstation element)
-    {
-
-    }
-
-    @Override
-    public void elementInitialCoordinateChanged(ISpacecraft element)
-    {
-
-    }
-
-    @Override
-    public void propagatablesTimeChanged(IScenarioProject element)
-    {
-
-    }
-
-    @Override
-    public void timepointStartChanged(ITimepoint element)
-    {
-
-    }
-
-    @Override
-    public void timepointStopChanged(ITimepoint element)
-    {
-
-    }
-
-    @Override
-    public void timepointCurrentChanged(ITimepoint element)
-    {
-
-    }
-
-    @Override
-    public void timepointAdded(ITimepoint element)
-    {
-
-    }
-
-    @Override
-    public void timepointRemoved(ITimepoint element)
-    {
-
-    }
-
-    @Override
-    public void timepointChanged(ITimepoint element)
-    {
-
     }
 
     protected NetworkMessageWrapper readMessage() throws ClassNotFoundException, IOException

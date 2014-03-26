@@ -50,12 +50,16 @@ public final class GLUtils
             // draw text outline in black
             renderer.setColor(0.0f, 0.0f, 0.0f, 1.0f);
             renderer.draw(text, posX - 1, posY - 1);
-            renderer.draw(text, posX - 1, posY);
             renderer.draw(text, posX - 1, posY + 1);
 
             renderer.draw(text, posX + 1, posY - 1);
-            renderer.draw(text, posX + 1, posY);
             renderer.draw(text, posX + 1, posY + 1);
+
+            renderer.draw(text, posX - 1, posY);
+            renderer.draw(text, posX + 1, posY);
+
+            renderer.draw(text, posX,     posY - 1);
+            renderer.draw(text, posX,     posY + 1);
         }
 
         // draw the actual text in white

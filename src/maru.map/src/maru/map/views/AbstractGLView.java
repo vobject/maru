@@ -85,12 +85,6 @@ public abstract class AbstractGLView extends ViewPart
 
     public void redraw()
     {
-//        Display.getDefault().syncExec(new Runnable() {
-//            @Override
-//            public void run() {
-//                getContainer().redraw();
-//            }
-//        });
         if (glWindow != null) {
             glWindow.display();
         }
