@@ -53,5 +53,6 @@ Java8 Tycho/Maven Build Problems OR This is why we cannot have nice things:
 - tycho compiler can be changed using tycho-compiler-plugin (in theory)
 - which needs a toolchain.xml file inside the maven directory: http://maven.apache.org/guides/mini/guide-using-toolchains.html
 - now try to make that work on windows and linux
+- it works when a specific jre (e.g. jre8) is bundled with the artifact but that would add a lot of files to the repo
 - very funny, NOT!
 -> no java8 support as long as we are stuck with Eclipse 3.8 -> switching to 4.4 may work (when it is released)

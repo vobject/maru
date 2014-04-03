@@ -94,7 +94,7 @@
         <module>src/maru</module>
         <module>src/maru.centralbody</module>
         <module>src/maru.core</module>
-<!--         <module>src/maru.core.tests</module> -->
+        <module>src/maru.core.tests</module>
         <module>src/maru.feature</module>
         <module>src/maru.groundstation</module>
         <module>src/maru.map</module>
