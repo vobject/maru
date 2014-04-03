@@ -64,7 +64,7 @@ public final class ScenarioModelManager
         return projectStorages.get(scenario);
     }
 
-    public void createScenario(IScenarioProject scenario, IScenarioProjectStorage storage, boolean update)
+    public void createScenario(final IScenarioProject scenario, IScenarioProjectStorage storage, boolean update)
     {
         projectStorages.put(scenario, storage);
 
@@ -74,10 +74,15 @@ public final class ScenarioModelManager
 
         // save all changes to disk and notify all listeners
         // tell the listener that we added a new project to the core model
-        notifyModelListeners(listener -> listener.scenarioCreated(scenario), scenario, true);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.scenarioCreated(scenario);
+            }
+        }, scenario, true);
     }
 
-    public void addScenario(IScenarioProject scenario, IScenarioProjectStorage storage, boolean update)
+    public void addScenario(final IScenarioProject scenario, IScenarioProjectStorage storage, boolean update)
     {
         projectStorages.put(scenario, storage);
 
@@ -86,10 +91,15 @@ public final class ScenarioModelManager
         }
 
         // tell the listener that we added this project to the core model
-        notifyModelListeners(listener -> listener.scenarioAdded(scenario), scenario, false);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.scenarioAdded(scenario);
+            }
+        }, scenario, false);
     }
 
-    public void removeScenario(IScenarioProject scenario, boolean update)
+    public void removeScenario(final IScenarioProject scenario, boolean update)
     {
         projectStorages.remove(scenario);
 
@@ -98,10 +108,15 @@ public final class ScenarioModelManager
         }
 
         // tell the listener (UI) that we removed this project
-        notifyModelListeners(listener -> listener.scenarioRemoved(scenario), scenario, true);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.scenarioRemoved(scenario);
+            }
+        }, scenario, false);
     }
 
-    public void removeElement(IScenarioElement element, boolean update)
+    public void removeElement(final IScenarioElement element, boolean update)
     {
         ((Parent) element.getParent()).removeChild(element);
 
@@ -109,10 +124,15 @@ public final class ScenarioModelManager
             return;
         }
 
-        notifyModelListeners(listener -> listener.elementRemoved(element), element, true);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementRemoved(element);
+            }
+        }, element, true);
     }
 
-    public void changeElementName(IScenarioElement element, String name, boolean update)
+    public void changeElementName(final IScenarioElement element, String name, boolean update)
     {
         ((AbstractScenarioElement) element).setElementName(name);
 
@@ -120,10 +140,15 @@ public final class ScenarioModelManager
             return;
         }
 
-        notifyModelListeners(listener -> listener.elementRenamed(element), element, true);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementRenamed(element);
+            }
+        }, element, true);
     }
 
-    public void changeElementComment(IScenarioElement element, String comment, boolean update)
+    public void changeElementComment(final IScenarioElement element, String comment, boolean update)
     {
         ((AbstractScenarioElement) element).setElementComment(comment);
 
@@ -131,12 +156,17 @@ public final class ScenarioModelManager
             return;
         }
 
-        notifyModelListeners(listener -> listener.elementCommented(element), element, true);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementCommented(element);
+            }
+        }, element, true);
     }
 
     public void addTimepoint(IScenarioProject scenario, AbsoluteDate date, boolean update)
     {
-        Timepoint tp = new Timepoint(date);
+        final Timepoint tp = new Timepoint(date);
 
         ((ScenarioProject) scenario).addTimepoint(tp);
 
@@ -149,19 +179,39 @@ public final class ScenarioModelManager
         boolean startChanged = scenario.getStartTime() == tp;
         boolean stopChanged = scenario.getStopTime() == tp;
 
-        if (startChanged) {
-            notifyModelListeners(listener -> listener.timepointStartChanged(tp), tp, true);
-        } else if (stopChanged) {
-            notifyModelListeners(listener -> listener.timepointStopChanged(tp), tp, true);
-        } else {
-            notifyModelListeners(listener -> listener.timepointAdded(tp), tp, true);
+        if (startChanged)
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointStartChanged(tp);
+                }
+            }, tp, true);
+        }
+        else if (stopChanged)
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointStopChanged(tp);
+                }
+            }, tp, true);
+        }
+        else
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointAdded(tp);
+                }
+            }, tp, true);
         }
     }
 
     public void removeTimepoint(ITimepoint timepoint, boolean update)
     {
         ScenarioProject scenario = (ScenarioProject) timepoint.getScenarioProject();
-        Timepoint tp = (Timepoint) timepoint;
+        final Timepoint tp = (Timepoint) timepoint;
 
         scenario.removeTimepoint(tp);
 
@@ -172,19 +222,39 @@ public final class ScenarioModelManager
         boolean startChanged = scenario.getStartTime() == tp;
         boolean stopChanged = scenario.getStopTime() == tp;
 
-        if (startChanged) {
-            notifyModelListeners(listener -> listener.timepointStartChanged(tp), tp, true);
-        } else if (stopChanged) {
-            notifyModelListeners(listener -> listener.timepointStopChanged(tp), tp, true);
-        } else {
-            notifyModelListeners(listener -> listener.timepointRemoved(tp), tp, true);
+        if (startChanged)
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointStartChanged(tp);
+                }
+            }, tp, true);
+        }
+        else if (stopChanged)
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointStopChanged(tp);
+                }
+            }, tp, true);
+        }
+        else
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointRemoved(tp);
+                }
+            }, tp, true);
         }
     }
 
     public void changeTimepoint(ITimepoint timepoint, AbsoluteDate date, boolean update)
     {
         ScenarioProject scenario = (ScenarioProject) timepoint.getScenarioProject();
-        Timepoint tp = (Timepoint) timepoint;
+        final Timepoint tp = (Timepoint) timepoint;
 
         scenario.changeTimepoint(tp, date);
 
@@ -198,18 +268,45 @@ public final class ScenarioModelManager
         boolean stopChanged = scenario.getStopTime() == tp;
         boolean currentChanged = scenario.getCurrentTime() == tp;
 
-        if (startChanged) {
-            notifyModelListeners(listener -> listener.timepointStartChanged(tp), tp, true);
-        } else if (stopChanged) {
-            notifyModelListeners(listener -> listener.timepointStopChanged(tp), tp, true);
-        } else if (currentChanged) {
-            notifyModelListeners(listener -> listener.timepointCurrentChanged(tp), tp, false);
-        } else {
-            notifyModelListeners(listener -> listener.timepointChanged(tp), tp, true);
+        if (startChanged)
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointStartChanged(tp);
+                }
+            }, tp, true);
+        }
+        else if (stopChanged)
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointStopChanged(tp);
+                }
+            }, tp, true);
+        }
+        else if (currentChanged)
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointCurrentChanged(tp);
+                }
+            }, tp, false);
+        }
+        else
+        {
+            notifyModelListeners(new IModelNotification() {
+                @Override
+                public void notifyListener(IScenarioModelListener listener) {
+                    listener.timepointChanged(tp);
+                }
+            }, tp, true);
         }
     }
 
-    public void changeScenarioElementsTime(IScenarioProject scenario, AbsoluteDate date, boolean update)
+    public void changeScenarioElementsTime(final IScenarioProject scenario, AbsoluteDate date, boolean update)
     {
         for (ISpacecraft element : scenario.getSpacecrafts()) {
             element.currentTimeChanged(date);
@@ -223,32 +320,47 @@ public final class ScenarioModelManager
             return;
         }
 
-        notifyModelListeners(listener -> listener.propagatablesTimeChanged(scenario), scenario, false);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.propagatablesTimeChanged(scenario);
+            }
+        }, scenario, false);
     }
 
-    public void addGroundstation(IScenarioProject scenario, IGroundstation element, boolean update)
+    public void addGroundstation(IScenarioProject scenario, final IGroundstation groundstation, boolean update)
     {
-        ((GroundstationContainer) scenario.getGroundstationContainer()).addGroundstation(element);
+        ((GroundstationContainer) scenario.getGroundstationContainer()).addGroundstation(groundstation);
 
         if (!update) {
             return;
         }
 
-        notifyModelListeners(listener -> listener.elementAdded(element), element, true);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementAdded(groundstation);
+            }
+        }, groundstation, true);
     }
 
-    public void addSpacecraft(IScenarioProject scenario, ISpacecraft element, boolean update)
+    public void addSpacecraft(IScenarioProject scenario, final ISpacecraft spacecraft, boolean update)
     {
-        ((SpacecraftContainer) scenario.getSpacecraftContainer()).addSpacecraft(element);
+        ((SpacecraftContainer) scenario.getSpacecraftContainer()).addSpacecraft(spacecraft);
 
         if (!update) {
             return;
         }
 
-        notifyModelListeners(listener -> listener.elementAdded(element), element, true);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementAdded(spacecraft);
+            }
+        }, spacecraft, true);
     }
 
-    public void changeElementColor(IVisibleElement element, VisibleElementColor color, boolean update)
+    public void changeElementColor(final IVisibleElement element, VisibleElementColor color, boolean update)
     {
         ((AbstractVisibleElement) element).setElementColor(color);
 
@@ -256,10 +368,15 @@ public final class ScenarioModelManager
             return;
         }
 
-        notifyModelListeners(listener -> listener.elementColorChanged(element), element, true);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementColorChanged(element);
+            }
+        }, element, true);
     }
 
-    public void changeElementImage(IVisibleElement element, IMaruResource image, boolean update)
+    public void changeElementImage(final IVisibleElement element, IMaruResource image, boolean update)
     {
         ((AbstractVisibleElement) element).setElementImage(image);
 
@@ -267,10 +384,15 @@ public final class ScenarioModelManager
             return;
         }
 
-        notifyModelListeners(listener -> listener.elementImageChanged(element), element, true);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementImageChanged(element);
+            }
+        }, element, true);
     }
 
-    public void changeInitialCoordinate(IGroundstation element, GeodeticPoint position, double elevation, boolean update)
+    public void changeInitialCoordinate(final IGroundstation element, GeodeticPoint position, double elevation, boolean update)
     {
         ((AbstractGroundstation) element).setGeodeticPosition(position);
         ((AbstractGroundstation) element).setElevationAngle(elevation);
@@ -279,10 +401,15 @@ public final class ScenarioModelManager
             return;
         }
 
-        notifyModelListeners(listener -> listener.elementInitialCoordinateChanged(element), element, true);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementInitialCoordinateChanged(element);
+            }
+        }, element, true);
     }
 
-    public void changeInitialCoordinate(ISpacecraft element, ICoordinate coordinate, boolean update)
+    public void changeInitialCoordinate(final ISpacecraft element, ICoordinate coordinate, boolean update)
     {
         try {
             ((AbstractSpacecraft) element).setInitialCoordinate(coordinate);
@@ -294,10 +421,15 @@ public final class ScenarioModelManager
             return;
         }
 
-        notifyModelListeners(listener -> listener.elementInitialCoordinateChanged(element), element, true);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.elementInitialCoordinateChanged(element);
+            }
+        }, element, true);
     }
 
-    public void changeCentralBodyImage(ICentralBody element, IMaruResource image, boolean update)
+    public void changeCentralBodyImage(final ICentralBody element, IMaruResource image, boolean update)
     {
         ((AbstractCentralBody) element).setTexture(image);
 
@@ -305,10 +437,15 @@ public final class ScenarioModelManager
             return;
         }
 
-        notifyModelListeners(listener -> listener.centralbodyImageChanged(element), element, true);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.centralbodyImageChanged(element);
+            }
+        }, element, true);
     }
 
-    public void changeCentralBodyGM(ICentralBody element, double gm, boolean update)
+    public void changeCentralBodyGM(final ICentralBody element, double gm, boolean update)
     {
         ((AbstractCentralBody) element).setProperties(element.getEquatorialRadius(),
                                                       element.getFlattening(),
@@ -329,10 +466,15 @@ public final class ScenarioModelManager
             return;
         }
 
-        notifyModelListeners(listener -> listener.centralbodyGmChanged(element), element, true);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.centralbodyGmChanged(element);
+            }
+        }, element, true);
     }
 
-    public void changeCentralBodyEquatorialRadius(ICentralBody element, double radius, boolean update)
+    public void changeCentralBodyEquatorialRadius(final ICentralBody element, double radius, boolean update)
     {
         ((AbstractCentralBody) element).setProperties(radius,
                                                       element.getFlattening(),
@@ -353,10 +495,15 @@ public final class ScenarioModelManager
             return;
         }
 
-        notifyModelListeners(listener -> listener.centralbodyEquatorialRadiusChanged(element), element, true);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.centralbodyEquatorialRadiusChanged(element);
+            }
+        }, element, true);
     }
 
-    public void changeCentralBodyFlattening(ICentralBody element, double flattening, boolean update)
+    public void changeCentralBodyFlattening(final ICentralBody element, double flattening, boolean update)
     {
         ((AbstractCentralBody) element).setProperties(element.getEquatorialRadius(),
                                                       flattening,
@@ -377,7 +524,12 @@ public final class ScenarioModelManager
             return;
         }
 
-        notifyModelListeners(listener -> listener.centralbodyFlatteningChanged(element), element, true);
+        notifyModelListeners(new IModelNotification() {
+            @Override
+            public void notifyListener(IScenarioModelListener listener) {
+                listener.centralbodyFlatteningChanged(element);
+            }
+        }, element, true);
     }
 
     public void addTimeProvider(IScenarioProject scenario, ITimeProvider provider)
@@ -463,7 +615,9 @@ public final class ScenarioModelManager
             writeProjectStorage(element.getScenarioProject());
         }
 
-        listeners.forEach(notification::notifyListener);
+        for (IScenarioModelListener listener : listeners) {
+            notification.notifyListener(listener);
+        }
     }
 
     private void writeProjectStorage(IScenarioProject project)

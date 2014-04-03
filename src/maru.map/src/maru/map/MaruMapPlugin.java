@@ -134,7 +134,9 @@ public class MaruMapPlugin extends AbstractUIPlugin
 
     public void notifyTextureListeners(TextureData data)
     {
-        textureListeners.forEach(listener -> listener.textureUpdated(data));
+        for (ITextureListener listener : textureListeners) {
+            listener.textureUpdated(data);
+        }
     }
 
     private IEclipsePreferences getPreferenceNode()
