@@ -45,3 +45,13 @@ Goals for Maru v1.3:
 - Project-specific preferences/properties -> done/fixed
 - Fix Linux and OSX issues -> Linux issues done/fixed
 - non-copyright infinging splashscreen -> fixed
+
+
+Java8 Tycho/Maven Build Problems OR This is why we cannot have nice things:
+- tycho uses ECJ compiler: http://dev.eclipse.org/mhonarc/lists/tycho-dev/msg01006.html
+- ECJ for Eclipse 3.8 is not Java8 compliant
+- tycho compiler can be changed using tycho-compiler-plugin (in theory)
+- which needs a toolchain.xml file inside the maven directory: http://maven.apache.org/guides/mini/guide-using-toolchains.html
+- now try to make that work on windows and linux
+- very funny, NOT!
+-> no java8 support as long as we are stuck with Eclipse 3.8 -> switching to 4.4 may work (when it is released)
