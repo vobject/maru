@@ -193,6 +193,18 @@ public class MapPrimitives
 
     private void flushVertices()
     {
+//        if (vertices.size() > 3)
+//        {
+//            Vertex first = vertices.get(0);
+//            Vertex second = vertices.get(1);
+//            Vertex last = vertices.get(vertices.size() - 1);
+//
+//            if (((first.mapX > second.mapX) && (first.mapX > last.mapX)) ||
+//                ((first.mapX < second.mapX) && (first.mapX < last.mapX))) {
+//                first.mapX = last.mapX + (second.mapX - last.mapX) / 2;
+//            }
+//        }
+
         for (Vertex v : vertices) {
             gl.glColor4ub((byte) v.color.r, (byte) v.color.g, (byte) v.color.b, v.opaque);
             gl.glVertex2d(v.mapX, v.mapY);
